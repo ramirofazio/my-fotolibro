@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  *,
+  *::after,
+  *::before {
+    @apply box-border scroll-smooth;
+  }
+
+  body {
+    @apply overflow-hidden
+  }
+}
