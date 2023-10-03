@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Root, ClientData } from "../pages/";
+import { Root } from "../pages/";
+import { ClientData } from "../pages/ClientData";
 
 export function Routes() {
   const routes = createBrowserRouter([

@@ -8,9 +8,15 @@ const links = [
 
 export function Nav() {
   return (
-    <nav className="border-2 border-black">
+    <nav className="border-2 border-black flex justify-around">
       {links.map((l, i) => (
-        <NavLink key={i} to={l.link}>
+        <NavLink
+          key={i}
+          to={l.link}
+          className={({ isActive }) =>
+            isActive ? "bg-red-500" : "border-2 border-black"
+          }
+        >
           <p>{l.text}</p>
         </NavLink>
       ))}

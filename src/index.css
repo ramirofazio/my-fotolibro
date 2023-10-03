@@ -14,6 +14,20 @@
   }
 
   body {
-    @apply overflow-hidden h-full
+    @apply overflow-x-hidden h-full
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-md bg-blue-500;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 }
