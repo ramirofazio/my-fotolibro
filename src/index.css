@@ -9,8 +9,11 @@
   *::before {
     @apply box-border scroll-smooth;
   }
+  html {
+    @apply h-full 
+  }
 
   body {
-    @apply overflow-hidden
+    @apply overflow-hidden h-full
   }
 }
