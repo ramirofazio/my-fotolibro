@@ -1,4 +1,20 @@
-export function ClientAdress() {
+
+export function ClientAdress({setAdress}) {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setAdress((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      }
+    })
+    /* setErrs(
+      isValidSignUp({
+        ...user,
+        [name]: value,
+      })
+    ); */
+  };
   return (
     <section className="w-full my-5 ">
       <h1 className="my-3 text-lg w-fit mx-auto font-bold text-blue-700">
@@ -8,6 +24,7 @@ export function ClientAdress() {
         <fieldset>
           <p>Codigo postal: </p>
           <input
+            onChange={handleChange}
             className=""
             type="number"
             placeholder="011 256356"
@@ -17,16 +34,17 @@ export function ClientAdress() {
         </fieldset>
         <fieldset>
           <p>Provincia: </p>
-          <input className="" type="text" name="province" id="" />{" "}
+          <input onChange={handleChange} className="" type="text" name="province" id="" />{" "}
           {/* Auto select */}
         </fieldset>
         <fieldset>
           <p>Localidad: </p>
-          <input className="" type="text" name="city" id="" />
+          <input onChange={handleChange} className="" type="text" name="city" id="" />
         </fieldset>
         <fieldset>
           <p>Dirección del domicilio: </p>
           <input
+            onChange={handleChange}
             className=""
             type="text"
             placeholder="e.g Av.Sanmartin 57"
@@ -35,8 +53,9 @@ export function ClientAdress() {
           />
         </fieldset>
         <fieldset>
-          <p>Piso: </p>
+          <p>Piso (opcional) : </p>
           <input
+            onChange={handleChange}
             className=""
             type="text"
             placeholder="opcional"
@@ -45,8 +64,9 @@ export function ClientAdress() {
           />
         </fieldset>
         <fieldset>
-          <p>Departamento: </p>
+          <p>Departamento (opcional) : </p>
           <input
+            onChange={handleChange}
             className=""
             type="text"
             placeholder="opcional"
