@@ -3,7 +3,7 @@ import { Nav, Footer } from "../components/";
 
 export function Root() {
   return (
-    <div className="flex flex-col justify-between border-2 border-red-500 min-h-screen">
+    <div className="bg-main flex flex-col justify-between min-h-screen">
     <Nav/>
     <Outlet/>
     <Footer/>

@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
   *,
   *::after,
@@ -10,11 +9,25 @@
     @apply box-border scroll-smooth;
   }
   html {
-    @apply h-full 
+    @apply h-full;
   }
 
   body {
-    @apply overflow-x-hidden h-full
+    @apply overflow-x-hidden h-full;
+  }
+
+  p {
+    @apply text-white;
+  }
+
+  input {
+    border-radius: 0.125rem;
+    background-color: #6b7c93;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    outline: none;
+    width: 80%;
+    margin-top: 2px;
   }
 
   ::-webkit-scrollbar {

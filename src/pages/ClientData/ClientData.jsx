@@ -17,15 +17,16 @@ export function ClientData() {
     deparment: null,
   });
 
-  function onSubmit(e) {
+  function handleSubmit(e) {
     
   }
 
   return (
-    <div className="h-full border-2 border-yellow-300">
+    <div className="h-full ">
       <h1>SOY EL CLIENT DATA</h1>
-      <form>
+      <form className="flex items-center flex-col" onSubmit={handleSubmit}>
         <PersonalData />
+        <hr />
         <ClientAdress />
         <section>
           <p>Observaciones: </p>
