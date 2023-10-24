@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Root } from "../pages/";
-import { ClientData } from "../pages/ClientData";
+import { ClientData , UploadImages} from "../pages";
 
 export function Routes() {
   const routes = createBrowserRouter([
@@ -14,7 +14,7 @@ export function Routes() {
         },
         {
           path: "/upload_images",
-          element: <div>soy el upload_images</div>,
+          element: <UploadImages/>,
         },
         {
           path: "/sort_images",
