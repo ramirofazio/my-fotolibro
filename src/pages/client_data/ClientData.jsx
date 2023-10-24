@@ -1,8 +1,8 @@
 import { PersonalData, ClientAdress } from "./";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function ClientData() {
-  const [personal, setPersoanl] = useState({
+  const [client, setClient] = useState({
     dni: null,
     name: null,
     phone: null,
@@ -17,17 +17,22 @@ export function ClientData() {
     deparment: null,
   });
 
+  useEffect(() => {
+    console.log(client)
+    console.log(adress)
+  }, [client, adress])
+
   function handleSubmit(e) {
     
   }
 
   return (
     <div className="h-full ">
-      <h1>SOY EL CLIENT DATA</h1>
+      <h1 className="w-[75%] text-white mx-auto text-center mt-10">Complete los siguientes campos con la información requerida</h1>
       <form className="flex items-center flex-col" onSubmit={handleSubmit}>
-        <PersonalData />
+        <PersonalData setClient={setClient} />
         <hr />
-        <ClientAdress />
+        <ClientAdress setAdress={setAdress}/>
         <section>
           <p>Observaciones: </p>
           <textarea />
