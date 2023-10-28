@@ -9,6 +9,16 @@ module.exports = (sequelize) => {
         autoIncrement: true,
         primaryKey: true,
       },
+      name: {
+        type: DataTypes.STRING,
+      },
+      publishDate: {
+        type: DataTypes.DATE,
+        defaultValue: Date.now(),
+      },
+      description: {
+        type: DataTypes.STRING,
+      },
     },
     {
       timestamps: false,
