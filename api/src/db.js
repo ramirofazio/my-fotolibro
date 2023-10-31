@@ -29,10 +29,10 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-const { User, Photo, Book } = sequelize.models;
+const { Client, Photo, Book } = sequelize.models;
 
-User.hasMany(Book);
-Book.belongsTo(User);
+Client.hasMany(Book);
+Book.belongsTo(Client);
 Book.hasMany(Photo);
 Photo.belongsTo(Book);
 

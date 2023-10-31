@@ -2,17 +2,18 @@ const { DataTypes, UUIDV4 } = require('sequelize');
 
 module.exports = (sequelize) => {
   sequelize.define(
-    'user',
-    {
-      DNI: {
-        type: DataTypes.INTEGER,
+    'client',
+    { 
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: UUIDV4,
         primaryKey: true,
       },
-      fName: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      dni: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
-      lName: {
+      name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -21,7 +22,7 @@ module.exports = (sequelize) => {
       },
       email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
     },
     {
