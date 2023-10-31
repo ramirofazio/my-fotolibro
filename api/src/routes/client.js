@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const router = Router();
 const { Client } = require("../db.js");
-const { where } = require("sequelize");
+
 
 router.get("/", async (req, res) => {
   try {

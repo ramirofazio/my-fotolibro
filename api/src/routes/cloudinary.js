@@ -32,7 +32,7 @@ router.get("/signature", (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { file, userId, upload_preset } = req.body;
+    const { file, userId, upload_preset } = req.body; // pasarlo a una funcion, que cree una promesa por cada img y las resuelva
     const result = await cloudinary.uploader.upload(file, {
       upload_preset: upload_preset,
       public_id: userId,
