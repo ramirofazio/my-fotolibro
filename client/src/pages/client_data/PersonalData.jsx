@@ -23,7 +23,7 @@ export function PersonalData({ setClient }) {
         </h1>
 
         <fieldset className="">
-          <p className=" w-fit mx-auto">Email </p>
+          <p className="italic w-fit mx-auto">Email (requerido)</p>
           <input
             className=" w-full "
             onChange={handleChange}
@@ -34,7 +34,7 @@ export function PersonalData({ setClient }) {
         </fieldset>
 
         <fieldset>
-          <p className=" w-fit mx-auto">Nombre </p>
+          <p className="italic w-fit mx-auto">Nombre (requerido)</p>
           <input
             className=" w-full "
             onChange={handleChange}
