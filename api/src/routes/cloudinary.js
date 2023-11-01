@@ -30,7 +30,7 @@ router.get("/signature", (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/upload", async (req, res) => {
   try {
     const { file, userId, upload_preset } = req.body; // pasarlo a una funcion, que cree una promesa por cada img y las resuelva
     const result = await cloudinary.uploader.upload(file, {
@@ -50,13 +50,20 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.get("/book", async (req, res) => {
+  const books = await Book.findAll()
+  return res.json({
+    books
+  })
+});
+
+router.delete("/book/:id", async (req, res) => {
   const { id } = req.params;
   await cloudinary.uploader.destroy({
     public_id,
   });
 });
-module.exports = router;
+
 
 router.get("/book/:id", async (req, res) => {
   const { id } = req.params;
@@ -98,3 +105,5 @@ router.delete("/book/:id", async (req, res) => {
     });
   }
 });
+
+module.exports = router;

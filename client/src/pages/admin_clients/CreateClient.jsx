@@ -13,7 +13,7 @@ export function CreateClient() {
 
   return (
     <div>
-      <h1>Complete con la información requerida para crear un cliente</h1>
+      <h1 className="text-3xl text-white text-center">Complete la información requerida para crear un cliente y su codigo para caragr imagenes</h1>
       <form onSubmit={submitClient}>
         <PersonalData setClient={setClient}/>
       </form>

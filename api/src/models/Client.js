@@ -9,18 +9,19 @@ module.exports = (sequelize) => {
         defaultValue: UUIDV4,
         primaryKey: true,
       },
-      dni: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-      },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      event: {
-        type: DataTypes.STRING,
-      },
       email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      dni: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      event: {
         type: DataTypes.STRING,
         allowNull: true,
       },

@@ -18,7 +18,7 @@ export function PersonalData({ setClient }) {
   return (
     <section className="my-5   w-[70%] mx-auto">
       <div className="flex flex-col gap-4 my-10 w-full px-3  items-center">
-        <h1 className="my-3 text-lg w-fit  font-bold text-blue-700">
+        <h1 className="text-2xl my-3 w-fit  font-bold text-blue-700">
           Datos personales
         </h1>
 
