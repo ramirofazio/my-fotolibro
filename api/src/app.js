@@ -25,9 +25,7 @@ server.use((req, res, next) => {
   next();
 });
 
-server.use('/', (req, res) => {
-  res.send('Bienvenido a tu foto libro');
-});
+
 server.use(router);
 // Error catching endware.
 server.use((err, req, res, next) => {
