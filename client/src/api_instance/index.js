@@ -4,7 +4,7 @@ export const API = {
   getClients: () => {
     return api.get("client");
   },
-  createClient: ({ newClient }) => {
+  createClient: ( newClient ) => {
     return api.post("client", newClient);
   },
   updateClient: ({ clientId, newData }) => {

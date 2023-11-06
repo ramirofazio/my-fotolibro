@@ -1,7 +1,13 @@
 export function PersonalData({ setClient }) {
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setClient((prev) => {
+      if (type === "number") {
+        return {
+          ...prev,
+          [name]: parseInt(value),
+        };
+      }
       return {
         ...prev,
         [name]: value,
@@ -16,7 +22,7 @@ export function PersonalData({ setClient }) {
   };
 
   return (
-    <section className="my-5   w-[70%] mx-auto">
+    <section className="my-5   w-[70%] mx-auto border-2">
       <div className="flex flex-col gap-4 my-10 w-full px-3  items-center">
         <h1 className="text-2xl my-3 w-fit  font-bold text-blue-700">
           Datos personales
@@ -25,7 +31,7 @@ export function PersonalData({ setClient }) {
         <fieldset className="">
           <p className="italic w-fit mx-auto">Email (requerido)</p>
           <input
-            className=" w-full "
+            className=" w-full font-bold p-1"
             onChange={handleChange}
             type="email"
             name="email"
@@ -34,9 +40,9 @@ export function PersonalData({ setClient }) {
         </fieldset>
 
         <fieldset>
-          <p className="italic w-fit mx-auto">Nombre (requerido)</p>
+          <p className="italic w-fit mx-auto ">Nombre (requerido)</p>
           <input
-            className=" w-full "
+            className=" w-full font-bold p-1"
             onChange={handleChange}
             type="text"
             name="name"
@@ -47,7 +53,7 @@ export function PersonalData({ setClient }) {
         <fieldset className="">
           <p className=" w-fit mx-auto">DNI de facturación </p>
           <input
-            className=" w-full "
+            className=" w-full font-bold p-1"
             onChange={handleChange}
             type="number"
             name="dni"
@@ -58,7 +64,7 @@ export function PersonalData({ setClient }) {
         <fieldset>
           <p className=" w-fit mx-auto">Celular </p>
           <input
-            className=" w-full "
+            className=" w-full font-bold p-1"
             onChange={handleChange}
             type="number"
             placeholder="011 256356"

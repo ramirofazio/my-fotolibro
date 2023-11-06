@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Root, AdminRoot } from "../pages/";
 import { ClientData, UploadImages, Clients, Books } from "../pages";
+import { RouterError } from "../components/RouterError";
 import { API } from "../api_instance";
 
 export function Routes() {
@@ -12,6 +13,7 @@ export function Routes() {
         return params;
       },
       element: <Root />,
+      errorElement: <RouterError/>,
       children: [
         {
           path: "/client/:clientId/client_data",
@@ -35,6 +37,7 @@ export function Routes() {
         return params;
       },
       element: <AdminRoot />,
+      errorElement: <RouterError/>,
       children: [
         {
           path: "/admin/:adminId/clients",
@@ -46,10 +49,10 @@ export function Routes() {
         },
         {
           path: "/admin/:adminId/books",
-          loader: async () => {
+          /* loader: async () => {
             const books = await API.getBooks()
             return books.data
-          },
+          }, */
           element: <Books />,
         },
       ],

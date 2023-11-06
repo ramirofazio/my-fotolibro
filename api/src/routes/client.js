@@ -31,6 +31,7 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
+    console.log(req.body)
     const newClient = await Client.create(req.body);
     res.json({
       esa: "usuario creado con exito",
@@ -38,7 +39,7 @@ router.post("/", async (req, res) => {
     });
   } catch (e) {
     console.log(e);
-    res.json({ e });
+    res.status(401).json({ e });
   }
 });
 

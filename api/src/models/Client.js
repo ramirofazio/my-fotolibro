@@ -18,7 +18,11 @@ module.exports = (sequelize) => {
         allowNull: false,
       },
       dni: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
+        allowNull: true,
+      },
+      phone: {
+        type: DataTypes.BIGINT,
         allowNull: true,
       },
       event: {
