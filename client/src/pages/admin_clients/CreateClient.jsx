@@ -1,6 +1,6 @@
 import { PersonalData } from "../client_data";
 import { useState } from "react";
-import { isValidClient } from "../../utils";
+//import { isValidClient } from "../../utils";
 import { useEffect } from "react";
 import { API } from "../../api_instance/index";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 export function CreateClient() {
   const navigate = useNavigate()
   const [client, setClient] = useState();
-  const [errs, setErrs] = useState();
+  //const [errs, setErrs] = useState();
 
   useEffect(() => {
     console.log(client);
@@ -16,8 +16,7 @@ export function CreateClient() {
 
   function submitClient(e) {
     e.preventDefault()
-    API.createClient(client).then(res => navigate("/admin/:adminId/clients"))
-    //API.getClients().then(res => console.log(res))
+    API.createClient(client).then(() => navigate("/admin/:adminId/clients"))
   }
 
   return (

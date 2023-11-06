@@ -22,10 +22,9 @@ export function ClientCard({ name, email, phone, id, dni }) {
         <p>Email: {email}</p>
         <p>Numero: {phone}</p>
         <p>DNI: {dni}</p>
-        {/* <p>{`email: ${email}, phone: ${phone}, dni: ${dni}`}</p> */}
       </section>
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <h1>NOOOOO</h1>
+        <h1>Se borrara todo los books relacionados al usuario: {name}</h1>
       </Modal>
     </div>
   );
