@@ -3,11 +3,6 @@ import { useState } from 'react';
 export function UploadImages() {
   const [images, setImages] = useState([]);
 
-  function removeImage(index) {
-    const Images = images.filter((_img, i) => i !== index);
-    setImages(Images);
-  }
-
   function handleImages({ target }) {
     const files = target.files;
     if (!files) return;
@@ -49,6 +44,9 @@ export function UploadImages() {
           onChange={handleImages}
         />
       </div>
+      <button onClick={() => null} className="">
+        Test
+      </button>
       <div className="p-4">
         {images.map((image, i) => (
           <div key={i} className="relative w-fit">
@@ -58,12 +56,7 @@ export function UploadImages() {
               key={i}
               className="w-[500px] aspect-square"
             />
-            <button
-              onClick={removeImage}
-              className="absolute top-2 right-2 text-lg"
-            >
-              x
-            </button>
+            <button className="absolute top-2 right-2 text-lg">x</button>
           </div>
         ))}
       </div>
