@@ -3,8 +3,10 @@ import { useState } from "react";
 import { isValidClient } from "../../utils";
 import { useEffect } from "react";
 import { API } from "../../api_instance/index";
+import { useNavigate } from "react-router-dom";
 
 export function CreateClient() {
+  const navigate = useNavigate()
   const [client, setClient] = useState();
   const [errs, setErrs] = useState();
 
@@ -14,7 +16,7 @@ export function CreateClient() {
 
   function submitClient(e) {
     e.preventDefault()
-    API.createClient(client).then(res => console.log(res))
+    API.createClient(client).then(res => navigate("/admin/:adminId/clients"))
     //API.getClients().then(res => console.log(res))
   }
 
@@ -24,7 +26,7 @@ export function CreateClient() {
         Complete los campos para crear un cliente con su codigo para cargar
         imagenes
       </h1>
-      <form onSubmit={submitClient} className="border-2">
+      <form onSubmit={submitClient} className="">
         <PersonalData setClient={setClient} />
         <div className="mx-auto w-fit">
           <button
