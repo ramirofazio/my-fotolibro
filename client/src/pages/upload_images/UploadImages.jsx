@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useApp } from '../../contexts/AppContext';
 
 export function UploadImages() {
-  const [images, setImages] = useState([]);
+  const { images, addImages, removeImages } = useApp();
 
   function handleImages({ target }) {
     const files = target.files;
@@ -13,15 +13,12 @@ export function UploadImages() {
 
       const reader = new FileReader();
       reader.onload = () => {
-        setImages((cur) => [
-          ...cur,
-          {
-            name: file.name,
-            index: i,
-            url: typeof reader.result === 'string' ? reader.result : '',
-            file: file,
-          },
-        ]);
+        addImages({
+          name: file.name,
+          index: i,
+          url: typeof reader.result === 'string' ? reader.result : '',
+          file: file,
+        });
       };
       reader.readAsDataURL(file);
     }
@@ -45,7 +42,7 @@ export function UploadImages() {
           onChange={handleImages}
         />
       </div>
-      <div className="mt-4 grid grid-cols-3 gap-4">
+      <div className="mt-4 grid md:grid-cols-3 gap-4">
         {images.map((image, i) => (
           <div key={i} className="relative w-fit">
             <img
@@ -54,7 +51,11 @@ export function UploadImages() {
               key={i}
               className="w-[500px] aspect-square"
             />
-            <button className="absolute top-2 right-2 w-7 h-7 hover:text-red-600 rounded-full hover:bg-gray-400/40" title="Eliminar">
+            <button
+              onClick={() => removeImages(i)}
+              className="absolute top-2 right-2 w-7 h-7 hover:text-red-800 rounded-full hover:bg-gray-400/40"
+              title="Eliminar"
+            >
               <XIcon />
             </button>
           </div>
@@ -64,7 +65,7 @@ export function UploadImages() {
   );
 }
 
-function XIcon() {
+export function XIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
