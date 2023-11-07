@@ -33,7 +33,7 @@ router.get("/signature", (req, res) => {
 router.post("/upload", async (req, res) => {
   try {
     const { files, userId, upload_preset } = req.body;// pasarlo a una funcion, que cree una promesa por cada img y las resuelva
-    
+    console.log("ENTRO A LA RUTA")
     let promises = []
     for (const imgName in files) {
       console.log(imgName)
