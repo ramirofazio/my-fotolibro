@@ -32,10 +32,16 @@ router.get("/signature", (req, res) => {
 
 router.post("/upload", async (req, res) => {
   try {
-    const { files, userId, upload_preset } = req.body;// pasarlo a una funcion, que cree una promesa por cada img y las resuelva
+    const { files } = req.body;// pasarlo a una funcion, que cree una promesa por cada img y las resuelva
+    
     console.log("ENTRO A LA RUTA")
+    console.log(req.body)
+  
+    for(let [name, value] of files) {
+      console.log(`${name} = ${value}`); 
+    }
     let promises = []
-    for (const imgName in files) {
+    /* for (const imgName in files) {
       console.log(imgName)
       promises.push(cloudinary.uploader.upload(files[imgName], {
         upload_preset: "testing",
@@ -45,18 +51,21 @@ router.post("/upload", async (req, res) => {
         cloud_name: CLOUDINARY_CLOUD_NAME,
         overwrite: true,
       }));
-      /* const result = await cloudinary.uploader.upload(files[imgName], {
-        upload_preset: upload_preset,
-        public_id: userId,
-        api_key: CLOUDINARY_API_KEY,
-        api_secret: CLOUDINARY_API_SECRET,
-        cloud_name: CLOUDINARY_CLOUD_NAME,
-        overwrite: true,
-      }); */
-    }
-    res.send(result.secure_url);
+    } */
+    /* const result = await cloudinary.uploader.upload(files[0], {
+      upload_preset: "test",
+      public_id: "el primer user",
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+      overwrite: true,
+    });
+    console.log(result) */
+    res.json({
+      res: files
+    });
   } catch (err) {
-    console.log(e);
+    console.log(err);
     res.json({
       err,
     });

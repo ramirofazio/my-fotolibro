@@ -9,12 +9,36 @@ export function UploadImages() {
     console.log(imgs)
   }, [imgs])
 
+  async function handleImgsUpload (files) {
+    let links = []; 
+
+    for(const img in files) {
+      console.log(files[img].name)
+      const formData = new FormData
+      formData.append("file", files[img])
+      formData.append("upload_preset", "random")
+      formData.append("public_id", img)
+      const {data} = await axios.post("https://api.cloudinary.com/v1_1/dnxa8khx9/image/upload", formData)
+      console.log(data)
+      links.push(data.secure_url)
+    }
+
+    return links
+  }
+
+
   function handleImgs(e) {
     const {target} = e
 
     for(let i = 0; i < target.files.length; i++) {
       const file = target.files[i];
-      const reader = new FileReader();
+      setImgs((prev) => {
+        return {
+         ...prev,
+         [file.name]: file
+       }
+     });
+      /* const reader = new FileReader();
       reader.onload = () => {
         setImgs((prev) => {
          return {
@@ -23,7 +47,7 @@ export function UploadImages() {
         }
       });
       };
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file); */
     }
   }
 
@@ -46,11 +70,20 @@ export function UploadImages() {
         />
       </div>
       <button onClick={async () => {
-        console.log(imgs)
-        let res = await axios.post(`http://localhost:3001/cloudinary/updload`, imgs, {
+        let links = await handleImgsUpload(imgs)
+        console.log(links)
+        /* console.log(imgs)
+        const imgFormData = new FormData()
+        for (const i in imgs) {
+          imgFormData.append(i, imgs[i])
+        }
+        for(let [name, value] of imgFormData) {
+          console.log(`${name} = ${value}`); 
+        }
+        let res = await axios.post(`http://localhost:3001/cloudinary/upload`,  imgFormData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        console.log(res)
+        console.log(res.data) */
       }}>
         Mandaleeeeeeeee
       </button>
