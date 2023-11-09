@@ -3,20 +3,19 @@ import { Root, AdminRoot } from "../pages/";
 import { ClientData, UploadImages, Clients, Books } from "../pages";
 import { RouterError } from "../components/RouterError";
 import { API } from "../api_instance";
+import { verifyClient } from "./loaders";
 
 export function Routes() {
   const routes = createBrowserRouter([
     {
       path: "/client/:clientId",
-      loader: ({ params }) => {
-        console.log(params.clientId);
-        return params;
-      },
       element: <Root />,
       errorElement: <RouterError/>,
       children: [
         {
           path: "/client/:clientId/client_data",
+          loader: verifyClient,
+          errorElement: <RouterError/>,
           element: <ClientData />,
         },
         {
