@@ -15,6 +15,8 @@ export const AppProvider = ({ children }) => {
     setImages((cur) => cur.filter((img, i) => i !== index));
   };
 
+  
+
   return (
     <AppContext.Provider value={{ images, addImages, removeImages }}>
       {children}
