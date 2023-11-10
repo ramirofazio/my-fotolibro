@@ -1,16 +1,32 @@
 import { PersonalData } from "./";
 import { useState } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import {API} from "../../api_instance"
+
 
 export function ClientData() {
-  const [client, setClient] = useState({
-    dni: null,
-    name: null,
-    phone: null,
-    email: null,
-  });
-
-  function handleSubmit() {
-    console.log(client);
+  const navigate = useNavigate()
+  const _client = useLoaderData()
+  const [client, setClient] = useState();
+  console.log(_client)
+  async function handleSubmit(e) {
+    e.preventDefault()
+    // setLoader(true)
+    API.updateClient({ clientId: _client.id, newData: client })
+    .then(res => {
+      if(res.data) {
+        // setLoader(false)
+        // popup "se guardo tu info correctamente"
+        console.log(res.data)
+        navigate(`/client/${_client.id}/upload_images`)
+      }
+      else {
+        console.log(res)
+        // popup "ocurrio este error"
+        // setLoader(false)
+      }
+    })
+    
   }
 
   return (
@@ -19,7 +35,7 @@ export function ClientData() {
         Complete los siguientes campos con la información requerida
       </h1>
       <form className="flex items-center flex-col gap-3" onSubmit={handleSubmit}>
-        <PersonalData setClient={setClient} />
+        <PersonalData _client={_client} setClient={setClient} />
         <hr />
         <section className="w-[70%]  flex flex-col justify-center items-center">
           <p className="w-fit">Observaciones: </p>

@@ -31,10 +31,10 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 const { Client, Photo, Book } = sequelize.models;
 
-Client.hasMany(Book);
-Book.belongsTo(Client);
-Book.hasMany(Photo);
-Photo.belongsTo(Book);
+/* Book.belongsTo(Client);
+Book.hasMany(Photo); */
+Client.hasMany(Photo);
+Photo.belongsTo(Client);
 
 module.exports = {
   ...sequelize.models,

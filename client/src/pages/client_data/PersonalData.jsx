@@ -1,53 +1,55 @@
-export function PersonalData({ setClient }) {
+export function PersonalData({ _client ,setClient }) {
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setClient((prev) => {
+      if (type === "number") {
+        return {
+          ...prev,
+          [name]: parseInt(value),
+        };
+      }
       return {
         ...prev,
         [name]: value,
       };
     });
-    /* setErrs(
-      isValidSignUp({
-        ...user,
-        [name]: value,
-      })
-    ); */
   };
 
   return (
-    <section className="my-5   w-[70%] mx-auto">
+    <section className="my-5   w-[70%] mx-auto border-2">
       <div className="flex flex-col gap-4 my-10 w-full px-3  items-center">
-        <h1 className="my-3 text-lg w-fit  font-bold text-blue-700">
+        <h1 className="text-2xl my-3 w-fit  font-bold text-blue-700">
           Datos personales
         </h1>
 
         <fieldset className="">
-          <p className=" w-fit mx-auto">Email </p>
+          <p className="italic w-fit mx-auto">Email (requerido)</p>
           <input
-            className=" w-full "
+            className=" w-full font-bold p-1 disabled:text-blue-950 disabled:opacity-50"
             onChange={handleChange}
             type="email"
             name="email"
-            id=""
+            value={_client?.email ? _client?.email : ""}
+            disabled={_client?.email ? true : false}
           />
         </fieldset>
 
         <fieldset>
-          <p className=" w-fit mx-auto">Nombre </p>
+          <p className="italic w-fit mx-auto ">Nombre (requerido)</p>
           <input
-            className=" w-full "
+            className=" w-full font-bold p-1 disabled:text-blue-950 disabled:opacity-50"
             onChange={handleChange}
             type="text"
             name="name"
-            id=""
+            value={_client?.name ? _client?.name : ""}
+            disabled={_client?.name ? true : false}
           />
         </fieldset>
 
         <fieldset className="">
           <p className=" w-fit mx-auto">DNI de facturación </p>
           <input
-            className=" w-full "
+            className=" w-full font-bold p-1"
             onChange={handleChange}
             type="number"
             name="dni"
@@ -58,7 +60,7 @@ export function PersonalData({ setClient }) {
         <fieldset>
           <p className=" w-fit mx-auto">Celular </p>
           <input
-            className=" w-full "
+            className=" w-full font-bold p-1"
             onChange={handleChange}
             type="number"
             placeholder="011 256356"
