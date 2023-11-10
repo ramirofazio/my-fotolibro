@@ -30,33 +30,62 @@ router.get("/signature", (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/upload", async (req, res) => {
   try {
-    const { file, userId, upload_preset } = req.body; // pasarlo a una funcion, que cree una promesa por cada img y las resuelva
-    const result = await cloudinary.uploader.upload(file, {
-      upload_preset: upload_preset,
-      public_id: userId,
+    const { files } = req.body;// pasarlo a una funcion, que cree una promesa por cada img y las resuelva
+    
+    console.log("ENTRO A LA RUTA")
+    console.log(req.body)
+  
+    for(let [name, value] of files) {
+      console.log(`${name} = ${value}`); 
+    }
+    let promises = []
+    /* for (const imgName in files) {
+      console.log(imgName)
+      promises.push(cloudinary.uploader.upload(files[imgName], {
+        upload_preset: "testing",
+        public_id: userId,
+        api_key: CLOUDINARY_API_KEY,
+        api_secret: CLOUDINARY_API_SECRET,
+        cloud_name: CLOUDINARY_CLOUD_NAME,
+        overwrite: true,
+      }));
+    } */
+    /* const result = await cloudinary.uploader.upload(files[0], {
+      upload_preset: "test",
+      public_id: "el primer user",
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
       cloud_name: CLOUDINARY_CLOUD_NAME,
       overwrite: true,
     });
-    res.send(result.secure_url);
+    console.log(result) */
+    res.json({
+      res: files
+    });
   } catch (err) {
-    console.log(e);
+    console.log(err);
     res.json({
       err,
     });
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.get("/book", async (req, res) => {
+  const books = await Book.findAll()
+  return res.json({
+    books
+  })
+});
+
+router.delete("/book/:id", async (req, res) => {
   const { id } = req.params;
   await cloudinary.uploader.destroy({
     public_id,
   });
 });
-module.exports = router;
+
 
 router.get("/book/:id", async (req, res) => {
   const { id } = req.params;
@@ -98,3 +127,5 @@ router.delete("/book/:id", async (req, res) => {
     });
   }
 });
+
+module.exports = router;
