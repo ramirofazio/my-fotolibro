@@ -1,53 +1,54 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Root, AdminRoot } from "../pages/";
-import { ClientData, UploadImages, Clients, Books } from "../pages";
-import { RouterError } from "../components/RouterError";
-import { API } from "../api_instance";
-import { verifyClient } from "./loaders";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Root, AdminRoot } from '../pages/';
+import { ClientData, UploadImages, Clients, Books } from '../pages';
+import { RouterError } from '../components/RouterError';
+import { API } from '../api_instance';
+import { verifyClient } from './loaders';
+import { ShortImages } from '../pages/sort_images/images';
 
 export function Routes() {
   const routes = createBrowserRouter([
     {
-      path: "/client/:clientId",
+      path: '/client/:clientId',
       element: <Root />,
-      errorElement: <RouterError/>,
+      errorElement: <RouterError />,
       children: [
         {
-          path: "/client/:clientId/client_data",
+          path: '/client/:clientId/client_data',
           loader: verifyClient,
-          errorElement: <RouterError/>,
+          errorElement: <RouterError />,
           element: <ClientData />,
         },
         {
-          path: "/client/:clientId/upload_images",
+          path: '/client/:clientId/upload_images',
           element: <UploadImages />,
         },
         {
-          path: "/client/:clientId/sort_images",
-          element: <div>sort_images</div>,
+          path: '/client/:clientId/sort_images',
+          element: <ShortImages />,
         },
       ],
     },
     {
-      path: "/admin/:adminId",
+      path: '/admin/:adminId',
       loader: ({ params }) => {
         console.log(params.adminId);
-        console.log("admin");
+        console.log('admin');
         return params;
       },
       element: <AdminRoot />,
-      errorElement: <RouterError/>,
+      errorElement: <RouterError />,
       children: [
         {
-          path: "/admin/:adminId/clients",
+          path: '/admin/:adminId/clients',
           loader: async () => {
-            const clients = await API.getClients()
-            return clients.data
+            const clients = await API.getClients();
+            return clients.data;
           },
           element: <Clients />,
         },
         {
-          path: "/admin/:adminId/books",
+          path: '/admin/:adminId/books',
           /* loader: async () => {
             const books = await API.getBooks()
             return books.data

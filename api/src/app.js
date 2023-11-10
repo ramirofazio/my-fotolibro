@@ -6,7 +6,6 @@ const router = require('./routes/index.js');
 require('dotenv').config();
 const { FRONT_URL } = process.env;
 
-
 require('./db.js');
 
 const server = express();
@@ -20,10 +19,7 @@ server.use(morgan('dev'));
 server.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', FRONT_URL); // update to match the domain you will make the request from
   res.header('Access-Control-Allow-Credentials', 'false');
-  res.header(
-    'Access-Control-Allow-Headers',
-    '*'
-  );
+  res.header('Access-Control-Allow-Headers', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
   next();
 });
