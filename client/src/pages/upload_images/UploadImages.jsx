@@ -1,16 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import {API} from "../../api_instance"
 import axios from "axios";
 
 export function UploadImages() {
   const { clientId } = useParams()
-  console.log(clientId)
   const [imgs, setImgs] = useState({})
-
-  useEffect(() => {
-    console.log(imgs)
-  }, [imgs])
 
   async function handleImgsUpload (files) {
     let links = [];
@@ -19,13 +14,11 @@ export function UploadImages() {
     // setLoader
     for(const img in files) {
       try {
-        console.log(files[img].name)
         const formData = new FormData
         formData.append("file", files[img])
         formData.append("upload_preset", clientId)
         formData.append("public_id", img)
         const {data} = await axios.post("https://api.cloudinary.com/v1_1/dnxa8khx9/image/upload", formData)
-        console.log(data)
         imgsDB.push({
           URL: data.secure_url,
           index: mockCounter,
@@ -39,13 +32,13 @@ export function UploadImages() {
     }
     // setLoader
     const res = await API.uploadImagesDB({clientId, imgs: imgsDB})
+    console.log(res)
     return links
   }
 
 
   function handleImgs(e) {
     const {target} = e
-
     for(let i = 0; i < target.files.length; i++) {
       const file = target.files[i];
       setImgs((prev) => {
@@ -54,16 +47,6 @@ export function UploadImages() {
          [file.name]: file
        }
      });
-      /* const reader = new FileReader();
-      reader.onload = () => {
-        setImgs((prev) => {
-         return {
-          ...prev,
-          [file.name]: typeof reader.result === "string" ? reader.result : "",
-        }
-      });
-      };
-      reader.readAsDataURL(file); */
     }
   }
 
