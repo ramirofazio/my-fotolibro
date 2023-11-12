@@ -23,7 +23,7 @@ export function SortImages() {
   return (
     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={images} strategy={verticalListSortingStrategy}>
-        <ul className="flex flex-col gap-3">
+        <ul className="flex flex-col gap-3 p-2">
           {images.map((image, i) => (
             <Item key={i} image={image} />
           ))}
@@ -55,9 +55,9 @@ function Item({ image }) {
       <img
         src={URL}
         alt="a image"
-        className={` w-[60px] aspect-square rounded-full`}
+        className={`w-[60px] aspect-square rounded-md object-cover`}
       />
-      {originalName}
+      <p className='w-full text-gray-800 ml-3'>{originalName}</p>
       <button
         className="w-7 h-7 hover:text-red-800 rounded-full hover:bg-gray-400/40"
         title="Eliminar"

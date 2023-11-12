@@ -64,7 +64,7 @@ export function UploadImages() {
               src={image.URL}
               alt="a image"
               key={i}
-              className="w-[500px] aspect-square"
+              className="w-[500px] aspect-square object-cover"
             />
             <div className="absolute top-0 left-0 w-full p-1 flex justify-between items-center bg-gradient-to-b from-black/70 to-transparent">
               <p className="flex flex-col">
