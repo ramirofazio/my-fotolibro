@@ -1,5 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { uploadImagesCloudinary } from '../../utils';
 
 export function UploadImages() {
   const { clientId } = useParams();
@@ -16,9 +18,8 @@ export function UploadImages() {
       const reader = new FileReader();
       reader.onload = () => {
         addImages({
-          id: i,
+          id: images.length + i + 1,
           originalName: file.name,
-          index: i,
           URL: typeof reader.result === 'string' ? reader.result : '',
           file: file,
         });
@@ -27,12 +28,22 @@ export function UploadImages() {
     }
   }
 
-  const uploadImagesToCloudinary = () => {};
+  const uploadImagesToCloudinary = async () => {
+    if (!images[0]) return;
+    console.log(images[0]);
+    const upImage = await uploadImagesCloudinary([images[0]]);
+    console.log(upImage);
+  };
 
   return (
     <div className="p-6">
       <div className="flex justify-end items-center text-white mb-4">
-        <button className='w-fit cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium' onClick={() => uploadImagesToCloudinary()}>Subir Imagen</button>
+        <button
+          className="w-fit cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium"
+          onClick={() => uploadImagesToCloudinary()}
+        >
+          Subir Imagen
+        </button>
       </div>
       <div className="text-white border-dashed border relative overflow-hidden flex flex-col justify-center items-center  p-4">
         <p className="text-lg font-medium mb-2">Arrastra aquí tus imagenes</p>
@@ -65,31 +76,11 @@ export function UploadImages() {
               className="absolute top-2 right-2 w-7 h-7 hover:text-red-800 rounded-full hover:bg-gray-400/40"
               title="Eliminar"
             >
-              <XIcon />
+              <XMarkIcon />
             </button>
           </div>
         ))}
       </div>
     </div>
-  );
-}
-
-export function XIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="100%"
-      height="100%"
-      viewBox="0 0 24 24"
-    >
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth="2"
-        d="M18 6L6 18M6 6l12 12"
-      />
-    </svg>
   );
 }
