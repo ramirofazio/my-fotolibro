@@ -4,7 +4,7 @@ import { ClientData, UploadImages, Clients, Books } from '../pages';
 import { RouterError } from '../components/RouterError';
 import { API } from '../api_instance';
 import { verifyClient } from './loaders';
-import { ShortImages } from '../pages/sort_images/images';
+import { SortImages } from '../pages/sort_images/sort_images';
 
 export function Routes() {
   const routes = createBrowserRouter([
@@ -25,7 +25,7 @@ export function Routes() {
         },
         {
           path: '/client/:clientId/sort_images',
-          element: <ShortImages />,
+          element: <SortImages />,
         },
       ],
     },
