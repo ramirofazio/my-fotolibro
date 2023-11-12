@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { uploadImagesCloudinary } from '../../utils';
+import { getSizeImage, uploadImagesCloudinary } from '../../utils';
 
 export function UploadImages() {
   const { clientId } = useParams();
@@ -22,6 +22,7 @@ export function UploadImages() {
           originalName: file.name,
           URL: typeof reader.result === 'string' ? reader.result : '',
           file: file,
+          size: file.size,
         });
       };
       reader.readAsDataURL(file);
@@ -32,21 +33,14 @@ export function UploadImages() {
     if (!images[0]) return;
     console.log(images[0]);
     const upImage = await uploadImagesCloudinary([images[0]]);
-    console.log(upImage);
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-end items-center text-white mb-4">
-        <button
-          className="w-fit cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium"
-          onClick={() => uploadImagesToCloudinary()}
-        >
-          Subir Imagen
-        </button>
-      </div>
+    <div className="p-3">
       <div className="text-white border-dashed border relative overflow-hidden flex flex-col justify-center items-center  p-4">
-        <p className="text-lg font-medium mb-2">Arrastra aquí tus imagenes</p>
+        <p className="text-lg font-medium mb-2 hidden">
+          Arrastra aquí tus imagenes
+        </p>
         <label
           htmlFor="upload-images"
           className="w-fit cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium"
@@ -62,7 +56,8 @@ export function UploadImages() {
           onChange={handleImages}
         />
       </div>
-      <div className="mt-4 grid md:grid-cols-3 gap-4">
+
+      <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
         {images.map((image, i) => (
           <div key={i} className="relative w-fit">
             <img
@@ -71,15 +66,31 @@ export function UploadImages() {
               key={i}
               className="w-[500px] aspect-square"
             />
-            <button
-              onClick={() => removeImages(i)}
-              className="absolute top-2 right-2 w-7 h-7 hover:text-red-800 rounded-full hover:bg-gray-400/40"
-              title="Eliminar"
-            >
-              <XMarkIcon />
-            </button>
+            <div className="absolute top-0 left-0 w-full p-1 flex justify-between items-center bg-gradient-to-b from-black/70 to-transparent">
+              <p className="flex flex-col">
+                <span className="text-sm font-medium">Imagen no subida</span>
+                <span className="text-[12px] text-gray-200">
+                  {getSizeImage(image.size)}
+                </span>
+              </p>
+              <button
+                onClick={() => removeImages(i)}
+                className=" w-7 aspect-square p-0.5 hover:text-red-800 text-gray-700 rounded-full bg-gray-400/40  hover:bg-gray-400 "
+                title="Eliminar"
+              >
+                <XMarkIcon />
+              </button>
+            </div>
           </div>
         ))}
+      </div>
+      <div className="flex justify-center items-center text-white mt-4">
+        <button
+          className="w-fit cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium"
+          onClick={() => uploadImagesToCloudinary()}
+        >
+          Subir Imagenes
+        </button>
       </div>
     </div>
   );

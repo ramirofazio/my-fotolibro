@@ -82,3 +82,15 @@ export function isValidClient({ name, email }) {
     return links;
   }
  */
+
+export function getSizeImage(size) {
+  const DECIMALS = 3;
+
+  let bytes = Number(size);
+
+  if (bytes < 1048576) {
+    return (bytes / 1024).toFixed(DECIMALS) + ' KB';
+  } else {
+    return (bytes / 1048576).toFixed(DECIMALS) + ' MB';
+  }
+}

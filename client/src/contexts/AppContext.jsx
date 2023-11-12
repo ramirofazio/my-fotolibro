@@ -15,10 +15,14 @@ export const AppProvider = ({ children }) => {
     setImages((cur) => cur.filter((img, i) => i !== index));
   };
 
-  
+  const reorderImages = (images) => {
+    setImages(images);
+  };
 
   return (
-    <AppContext.Provider value={{ images, addImages, removeImages }}>
+    <AppContext.Provider
+      value={{ images, addImages, removeImages, reorderImages }}
+    >
       {children}
     </AppContext.Provider>
   );
