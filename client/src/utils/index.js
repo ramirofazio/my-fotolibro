@@ -1,14 +1,17 @@
 import axios from 'axios';
 
-export async function uploadImagesCloudinary(files = [], clientId) {
+export async function uploadImagesCloudinary(
+  images = [],
+  clientId = '90cd6410-7501-4c64-9ec3-1dbf85bd765e'
+) {
   const cloud_name = import.meta.env.CLOUDINARY_CLOUD_NAME;
 
-  const URL = 'https://api.cloudinary.com/v1_1/' + cloud_name + '/image/upload';
+  const URL = 'https://api.cloudinary.com/v1_1/dnxa8khx9/image/upload';
 
   const photos = [];
   const promises = [];
 
-  files.forEach((file) => {
+  images.forEach(({ file }) => {
     const formdata = new FormData();
     formdata.append('file', file);
     formdata.append('upload_preset', clientId);
@@ -17,11 +20,16 @@ export async function uploadImagesCloudinary(files = [], clientId) {
 
   try {
     const responses = await Promise.all(promises);
-    console.log(promises[0]);
-    responses.forEach((res) => {
-      const url = res?.data?.secure_url;
-      if (url) {
-        photos.push(url);
+    responses.forEach((res, i) => {
+      console.log('Data response', res.data);
+      const data = res?.data;
+      if (data.secure_url) {
+        photos.push({
+          ...images[i],
+          URL: data.secure_url,
+          id: data.asset_id,
+          upload: true,
+        });
       }
     });
   } catch (err) {
