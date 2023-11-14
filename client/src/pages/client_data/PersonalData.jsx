@@ -1,4 +1,4 @@
-export function PersonalData({ _client ,setClient }) {
+export function PersonalData({ _client, admin = false, setClient }) {
   const handleChange = (e) => {
     const { name, value, type } = e.target;
     setClient((prev) => {
@@ -16,7 +16,7 @@ export function PersonalData({ _client ,setClient }) {
   };
 
   return (
-    <section className="my-5   w-[70%] mx-auto border-2">
+    <section className="my-5   w-[70%] mx-auto border-2 bg-slate-700">
       <div className="flex flex-col gap-4 my-10 w-full px-3  items-center">
         <h1 className="text-2xl my-3 w-fit  font-bold text-blue-700">
           Datos personales
@@ -30,7 +30,7 @@ export function PersonalData({ _client ,setClient }) {
             type="email"
             name="email"
             value={_client?.email && _client?.email}
-            disabled={_client?.email ? true : false}
+            disabled={(admin && _client?.email) ? true : false}
           />
         </fieldset>
 
@@ -42,7 +42,7 @@ export function PersonalData({ _client ,setClient }) {
             type="text"
             name="name"
             value={_client?.name && _client?.name}
-            disabled={_client?.name ? true : false}
+            disabled={(admin && _client?.name) ? true : false}
           />
         </fieldset>
 
@@ -54,6 +54,7 @@ export function PersonalData({ _client ,setClient }) {
             type="number"
             name="dni"
             id=""
+            value={_client?.dni && _client?.dni}
           />
         </fieldset>
 
@@ -66,6 +67,7 @@ export function PersonalData({ _client ,setClient }) {
             placeholder="011 256356"
             name="phone"
             id=""
+            value={_client?.phone && _client?.phone}
           />
         </fieldset>
       </div>

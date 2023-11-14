@@ -16,7 +16,10 @@ export function CreateClient() {
 
   function submitClient(e) {
     e.preventDefault()
-    API.createClient(client).then(() => navigate("/admin/:adminId/clients"))
+    API.createClient(client).then((res) => {
+      console.log(res.data)
+      navigate("/admin/:adminId/clients")
+    })
   }
 
   return (
@@ -26,7 +29,7 @@ export function CreateClient() {
         imagenes
       </h1>
       <form onSubmit={submitClient} className="">
-        <PersonalData /* _client={client} */ setClient={setClient} />
+        <PersonalData admin={false} /* _client={client} */ setClient={setClient} />
         <div className="mx-auto w-fit">
           <button
             type="submit"

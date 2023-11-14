@@ -4,7 +4,7 @@ export const API = {
   getClients: () => {
     return api.get("client");
   },
-  getClientVerification: (clientId) => {
+  getCLientById: (clientId) => {
     return api.get(`client/${clientId}`);
   },
   createClient: ( newClient ) => {
