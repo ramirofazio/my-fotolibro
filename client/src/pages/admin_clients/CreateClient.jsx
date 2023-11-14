@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 export function CreateClient() {
   const navigate = useNavigate()
-  const [client, setClient] = useState();
+  const [client, setClient] = useState({});
   //const [errs, setErrs] = useState();
 
   useEffect(() => {
@@ -26,7 +26,7 @@ export function CreateClient() {
         imagenes
       </h1>
       <form onSubmit={submitClient} className="">
-        <PersonalData setClient={setClient} />
+        <PersonalData /* _client={client} */ setClient={setClient} />
         <div className="mx-auto w-fit">
           <button
             type="submit"

@@ -29,7 +29,7 @@ export function PersonalData({ _client ,setClient }) {
             onChange={handleChange}
             type="email"
             name="email"
-            value={_client?.email ? _client?.email : ""}
+            value={_client?.email && _client?.email}
             disabled={_client?.email ? true : false}
           />
         </fieldset>
@@ -41,7 +41,7 @@ export function PersonalData({ _client ,setClient }) {
             onChange={handleChange}
             type="text"
             name="name"
-            value={_client?.name ? _client?.name : ""}
+            value={_client?.name && _client?.name}
             disabled={_client?.name ? true : false}
           />
         </fieldset>
