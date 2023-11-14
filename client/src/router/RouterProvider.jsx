@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Root, AdminRoot } from "../pages/";
-import { ClientData, UploadImages, Clients, Books } from "../pages";
+import { ClientData, UploadImages, Clients, Folders } from "../pages";
 import { RouterError } from "../components/RouterError";
 import { API } from "../api_instance";
 import { verifyClient } from "./loaders";
@@ -66,12 +66,12 @@ export function Routes() {
           ],
         },
         {
-          path: "/admin/:adminId/books",
-          /* loader: async () => {
-            const books = await API.getBooks()
+          path: "/admin/:adminId/folders",
+          loader: async () => {
+            const books = await API.getClients()
             return books.data
-          }, */
-          element: <Books />,
+          },
+          element: <Folders />,
         },
       ],
     },

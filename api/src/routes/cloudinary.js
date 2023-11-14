@@ -30,17 +30,58 @@ router.get("/signature", (req, res) => {
   }
 });
 
+router.get("/download/:clientId", async (req, res) => {
+  try {
+    const { clientId } = req.params;
+    const download_url = await cloudinary.v2.utils.download_folder(clientId, {
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+      prefixes: "/",
+    });
+
+    return res.json({
+      res: download_url,
+    });
+  } catch (e) {
+    console.log(e);
+    return res.json({
+      e,
+    });
+  }
+});
+
+router.get("/folders", async (req, res) => {
+  try {
+    const { clientId } = req.params;
+    const folders = await cloudinary.v2.api.root_folders({
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+    });
+
+    return res.json({
+      res: folders,
+    });
+  } catch (e) {
+    console.log(e);
+    return res.json({
+      e,
+    });
+  }
+});
+
 router.post("/upload", async (req, res) => {
   try {
-    const { files } = req.body;// pasarlo a una funcion, que cree una promesa por cada img y las resuelva
-    
-    console.log("ENTRO A LA RUTA")
-    console.log(req.body)
-  
-    for(let [name, value] of files) {
-      console.log(`${name} = ${value}`); 
+    const { files } = req.body; // pasarlo a una funcion, que cree una promesa por cada img y las resuelva
+
+    console.log("ENTRO A LA RUTA");
+    console.log(req.body);
+
+    for (let [name, value] of files) {
+      console.log(`${name} = ${value}`);
     }
-    let promises = []
+    let promises = [];
     /* for (const imgName in files) {
       console.log(imgName)
       promises.push(cloudinary.uploader.upload(files[imgName], {
@@ -62,7 +103,7 @@ router.post("/upload", async (req, res) => {
     });
     console.log(result) */
     res.json({
-      res: files
+      res: files,
     });
   } catch (err) {
     console.log(err);
@@ -72,20 +113,12 @@ router.post("/upload", async (req, res) => {
   }
 });
 
-router.get("/book", async (req, res) => {
-  const books = await Book.findAll()
-  return res.json({
-    books
-  })
-});
-
 router.delete("/book/:id", async (req, res) => {
   const { id } = req.params;
   await cloudinary.uploader.destroy({
     public_id,
   });
 });
-
 
 router.get("/book/:id", async (req, res) => {
   const { id } = req.params;

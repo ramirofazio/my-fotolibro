@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 
 const links = [
-  { link: "books", text: "Books" },
+  { link: "folders", text: "Carpetas" },
   { link: "clients", text: "Clientes" },
 ];
 

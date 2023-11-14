@@ -18,7 +18,7 @@ export function CreateClient() {
     e.preventDefault()
     API.createClient(client).then((res) => {
       console.log(res.data)
-      navigate("/admin/:adminId/clients")
+      navigate("/admin/:adminId/clients/create")
     })
   }
 
