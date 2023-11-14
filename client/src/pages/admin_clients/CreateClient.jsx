@@ -29,7 +29,7 @@ export function CreateClient() {
         imagenes
       </h1>
       <form onSubmit={submitClient} className="">
-        <PersonalData admin={false} /* _client={client} */ setClient={setClient} />
+        <PersonalData admin={false} setClient={setClient} />
         <div className="mx-auto w-fit">
           <button
             type="submit"

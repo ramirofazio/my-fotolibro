@@ -9,7 +9,7 @@ export function ClientCard({ name, email, phone, id, dni }) {
   const params = useParams();
 
   return (
-    <div className={`border-2 rounded p-2  border-base-[10%] ${params?.clientId === id && "border-4 border-red-500"} `}>
+    <div className={`border-2 rounded p-2  bg-slate-700 border-base-[10%] ${params?.clientId === id && "border-4 border-red-500"} `}>
       <section>
         <picture className="flex w-fit ml-auto gap-3">
           <XCircleIcon

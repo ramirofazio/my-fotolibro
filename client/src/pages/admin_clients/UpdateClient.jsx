@@ -1,7 +1,6 @@
 import { PersonalData } from "../client_data";
 import { useState } from "react";
 //import { isValidClient } from "../../utils";
-import { XCircleIcon } from "@heroicons/react/24/outline";
 import { useEffect } from "react";
 import { API } from "../../api_instance/index";
 import { useNavigate, useLoaderData, Link, useParams } from "react-router-dom";
