@@ -19,6 +19,9 @@ export const API = {
   uploadImagesDB: ({imgs, clientId}) => {
     return api.post("client/imgs", { imgs, clientId });
   },
+  getDownloadUrl: (clientId) => {
+    return api.get(`cloudinary/download/${clientId}`)
+  }
   /* getBooks: () => {
     return api.get("cloudinary/book");
   },
