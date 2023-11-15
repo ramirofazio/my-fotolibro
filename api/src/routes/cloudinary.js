@@ -40,9 +40,7 @@ router.get("/download/:clientId", async (req, res) => {
       prefixes: "/",
     });
 
-    return res.json({
-      res: download_url,
-    });
+    return res.send(download_url);
   } catch (e) {
     console.log(e);
     return res.json({
@@ -113,11 +111,24 @@ router.post("/upload", async (req, res) => {
   }
 });
 
-router.delete("/book/:id", async (req, res) => {
-  const { id } = req.params;
-  await cloudinary.uploader.destroy({
-    public_id,
-  });
+router.delete("/images/:clientId", async (req, res) => {
+  console.log("entro a destoroy")
+  try {
+    const { clientId } = req.params;
+    const data = await cloudinary.v2.api.delete_resources(["/"],{
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+    });
+    console.log(data)
+    
+  } catch (error) {
+    
+    console.log(error);
+    res.json({
+      error,
+    });
+  }
 });
 
 router.get("/book/:id", async (req, res) => {
