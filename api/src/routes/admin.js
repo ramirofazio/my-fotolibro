@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const router = Router();
 const { Admin } = require("../db.js");
+const transporter = require("../node_mailer")
 
 router.post('/create', async (req, res) => {
   try {
@@ -31,6 +32,28 @@ router.get("/verify/:adminId", async (req, res) => {
   }
 })
 
+router.get("/email", async (req, res) => {
+  try {
+    const info = await transporter.sendMail({
+      from: '"Sos re logii 👻" <tomixdperez@gmail.com>', // sender address
+      to: "tomi2001perez@gmail.com, baz@example.com", // list of receivers
+      subject: "para ver si funca", // Subject line
+      text: "Hello world?", // plain text body
+      html: `
+      <b>Imagenes cargadas con exito</b>
+      <h1>Ah re locoo</h1>
+      `, // html body
+    });
+    console.log(info)
+    
+  } catch (err) {
+    console.log(err)
+    res.json({
+      messagge: "no salio",
+      err
+    })
+  }
 
+})
 
 module.exports = router
