@@ -2,15 +2,12 @@
 import { ClientCard } from "./ClientCard";
 import { useLoaderData } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-import { Loader } from "../../components/Loader";
 
 export function Clients() {
   const clients = useLoaderData()
-  console.log(clients)
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 my-auto">
-      <Loader/>
       <div className="mb-auto p-4 grid grid-cols-1 lg:grid-cols-2 place-items-center gap-2 lg:gap-5 border-r-2">
         <h1 className="text-xl text-primary my-4 lg:col-span-2">Clientes activos</h1>
         {clients?.length ? (

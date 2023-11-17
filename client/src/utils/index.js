@@ -17,7 +17,6 @@ export async function uploadImagesCloudinary(files = [], clientId) {
 
   try {
     const responses = await Promise.all(promises);
-    console.log(promises[0]);
     responses.forEach((res) => {
       const url = res?.data?.secure_url;
       if (url) {
