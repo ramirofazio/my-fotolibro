@@ -5,9 +5,23 @@ import {
 } from "@heroicons/react/24/outline";
 import { API } from "../../api_instance";
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 export function FolderCard({ name, id }) {
+  const params = useParams();
+  const navigate = useNavigate()
   const [url, setUrl] = useState(false);
+
+  function handleDelete () {
+    setUrl(false)
+    API.deleteFolder(id)
+    .then(res => {
+      console.log(res.data)
+      API.deleteClient(id).then(() => navigate(`/admin/${params?.adminId}/folders`))
+    })
+    
+  }
+
 
   useEffect(() => {
     console.log(url);
@@ -32,7 +46,7 @@ export function FolderCard({ name, id }) {
             <ArrowDownTrayIcon className="w-9 inline mx-3 text-green-600 hover:opacity-75" />
           </a>
         )}
-        <XCircleIcon className="w-9 inline mx-1 text-red-500 hover:opacity-60" />
+        <XCircleIcon onClick={handleDelete} className="w-9 inline mx-1 text-red-500 hover:opacity-60" />
       </div>
       <div className="flex items-center border-t-2 gap-2">
         <FolderIcon className="h-20 w-20 text-blue-700" />

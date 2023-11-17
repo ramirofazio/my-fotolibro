@@ -21,6 +21,9 @@ export const API = {
   },
   getDownloadUrl: (clientId) => {
     return api.get(`cloudinary/download/${clientId}`)
+  },
+  deleteFolder: (clientId) => {
+    return api.delete(`cloudinary/images/${clientId}`)
   }
   /* getBooks: () => {
     return api.get("cloudinary/book");
