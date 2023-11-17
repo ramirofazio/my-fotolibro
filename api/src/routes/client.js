@@ -93,16 +93,23 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:clientId", async (req, res) => {
   try {
-    const { id } = req.params;
-    const deleted = await Client.delete({
+    const { clientId } = req.params;
+    const deleted = await Client.destroy({
       where: {
-        id,
+        id: clientId,
       },
     });
+    cloudinary.v2.config({
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+    })
+    const deleted_upload_preset = await cloudinary.v2.api.delete_upload_preset(clientId)
     res.json({
-      esa: `cliente ${id} eliminado`,
+      message: `cliente ${id} eliminado`,
+      upload_preset: deleted_upload_preset,
       deleted,
     });
   } catch (e) {

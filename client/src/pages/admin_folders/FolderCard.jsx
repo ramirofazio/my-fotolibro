@@ -17,7 +17,7 @@ export function FolderCard({ name, id }) {
     API.deleteFolder(id)
     .then(res => {
       console.log(res.data)
-      API.deleteClient(id).then(() => navigate(`/admin/${params?.adminId}/folders`))
+      API.deleteClient(id).then(() => navigate(`/admin/${params?.adminId}/clients/`))
     })
     
   }

@@ -13,7 +13,7 @@ export const API = {
   updateClient: ({ clientId, newData }) => {
     return api.put(`client/${clientId}`, newData);
   },
-  deleteClient: ({ clientId }) => {
+  deleteClient: ( clientId ) => {
     return api.delete(`client/${clientId}`);
   },
   uploadImagesDB: ({imgs, clientId}) => {
@@ -24,6 +24,9 @@ export const API = {
   },
   deleteFolder: (clientId) => {
     return api.delete(`cloudinary/images/${clientId}`)
+  },
+  isAdmin: (adminId) => {
+    return api.get(`admin/verify/${adminId}`)
   }
   /* getBooks: () => {
     return api.get("cloudinary/book");

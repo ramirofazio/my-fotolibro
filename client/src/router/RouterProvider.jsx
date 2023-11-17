@@ -33,10 +33,12 @@ export function Routes() {
     },
     {
       path: "/admin/:adminId",
-      loader: ({ params }) => {
+      loader: async ({ params }) => {
         console.log(params.adminId);
         console.log("admin");
-        return params;
+        const isAdmin = await API.isAdmin(params.adminId)
+        console.log(isAdmin)
+        return isAdmin;
       },
       element: <AdminRoot />,
       errorElement: <RouterError />,

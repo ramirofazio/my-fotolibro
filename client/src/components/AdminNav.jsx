@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 const links = [
   { link: "folders", text: "Carpetas" },
-  { link: "clients", text: "Clientes" },
+  { link: "clients/create", text: "Clientes" },
 ];
 
 export function AdminNav() {

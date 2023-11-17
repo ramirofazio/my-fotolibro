@@ -1,19 +1,25 @@
 import { XCircleIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
 import { Modal } from "../../components/Modal";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import {API} from "../../api_instance"
 
 export function ClientCard({ name, email, phone, id, dni }) {
+  const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false);
   const params = useParams();
+
+
+  function handleDelete() {
+    API.deleteClient(id).then(() => navigate(`/admin/${params?.adminId}/folders/`))
+  }
 
   return (
     <div className={`border-2 rounded p-2  bg-slate-700 border-base-[10%] ${params?.clientId === id && "border-4 border-red-500"} `}>
       <section>
         <picture className="flex w-fit ml-auto gap-3">
           <XCircleIcon
-            onClick={() => setIsOpen(true)}
+            onClick={handleDelete}
             className="w-10 h-10 hover:text-red-400 text-red-600"
           />
           <Link to={`update/${id}`}>
