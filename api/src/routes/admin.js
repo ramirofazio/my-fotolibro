@@ -15,6 +15,22 @@ router.post('/create', async (req, res) => {
   }
 })
 
+router.get("/verify/:adminId", async (req, res) => {
+  try {
+    const {adminId} = req.params
+    const isAdmin = await Admin.findByPk(adminId)
+    if(!isAdmin) {
+      return res.status(401).json({
+        messagge: "not authorized",
+        isAdmin
+      })
+    }
+    return res.send("authorized")
+  } catch (e) {
+    console.log(e)
+  }
+})
+
 
 
 module.exports = router

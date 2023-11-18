@@ -18,18 +18,6 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: true
       },
-      cloud_name: {
-        type: DataTypes.STRING,
-        allowNull: true
-      },
-      api_secret: {
-        type: DataTypes.STRING,
-        allowNull: true
-      },
-      api_key: {
-        type: DataTypes.STRING,
-        allowNull: true
-      },
     },
     {
       timestamps: false,

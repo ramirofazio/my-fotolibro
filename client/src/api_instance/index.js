@@ -4,7 +4,7 @@ export const API = {
   getClients: () => {
     return api.get("client");
   },
-  getClientVerification: (clientId) => {
+  getCLientById: (clientId) => {
     return api.get(`client/${clientId}`);
   },
   createClient: ( newClient ) => {
@@ -13,12 +13,21 @@ export const API = {
   updateClient: ({ clientId, newData }) => {
     return api.put(`client/${clientId}`, newData);
   },
-  deleteClient: ({ clientId }) => {
+  deleteClient: ( clientId ) => {
     return api.delete(`client/${clientId}`);
   },
   uploadImagesDB: ({imgs, clientId}) => {
     return api.post("client/imgs", { imgs, clientId });
   },
+  getDownloadUrl: (clientId) => {
+    return api.get(`cloudinary/download/${clientId}`)
+  },
+  deleteFolder: (clientId) => {
+    return api.delete(`cloudinary/images/${clientId}`)
+  },
+  isAdmin: (adminId) => {
+    return api.get(`admin/verify/${adminId}`)
+  }
   /* getBooks: () => {
     return api.get("cloudinary/book");
   },

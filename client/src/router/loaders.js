@@ -1,8 +1,6 @@
 import {API} from "../api_instance/index"
 
 export async function verifyClient({ params }) {
-  console.log(params.clientId);
-
   return (await API.getClientVerification(params.clientId)).data;
 }
 
