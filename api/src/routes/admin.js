@@ -32,20 +32,22 @@ router.get("/verify/:adminId", async (req, res) => {
   }
 })
 
-router.get("/email", async (req, res) => {
+router.post("/send_client_url/:clientId", async (req, res) => {
+  const {client, photos_length} = req.body;
+
   try {
     const info = await transporter.sendMail({
-      from: '"Sos re logii 👻" <tomixdperez@gmail.com>', // sender address
-      to: "tomi2001perez@gmail.com, baz@example.com", // list of receivers
-      subject: "para ver si funca", // Subject line
-      text: "Hello world?", // plain text body
+      from: `"myfotolibro 📷" <${EMAIL_USER}>`, 
+      to: ADMIN_EMAIL, 
+      subject: "subida de fotos", 
+      text: "Hello world?", 
       html: `
-      <b>Imagenes cargadas con exito</b>
-      <h1>Ah re locoo</h1>
-      `, // html body
+      <b>Se cargaron nuevas fotos</b>
+      <h1>El cliente ${client?.name} con el id: ${client?.id} termino de cargar ${photos_length} fotos</h1>
+      `, 
     });
     console.log(info)
-    
+    res.json(info)
   } catch (err) {
     console.log(err)
     res.json({
@@ -53,7 +55,6 @@ router.get("/email", async (req, res) => {
       err
     })
   }
-
 })
 
 module.exports = router

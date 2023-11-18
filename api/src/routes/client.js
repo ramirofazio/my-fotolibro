@@ -1,8 +1,12 @@
+require('dotenv').config();
+const { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME, EMAIL_PASSWORD, EMAIL_USER, ADMIN_EMAIL } = process.env;
 const { Router } = require("express");
 const router = Router();
-const { Client, Photo } = require("../db.js");
+const { Client, Photo, Admin } = require("../db.js");
 const cloudinary = require("cloudinary");
-const { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } = process.env;
+const transporter = require("../node_mailer")
+
+
 
 router.get("/", async (req, res) => {
   try {
@@ -138,6 +142,31 @@ router.post("/imgs", async (req, res) => {
   }
   catch(e) {
     console.log(e)
+  }
+})
+
+router.post("/finish_upload", async (req, res) => {
+  const {client, photos_length} = req.body;
+
+  try {
+    const info = await transporter.sendMail({
+      from: `"myfotolibro 📷" <${EMAIL_USER}>`, 
+      to: ADMIN_EMAIL, 
+      subject: "subida de fotos", 
+      text: "Hello world?", 
+      html: `
+      <b>Se cargaron nuevas fotos</b>
+      <h1>El cliente ${client?.name} con el id: ${client?.id} termino de cargar ${photos_length} fotos</h1>
+      `, 
+    });
+    console.log(info)
+    res.json(info)
+  } catch (err) {
+    console.log(err)
+    res.json({
+      messagge: "no salio",
+      err
+    })
   }
 })
 
