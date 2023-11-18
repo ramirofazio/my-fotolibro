@@ -10,6 +10,7 @@
   }
   html {
     @apply h-full;
+    touch-action: none; 
   }
 
   body {
