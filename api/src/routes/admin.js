@@ -32,18 +32,20 @@ router.get("/verify/:adminId", async (req, res) => {
   }
 })
 
-router.post("/send_client_url/:clientId", async (req, res) => {
-  const {client, photos_length} = req.body;
+router.post("/send_client_url", async (req, res) => {
+  const {clientId, clientEmail} = req.body;
 
   try {
     const info = await transporter.sendMail({
       from: `"myfotolibro 📷" <${EMAIL_USER}>`, 
-      to: ADMIN_EMAIL, 
+      to: clientEmail, 
       subject: "subida de fotos", 
       text: "Hello world?", 
       html: `
-      <b>Se cargaron nuevas fotos</b>
-      <h1>El cliente ${client?.name} con el id: ${client?.id} termino de cargar ${photos_length} fotos</h1>
+      <b>Cargue sus fotos!</b>
+      <h1>Ya esta disponilbe el link para la carga de sus fotos</h1>
+
+      
       `, 
     });
     console.log(info)
