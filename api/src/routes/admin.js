@@ -2,6 +2,8 @@ const { Router } = require("express");
 const router = Router();
 const { Admin } = require("../db.js");
 const transporter = require("../node_mailer")
+require('dotenv').config();
+const { EMAIL_USER } = process.env;
 
 router.post('/create', async (req, res) => {
   try {
@@ -43,12 +45,11 @@ router.post("/send_client_url", async (req, res) => {
       text: "Hello world?", 
       html: `
       <b>Cargue sus fotos!</b>
-      <h1>Ya esta disponilbe el link para la carga de sus fotos</h1>
-
-      
+      <h2>Ya esta disponilbe el link para la carga de sus fotos</h2>
+      <br/>
+      <h1> http://localhost:5173/client/${clientId}/client_data </h1>
       `, 
     });
-    console.log(info)
     res.json(info)
   } catch (err) {
     console.log(err)
