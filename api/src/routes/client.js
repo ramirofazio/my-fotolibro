@@ -25,15 +25,16 @@ router.get("/:id", async (req, res) => {
       },
     });
     if(!client) {
-      res.status(404).json({
+      return res.status(404).json({
         err: `no se encontro el cliente: ${id}`,
         res: client
       });
+     
     }
     res.json(client);
   } catch (e) {
     console.log(e);
-    res.json({ e });
+    res.status(404).json({ e });
   }
 });
 

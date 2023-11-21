@@ -1,12 +1,21 @@
-import { Outlet } from 'react-router-dom';
-import { Nav } from '../components/';
+import { Outlet, useLoaderData } from "react-router-dom";
+import { Nav } from "../components/";
+import { UrlInUse } from "../components/UrlInUse";
 
 export function Root() {
-  
+  const client = useLoaderData();
+  console.log(client);
+
   return (
     <div className="bg-main min-h-screen">
-      <Nav />
-      <Outlet />
+      {client?.online ? (
+        <UrlInUse/>
+      ) : (
+        <>
+          <Nav />
+          <Outlet />
+        </>
+      )}
     </div>
   );
 }

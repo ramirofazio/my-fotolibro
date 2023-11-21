@@ -25,6 +25,11 @@ module.exports = (sequelize) => {
         type: DataTypes.BIGINT,
         allowNull: true,
       },
+      online: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+      },
       event: {
         type: DataTypes.STRING,
         allowNull: true,

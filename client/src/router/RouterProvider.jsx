@@ -14,10 +14,10 @@ export function Routes() {
       path: "/client/:clientId",
       element: <Root />,
       errorElement: <RouterError />,
+      loader: verifyClient,
       children: [
         {
           path: "/client/:clientId/client_data",
-          loader: verifyClient,
           errorElement: <RouterError />,
           element: <ClientData />,
         },
