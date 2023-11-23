@@ -4,10 +4,11 @@ import {
   LinkIcon,
 } from "@heroicons/react/24/outline";
 import { Modal } from "../../components/Modal";
-import { useState } from "react";
+import {  useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { API } from "../../api_instance";
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import {toast} from "react-hot-toast"
 
 export function ClientCard({ name, email, phone, id, dni }) {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ export function ClientCard({ name, email, phone, id, dni }) {
           <CopyToClipboard
             text={`http://localhost:5173/client/${id}/client_data`} // TODO cambiar a url de producción
           >
-            <LinkIcon className="w-9 h-9 text-gray-400 hover:text-white" />
+            <LinkIcon onClick={() => toast("URL copiado", {icon: "📎" }) } className="w-9 h-9 text-gray-400 hover:text-white" />
           </CopyToClipboard>
           <Link to={`update/${id}`}>
             <PencilSquareIcon className="w-10 h-10 hover:text-blue-400 text-blue-600" />

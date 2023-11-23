@@ -2,6 +2,7 @@ import { PersonalData } from "../client_data";
 import { useState } from "react";
 import { API } from "../../api_instance/index";
 import { useNavigate, useParams } from "react-router-dom";
+import {toast} from "react-hot-toast"
 
 export function CreateClient() {
   const navigate = useNavigate();
@@ -13,8 +14,13 @@ export function CreateClient() {
     e.preventDefault();
     const res = await API.createClient(client);
     console.log(res);
+    if(res?.data) {
+      toast.success("Cliente creado")
+    } else {
+      toast.success("error del servidor", {style: {borderColor: "red"}})
+    }
+
     navigate(`/admin/${params?.adminId}/clients/create`)
-  
   }
 
   return (

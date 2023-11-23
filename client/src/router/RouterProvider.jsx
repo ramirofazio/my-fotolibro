@@ -56,9 +56,9 @@ export function Routes() {
             {
               path: "/admin/:adminId/clients/update/:clientId",
               loader: async ({params}) => {
-                const clients = await API.getCLientById(params.clientId);
-                console.log(clients)
-                return clients.data;
+                const client = await API.getCLientById(params.clientId);
+                console.log(client)
+                return client.data;
               },
               element: <UpdateClient/>
             },
