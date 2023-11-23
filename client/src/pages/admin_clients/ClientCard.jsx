@@ -3,22 +3,20 @@ import {
   PencilSquareIcon,
   LinkIcon,
 } from "@heroicons/react/24/outline";
-import { Modal } from "../../components/Modal";
-import {  useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { API } from "../../api_instance";
-import {CopyToClipboard} from 'react-copy-to-clipboard';
-import {toast} from "react-hot-toast"
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { toast } from "react-hot-toast";
 
 export function ClientCard({ name, email, phone, id, dni }) {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
   const params = useParams();
 
-  function handleDelete() {
-    API.deleteClient(id).then(() =>
-      navigate(`/admin/${params?.adminId}/folders/`)
-    );
+  async function handleDelete() {
+    const deleted = await API.deleteClient(id);
+    console.log(deleted);
+    toast.success(`Se elimino "${name}"`);
+    navigate(`/admin/${params?.adminId}/clients/create`);
   }
 
   return (
@@ -32,7 +30,10 @@ export function ClientCard({ name, email, phone, id, dni }) {
           <CopyToClipboard
             text={`http://localhost:5173/client/${id}/client_data`} // TODO cambiar a url de producción
           >
-            <LinkIcon onClick={() => toast("URL copiado", {icon: "📎" }) } className="w-9 h-9 text-gray-400 hover:text-white" />
+            <LinkIcon
+              onClick={() => toast("URL copiado", { icon: "📎" })}
+              className="w-9 h-9 text-gray-400 hover:text-white"
+            />
           </CopyToClipboard>
           <Link to={`update/${id}`}>
             <PencilSquareIcon className="w-10 h-10 hover:text-blue-400 text-blue-600" />
@@ -53,9 +54,6 @@ export function ClientCard({ name, email, phone, id, dni }) {
         <p>Numero: {phone}</p>
         <p>DNI: {dni}</p>
       </section>
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <h1>Se borrara todo la informacion de '{name}' en la base de datos</h1>
-      </Modal>
     </div>
   );
 }

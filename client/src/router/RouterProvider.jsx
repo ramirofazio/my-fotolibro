@@ -18,6 +18,7 @@ export function Routes() {
       children: [
         {
           path: "/client/:clientId/client_data",
+          loader: verifyClient,
           errorElement: <RouterError />,
           element: <ClientData />,
         },
