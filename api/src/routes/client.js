@@ -143,4 +143,34 @@ router.post("/imgs", async (req, res) => {
   }
 })
 
+router.get("/connect/:clientId", async (req, res) => {
+  try {
+    const {clientId} = req.params
+    const client = await Client.findByPk(clientId)
+    console.log(client)
+    const connected = await client.update({
+        online: true
+    })
+    return res.status(202).json(connected)
+  } catch (e) {
+    console.log(e)
+    return res.status(401).json(e)
+  }
+})
+
+router.get("/disconnect/:clientId", async (req, res) => {
+  try {
+    const {clientId} = req.params
+    const client = await Client.findByPk(clientId)
+    console.log(client)
+    const connected = await client.update({
+        online: false
+    })
+    return res.status(202).json(connected)
+  } catch (e) {
+    console.log(e)
+    return res.status(401).json(e)
+  }
+})
+
 module.exports = router;

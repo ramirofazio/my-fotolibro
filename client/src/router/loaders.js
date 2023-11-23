@@ -7,3 +7,8 @@ export async function verifyClient({ params }) {
 export async function getPrevImgs({ params }) {
   return (await API.getImages(params.clientId)).data;
 }
+export async function connectClient({ params }) {
+  const client = (await API.getCLientById(params.clientId)).data;
+  await API.connectClient(params.clientId)
+  return client
+}
