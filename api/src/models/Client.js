@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
       },
       email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       dni: {
         type: DataTypes.BIGINT,

@@ -128,7 +128,7 @@ router.delete("/images/:clientId", async (req, res) => {
     const deleted_assets = await cloudinary.v2.api.delete_resources(public_ids,{
       all: true
     });
-  
+    
     const deleted_folder = await cloudinary.v2.api.delete_folder(clientId)
     const delete_upload_preset = await cloudinary.v2.api.delete_upload_preset(clientId)
 

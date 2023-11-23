@@ -42,8 +42,8 @@ router.post("/", async (req, res) => {
   try {
     console.log(req.body)
 
-    const {name, email} = req.body
-    if(!name || !email) {
+    const {name} = req.body
+    if(!name) {
       return res.json({
         res: "faltan parametros para crear el cliente",
         payload: req.body
@@ -51,6 +51,7 @@ router.post("/", async (req, res) => {
     }
     // ? Se crea el usuario, y se utiliza su ID para
     // ? crear su "upload_preset" y su respectiva carpeta
+    console.log(req.body)
     const newClient = await Client.create(req.body);
     console.log(newClient)
     
