@@ -1,9 +1,8 @@
 import axios from 'axios';
 
-export async function uploadImagesCloudinary(
-  images = [],
-  clientId = '90cd6410-7501-4c64-9ec3-1dbf85bd765e'
-) {
+export async function uploadImagesCloudinary(images = [], clientId = '') {
+  if (!clientId) return;
+
   const cloud_name = import.meta.env.CLOUDINARY_CLOUD_NAME;
 
   const URL = 'https://api.cloudinary.com/v1_1/dnxa8khx9/image/upload';

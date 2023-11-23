@@ -31,15 +31,17 @@ export function UploadImages() {
 
   const uploadImagesToCloudinary = async () => {
     if (!images[0]) return;
-    console.log(images[0]);
-    const upImage = await uploadImagesCloudinary([images[0]]);
+    const upImage = await uploadImagesCloudinary(images, clientId);
+    console.log(upImage);
+    addImages(upImage);
+    console.log('imagenes', images);
   };
 
   return (
     <div className="p-3">
       <div className="flex  flex-col justify-center items-center text-white mt-4 mb-4">
         <h2 className="font-semibold text-2xl">Subi Tus Fotos!</h2>
-        <div className='flex justify-between w-full'>
+        <div className="flex justify-between w-full">
           <p className="flex flex-col text-lg font-medium">
             <span>Fotos selecionadas: {images.length} </span>
             <span>Fotos subidas: {0}</span>
@@ -82,9 +84,11 @@ export function UploadImages() {
               key={i}
               className="w-[500px] aspect-square object-cover"
             />
-            <div className="absolute top-0 left-0 w-full p-1 flex justify-between items-center bg-gradient-to-b from-black/70 to-transparent">
+            <div className={`absolute top-0 left-0 w-full p-1 flex justify-between items-center bg-gradient-to-b ${ !image.upload ? 'from-black/70' : 'from-green-800/70'} to-transparent`}>
               <p className="flex flex-col">
-                <span className="text-sm font-medium">Imagen no subida</span>
+                <span className="text-sm font-medium">
+                  {!image.upload ? 'Imagen no subida' : 'Imagen Subida'}
+                </span>
                 <span className="text-[12px] text-gray-200">
                   {getSizeImage(image.size)}
                 </span>

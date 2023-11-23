@@ -21,15 +21,17 @@ export function SortImages() {
   };
 
   return (
-    <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={images} strategy={verticalListSortingStrategy}>
-        <ul className="flex flex-col gap-3 py-2">
-          {images.map((image, i) => (
-            <Item key={i} image={image} />
-          ))}
-        </ul>
-      </SortableContext>
-    </DndContext>
+    <div className='touch-none w-[85%] mx-auto'>
+      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={images} strategy={verticalListSortingStrategy}>
+          <ul className="flex flex-col gap-3 py-2">
+            {images.map((image, i) => (
+              <Item key={i} image={image} />
+            ))}
+          </ul>
+        </SortableContext>
+      </DndContext>
+    </div>
   );
 }
 
@@ -50,11 +52,11 @@ function Item({ image }) {
       {...attributes}
       {...listeners}
       style={style}
-      className="p-2 flex justify-between items-center bg-slate-300 w-1/2"
+      className="p-2 flex justify-between items-center bg-slate-300 rounded"
     >
       <img
         src={URL}
-        alt="a image"
+        alt="image"
         className={`w-[60px] aspect-square rounded-md object-cover`}
       />
       <p className="w-full text-gray-800 ml-3">{originalName}</p>

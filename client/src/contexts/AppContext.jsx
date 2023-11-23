@@ -8,7 +8,10 @@ export const AppProvider = ({ children }) => {
   const [images, setImages] = useState([]);
 
   const addImages = (images) => {
-    setImages((cur) => [...cur, images]);
+    setImages((cur) => {
+      if (Array.isArray(images)) return [...cur, ...images];
+      return [...cur, images];
+    });
   };
 
   const removeImages = (index) => {

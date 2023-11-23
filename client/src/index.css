@@ -10,7 +10,6 @@
   }
   html {
     @apply h-full;
-    touch-action: none; 
   }
 
   body {
@@ -39,8 +38,8 @@
     @apply rounded-md bg-blue-500;
   }
 
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"]::-webkit-outer-spin-button {
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
   }
