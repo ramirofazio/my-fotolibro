@@ -7,28 +7,28 @@ export async function uploadImagesCloudinary(images = [], clientId = '') {
 
   const URL = 'https://api.cloudinary.com/v1_1/dnxa8khx9/image/upload';
 
-  const photos = [];
+  const photos = {};
   const promises = [];
 
-  images.forEach(({ file }) => {
-    const formdata = new FormData();
-    formdata.append('file', file);
-    formdata.append('upload_preset', clientId);
-    promises.push(axios.post(URL, formdata));
+  images.forEach(({ file, upload }) => {
+    if (!upload) {
+      const formdata = new FormData();
+      formdata.append('file', file);
+      formdata.append('upload_preset', clientId);
+      promises.push(axios.post(URL, formdata));
+    }
   });
 
   try {
     const responses = await Promise.all(promises);
-    responses.forEach((res, i) => {
-      console.log('Data response', res.data);
-      const data = res?.data;
+    responses.forEach(({ data }) => {
       if (data.secure_url) {
-        photos.push({
-          ...images[i],
+        photos[data.original_filename] = {
           URL: data.secure_url,
           id: data.asset_id,
-          upload: true,
-        });
+          originalName: data.original_filename,
+          size: data.bytes,
+        };
       }
     });
   } catch (err) {
