@@ -124,6 +124,21 @@ router.delete("/:clientId", async (req, res) => {
   }
 });
 
+router.get("/imgs/:clientId", async (req, res) => {
+  try {
+    const {clientId} = req.params
+    const photos = await Photo.findAll({where: {
+      clientId
+    }})
+    console.log(photos)
+    return res.json({
+      photos
+    })
+  } catch (e) {
+    console.log(e)
+  }
+})
+
 router.post("/imgs", async (req, res) => {
   try {
     const {imgs, clientId} = req.body

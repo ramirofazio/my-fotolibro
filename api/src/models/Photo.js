@@ -16,12 +16,20 @@ module.exports = (sequelize) => {
       },
       index: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       originalName: {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      size: {
+        type: DataTypes.BIGINT,
+        allowNull: true
+      },
+      publicId: {
+        type: DataTypes.STRING,
+        allowNull: true
+      }
     },
     {
       timestamps: false,
