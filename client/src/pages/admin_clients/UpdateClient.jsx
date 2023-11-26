@@ -1,18 +1,16 @@
 import { PersonalData } from "../client_data";
-import { useState } from "react";
-//import { isValidClient } from "../../utils";
+import { useState} from "react";
 import { API } from "../../api_instance/index";
 import { useNavigate, useLoaderData, Link, useParams } from "react-router-dom";
+import {toast} from "react-hot-toast"
 
 export function UpdateClient() {
   const navigate = useNavigate();
   const params = useParams();
   const _client = useLoaderData();
   const [client, setClient] = useState(_client);
-  //const [errs, setErrs] = useState();
- 
-
-  function submitClient(e) {
+  
+  async function submitClient(e) {
     e.preventDefault();
     const { email, name, dni, phone } = client;
     const newData = {
@@ -21,11 +19,10 @@ export function UpdateClient() {
       dni,
       phone,
     };
-    API.updateClient({ newData, clientId: _client?.id }).then((res) => {
-      console.log(res.data);
-      //notify
-      navigate(`/admin/${params?.adminId}/clients/create`);
-    });
+    const updated = await API.updateClient({ newData, clientId: _client?.id })
+    console.log(updated)
+    toast.success("Cliente actualizado")
+    navigate(`/admin/${params?.adminId}/clients/update/${_client.id}`);
   }
 
   return (
@@ -41,7 +38,7 @@ export function UpdateClient() {
         </Link>
       </div>
       <form onSubmit={submitClient}>
-        <PersonalData admin={false} _client={client} setClient={setClient} />
+        <PersonalData admin={false} _client={_client} setClient={setClient} />
         <div className="mx-auto w-fit">
           <button
             type="submit"

@@ -3,7 +3,7 @@ import { Root, AdminRoot } from '../pages/';
 import { ClientData, UploadImages, Clients, Folders } from '../pages';
 import { RouterError } from '../components/RouterError';
 import { API } from '../api_instance';
-import { verifyClient } from './loaders';
+import { verifyClient, connectClient } from './loaders';
 import { SortImages } from '../pages/sort_images/sort_images';
 import { CreateClient } from '../pages/admin_clients/CreateClient';
 import { UpdateClient } from '../pages/admin_clients/UpdateClient';
@@ -14,10 +14,11 @@ export function Routes() {
       path: '/client/:clientId',
       element: <Root />,
       errorElement: <RouterError />,
+      loader: verifyClient,
       children: [
         {
-          path: '/client/:clientId/client_data',
-          loader: verifyClient,
+          path: "/client/:clientId/client_data",
+          loader: connectClient,
           errorElement: <RouterError />,
           element: <ClientData />,
         },
@@ -54,11 +55,11 @@ export function Routes() {
               element: <CreateClient />,
             },
             {
-              path: '/admin/:adminId/clients/update/:clientId',
-              loader: async ({ params }) => {
-                const clients = await API.getCLientById(params.clientId);
-                console.log(clients);
-                return clients.data;
+              path: "/admin/:adminId/clients/update/:clientId",
+              loader: async ({params}) => {
+                const client = await API.getCLientById(params.clientId);
+                console.log(client)
+                return client.data;
               },
               element: <UpdateClient />,
             },

@@ -15,7 +15,7 @@ module.exports = (sequelize) => {
       },
       email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       dni: {
         type: DataTypes.BIGINT,
@@ -24,6 +24,11 @@ module.exports = (sequelize) => {
       phone: {
         type: DataTypes.BIGINT,
         allowNull: true,
+      },
+      online: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
       },
       event: {
         type: DataTypes.STRING,

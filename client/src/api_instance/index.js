@@ -27,6 +27,12 @@ export const API = {
   },
   isAdmin: (adminId) => {
     return api.get(`admin/verify/${adminId}`)
+  },
+  connectClient: (clientId) => {
+    return api.get(`client/connect/${clientId}`)
+  },
+  disconnectClient: (clientId) => {
+    return api.get(`client/disconnect/${clientId}`)
   }
   /* getBooks: () => {
     return api.get("cloudinary/book");
