@@ -29,15 +29,16 @@ router.get("/:id", async (req, res) => {
       },
     });
     if(!client) {
-      res.status(404).json({
+      return res.status(404).json({
         err: `no se encontro el cliente: ${id}`,
         res: client
       });
+     
     }
     res.json(client);
   } catch (e) {
     console.log(e);
-    res.json({ e });
+    res.status(404).json({ e });
   }
 });
 
@@ -45,8 +46,8 @@ router.post("/", async (req, res) => {
   try {
     console.log(req.body)
 
-    const {name, email} = req.body
-    if(!name || !email) {
+    const {name} = req.body
+    if(!name) {
       return res.json({
         res: "faltan parametros para crear el cliente",
         payload: req.body
@@ -54,6 +55,7 @@ router.post("/", async (req, res) => {
     }
     // ? Se crea el usuario, y se utiliza su ID para
     // ? crear su "upload_preset" y su respectiva carpeta
+    console.log(req.body)
     const newClient = await Client.create(req.body);
     console.log(newClient)
     
@@ -167,6 +169,35 @@ router.post("/finish_upload", async (req, res) => {
       messagge: "no salio",
       err
     })
+  } })
+
+router.get("/connect/:clientId", async (req, res) => {
+  try {
+    const {clientId} = req.params
+    const client = await Client.findByPk(clientId)
+    console.log(client)
+    const connected = await client.update({
+        online: true
+    })
+    return res.status(202).json(connected)
+  } catch (e) {
+    console.log(e)
+    return res.status(401).json(e)
+  }
+})
+
+router.get("/disconnect/:clientId", async (req, res) => {
+  try {
+    const {clientId} = req.params
+    const client = await Client.findByPk(clientId)
+    console.log(client)
+    const connected = await client.update({
+        online: false
+    })
+    return res.status(202).json(connected)
+  } catch (e) {
+    console.log(e)
+    return res.status(401).json(e)
   }
 })
 

@@ -1,26 +1,34 @@
 import axios from 'axios';
 
-export async function uploadImagesCloudinary(files = [], clientId) {
+export async function uploadImagesCloudinary(images = [], clientId = '') {
+  if (!clientId) return;
+
   const cloud_name = import.meta.env.CLOUDINARY_CLOUD_NAME;
 
-  const URL = 'https://api.cloudinary.com/v1_1/' + cloud_name + '/image/upload';
+  const URL = 'https://api.cloudinary.com/v1_1/dnxa8khx9/image/upload';
 
-  const photos = [];
+  const photos = {};
   const promises = [];
 
-  files.forEach((file) => {
-    const formdata = new FormData();
-    formdata.append('file', file);
-    formdata.append('upload_preset', clientId);
-    promises.push(axios.post(URL, formdata));
+  images.forEach(({ file, upload }) => {
+    if (!upload) {
+      const formdata = new FormData();
+      formdata.append('file', file);
+      formdata.append('upload_preset', clientId);
+      promises.push(axios.post(URL, formdata));
+    }
   });
 
   try {
     const responses = await Promise.all(promises);
-    responses.forEach((res) => {
-      const url = res?.data?.secure_url;
-      if (url) {
-        photos.push(url);
+    responses.forEach(({ data }) => {
+      if (data.secure_url) {
+        photos[data.original_filename] = {
+          URL: data.secure_url,
+          id: data.asset_id,
+          originalName: data.original_filename,
+          size: data.bytes,
+        };
       }
     });
   } catch (err) {
@@ -73,3 +81,15 @@ export function isValidClient({ name, email }) {
     return links;
   }
  */
+
+export function getSizeImage(size) {
+  const DECIMALS = 3;
+
+  let bytes = Number(size);
+
+  if (bytes < 1048576) {
+    return (bytes / 1024).toFixed(DECIMALS) + ' KB';
+  } else {
+    return (bytes / 1048576).toFixed(DECIMALS) + ' MB';
+  }
+}

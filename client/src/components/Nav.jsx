@@ -14,11 +14,11 @@ export function Nav() {
           key={i}
           to={l.link}
           className={({ isActive }) =>
-            `flex flex-col rounded-md bg-base items-center py-2 border-2 ${isActive ? "border-white" : " border-black opacity-30"}`
+            `flex flex-col rounded-md bg-base items-center py-2 border-2 ${isActive ? "border-white bg-gray-500" : " border-black opacity-30"}`
           }
         >
           <div className={`justify-self-center rounded-full w-fit px-2 bg-blue-700`}><p>{i + 1}</p></div>
-          <p className="text-center">{l.text}</p>
+          <p className="text-center text-lg">{l.text}</p>
         </NavLink>
       ))}
     </nav>

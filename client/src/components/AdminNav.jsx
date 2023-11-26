@@ -14,11 +14,11 @@ export function AdminNav() {
           to={l.link}
           className={({ isActive }) =>
             `flex flex-col rounded-md bg-base items-center py-2 border-2 ${
-              isActive ? "border-white" : " border-black opacity-30"
+              isActive ? "border-white bg-gray-500" : " border-black opacity-30"
             }`
           }
         >
-          <p className="text-center">{l.text}</p>
+          <p className="text-center text-lg">{l.text}</p>
         </NavLink>
       ))}
     </nav>
