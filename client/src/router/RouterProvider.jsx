@@ -28,6 +28,9 @@ export function Routes() {
         },
         {
           path: '/client/:clientId/sort_images',
+          loader: () => {
+               // 
+          },
           element: <SortImages />,
         },
       ],
@@ -70,7 +73,7 @@ export function Routes() {
           loader: async () => {
             const books = await API.getClients();
             return books.data;
-          },
+           },
           element: <Folders />,
         },
       ],
