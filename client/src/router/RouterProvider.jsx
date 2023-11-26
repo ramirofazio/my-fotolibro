@@ -1,17 +1,17 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Root, AdminRoot } from "../pages/";
-import { ClientData, UploadImages, Clients, Folders } from "../pages";
-import { RouterError } from "../components/RouterError";
-import { API } from "../api_instance";
-import { verifyClient, connectClient } from "./loaders";
-import { ShortImages } from "../pages/sort_images/images";
-import { CreateClient } from "../pages/admin_clients/CreateClient";
-import { UpdateClient } from "../pages/admin_clients/UpdateClient";
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Root, AdminRoot } from '../pages/';
+import { ClientData, UploadImages, Clients, Folders } from '../pages';
+import { RouterError } from '../components/RouterError';
+import { API } from '../api_instance';
+import { verifyClient, connectClient } from './loaders';
+import { SortImages } from '../pages/sort_images/sort_images';
+import { CreateClient } from '../pages/admin_clients/CreateClient';
+import { UpdateClient } from '../pages/admin_clients/UpdateClient';
 
 export function Routes() {
   const routes = createBrowserRouter([
     {
-      path: "/client/:clientId",
+      path: '/client/:clientId',
       element: <Root />,
       errorElement: <RouterError />,
       loader: verifyClient,
@@ -23,26 +23,26 @@ export function Routes() {
           element: <ClientData />,
         },
         {
-          path: "/client/:clientId/upload_images",
+          path: '/client/:clientId/upload_images',
           element: <UploadImages />,
         },
         {
-          path: "/client/:clientId/sort_images",
-          element: <ShortImages />,
+          path: '/client/:clientId/sort_images',
+          element: <SortImages />,
         },
       ],
     },
     {
-      path: "/admin/:adminId",
+      path: '/admin/:adminId',
       loader: async ({ params }) => {
-        const isAdmin = await API.isAdmin(params.adminId)
+        const isAdmin = await API.isAdmin(params.adminId);
         return isAdmin;
       },
       element: <AdminRoot />,
       errorElement: <RouterError />,
       children: [
         {
-          path: "/admin/:adminId/clients",
+          path: '/admin/:adminId/clients',
           loader: async () => {
             const clients = await API.getClients();
             return clients.data;
@@ -50,9 +50,9 @@ export function Routes() {
           element: <Clients />,
           children: [
             {
-              path: "/admin/:adminId/clients/create",
+              path: '/admin/:adminId/clients/create',
               index: true,
-              element: <CreateClient/>
+              element: <CreateClient />,
             },
             {
               path: "/admin/:adminId/clients/update/:clientId",
@@ -61,15 +61,15 @@ export function Routes() {
                 console.log(client)
                 return client.data;
               },
-              element: <UpdateClient/>
+              element: <UpdateClient />,
             },
           ],
         },
         {
-          path: "/admin/:adminId/folders",
+          path: '/admin/:adminId/folders',
           loader: async () => {
-            const books = await API.getClients()
-            return books.data
+            const books = await API.getClients();
+            return books.data;
           },
           element: <Folders />,
         },
