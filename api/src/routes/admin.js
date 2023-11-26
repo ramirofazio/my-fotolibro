@@ -1,6 +1,9 @@
 const { Router } = require("express");
 const router = Router();
 const { Admin } = require("../db.js");
+const transporter = require("../node_mailer")
+require('dotenv').config();
+const { EMAIL_USER } = process.env;
 
 router.post('/create', async (req, res) => {
   try {
@@ -31,6 +34,30 @@ router.get("/verify/:adminId", async (req, res) => {
   }
 })
 
+router.post("/send_client_url", async (req, res) => {
+  const {clientId, clientEmail} = req.body;
 
+  try {
+    const info = await transporter.sendMail({
+      from: `"myfotolibro 📷" <${EMAIL_USER}>`, 
+      to: clientEmail, 
+      subject: "subida de fotos", 
+      text: "Hello world?", 
+      html: `
+      <b>Cargue sus fotos!</b>
+      <h2>Ya esta disponilbe el link para la carga de sus fotos</h2>
+      <br/>
+      <h1> http://localhost:5173/client/${clientId}/client_data </h1>
+      `, 
+    });
+    res.json(info)
+  } catch (err) {
+    console.log(err)
+    res.json({
+      messagge: "no salio",
+      err
+    })
+  }
+})
 
 module.exports = router
