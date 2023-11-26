@@ -33,6 +33,9 @@ export const API = {
   },
   disconnectClient: (clientId) => {
     return api.get(`client/disconnect/${clientId}`)
+  },
+  getPreviusImgs: (clientId) => {
+    return api.get(`client/imgs/${clientId}`)
   }
   /* getBooks: () => {
     return api.get("cloudinary/book");
