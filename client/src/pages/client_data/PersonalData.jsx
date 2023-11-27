@@ -14,7 +14,7 @@ export function PersonalData({ client, _client, admin = false, setClient }) {
       };
     });
   };
-  console.log(_client)
+  
   return (
     <section className="my-5   w-[70%] mx-auto border-2 bg-slate-700">
       <div className="flex flex-col gap-4 my-10 w-full px-3  items-center">

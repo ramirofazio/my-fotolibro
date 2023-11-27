@@ -6,9 +6,7 @@ import {API} from "../api_instance"
 
 export function Root() {
   const client = useLoaderData();
-  console.log(client)
-
-
+  
   useEffect(() => {
     window.addEventListener("beforeunload", () => API.disconnectClient(client?.id));
     return () => {
