@@ -4,7 +4,7 @@ const cloudinary = require("cloudinary");
 const router = Router();
 const { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } =
   process.env;
-const { Client, Book } = require("../db.js");
+const { Client, Book, Photo } = require("../db.js");
 
 router.get("/signature", (req, res) => {
   try {
@@ -158,6 +158,44 @@ router.get("/book/:id", async (req, res) => {
     });
   }
 });
+
+router.post("/sort_download_imgs/:clientId", async (req, res) => {
+  try {
+    const {clientId} = req.params
+  
+    const photos = await Photo.findAll({
+      where: {clientId}
+    })
+    
+    cloudinary.v2.config({
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+    })
+    photos.map(async (p) => {
+      try {
+        const [folder, originalName] = p?.publicId.split("/")
+        console.log(folder, originalName)
+        const indexedName = originalName.replace("-0-", `${p?.index}-`)
+        const newImg = await cloudinary.v2.uploader.rename(p?.publicId, `${folder}/${indexedName}`, {})
+        return newImg
+      } catch (e) {
+        console.log(e)
+      }
+    })
+    return res.json({
+      photos
+    })
+  } catch (e) {
+    console.log(e)
+    const {clientId} = req.body
+    return res.status(401).json({
+      e,
+      clientId
+    })
+  }
+})
+
 
 router.put("/book/:id", async (req, res) => {
   const { id } = req.params;

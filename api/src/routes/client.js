@@ -4,7 +4,8 @@ const { Router } = require("express");
 const router = Router();
 const { Client, Photo, Admin } = require("../db.js");
 const cloudinary = require("cloudinary");
-const transporter = require("../node_mailer")
+const transporter = require("../node_mailer");
+
 
 
 
@@ -77,7 +78,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/edit_client/:id", async (req, res) => {
   try {
     const { id } = req.params;
     console.log(id)
@@ -213,6 +214,28 @@ router.get("/disconnect/:clientId", async (req, res) => {
   } catch (e) {
     console.log(e)
     return res.status(401).json(e)
+  }
+})
+
+router.put("/index_images", async (req, res) => {
+  try {
+    const {imgs} = req.body
+    
+    
+    const indexedImgs = await imgs.forEach(async (img, i) => {
+      
+      await Photo.update({index: i },{ where: {id: img.id}})
+    })
+
+    return res.json({
+      imgs,
+      indexedImgs
+    })
+  } catch (e) {
+    console.log(e)
+    return res.status(401).json({
+      e
+    })
   }
 })
 

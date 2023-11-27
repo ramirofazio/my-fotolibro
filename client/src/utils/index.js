@@ -3,7 +3,7 @@ import { API } from "../api_instance";
 
 export async function uploadImagesCloudinary(images = [], clientId = "") {
   if (!clientId) return;
-
+  console.log(images)
   const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 
   const URL = `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`;
@@ -17,6 +17,7 @@ export async function uploadImagesCloudinary(images = [], clientId = "") {
       const formdata = new FormData();
       formdata.append("file", file);
       formdata.append("upload_preset", clientId);
+      formdata.append("public_id", `-0-"${file?.name}"`);
       promises.push(axios.post(URL, formdata));
     }
   });

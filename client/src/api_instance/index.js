@@ -11,7 +11,7 @@ export const API = {
     return api.post("client", newClient);
   },
   updateClient: ({ clientId, newData }) => {
-    return api.put(`client/${clientId}`, newData);
+    return api.put(`client/edit_client/${clientId}`, newData);
   },
   deleteClient: ( clientId ) => {
     return api.delete(`client/${clientId}`);
@@ -36,7 +36,10 @@ export const API = {
   },
   getPreviusImgs: (clientId) => {
     return api.get(`client/imgs/${clientId}`)
-  }
+  },
+  addDownloadImgsIndex: (clientId) => {
+    return api.get(`cloudinary/sort_download_imgs/${clientId}`, )
+  },
   /* getBooks: () => {
     return api.get("cloudinary/book");
   },
