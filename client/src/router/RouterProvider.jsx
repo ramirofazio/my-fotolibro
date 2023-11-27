@@ -17,7 +17,7 @@ export function Routes() {
       loader: verifyClient,
       children: [
         {
-          path: "/client/:clientId/client_data",
+          path: '/client/:clientId/client_data',
           loader: connectClient,
           errorElement: <RouterError />,
           element: <ClientData />,
@@ -28,9 +28,6 @@ export function Routes() {
         },
         {
           path: '/client/:clientId/sort_images',
-          loader: () => {
-               // 
-          },
           element: <SortImages />,
         },
       ],
@@ -58,10 +55,10 @@ export function Routes() {
               element: <CreateClient />,
             },
             {
-              path: "/admin/:adminId/clients/update/:clientId",
-              loader: async ({params}) => {
+              path: '/admin/:adminId/clients/update/:clientId',
+              loader: async ({ params }) => {
                 const client = await API.getCLientById(params.clientId);
-                console.log(client)
+                console.log(client);
                 return client.data;
               },
               element: <UpdateClient />,
@@ -73,7 +70,7 @@ export function Routes() {
           loader: async () => {
             const books = await API.getClients();
             return books.data;
-           },
+          },
           element: <Folders />,
         },
       ],
