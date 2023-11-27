@@ -169,7 +169,7 @@ router.delete("/single_img", async (req, res) => {
     const deleted_asset = await cloudinary.v2.api.delete_resources([publicId], {
       all: true,
     });
-
+    
     res.json({
       deleted_asset,
     });
