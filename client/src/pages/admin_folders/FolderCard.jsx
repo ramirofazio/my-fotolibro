@@ -21,7 +21,8 @@ export function FolderCard({ name, id }) {
 
         API.deleteClient(id).then(() =>
           {
-            navigate(`/admin/${params?.adminId}/folders/`)
+            navigate(0)
+            //navigate(`/admin/${params?.adminId}/folders/`)
           }
         );
       }

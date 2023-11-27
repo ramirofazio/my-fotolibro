@@ -155,27 +155,33 @@ router.delete("/images/:clientId", async (req, res) => {
   }
 });
 
-router.delete("/single_img", async (req, res) => {
+router.post("/delete/single_img", async (req, res) => {
   console.log("palta");
   try {
-    const { publicId } = req.body;
-    console.log(publicId)
+    const { publicId, id } = req.body;
+    console.log(req.body);
     cloudinary.v2.config({
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
       cloud_name: CLOUDINARY_CLOUD_NAME,
     });
 
-    const deleted_asset = await cloudinary.v2.api.delete_resources([publicId], {
-      all: true,
+    const deleted_cloudinary = await cloudinary.v2.api.delete_resources(
+      [publicId],
+      {}
+    );
+
+    const deleted_db = await Photo.destroy({
+      where: { id },
     });
-    
+
     res.json({
-      deleted_asset,
+      deleted_cloudinary,
+      deleted_db,
     });
   } catch (error) {
     console.log(error);
-    res.json({
+    return res.status(401).json({
       message: "cannot delete folder",
       err: error,
     });
