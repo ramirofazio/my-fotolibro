@@ -3,7 +3,7 @@ import { API } from '../api_instance';
 
 export async function uploadImagesCloudinary(images = [], clientId = '') {
   if (!clientId) return;
-  console.log(images);
+  
   const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 
   const URL = `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`;
@@ -25,7 +25,6 @@ export async function uploadImagesCloudinary(images = [], clientId = '') {
   try {
     const responses = await Promise.all(promises);
     responses.forEach(({ data }) => {
-      console.log(data);
       if (data.secure_url) {
         photos[data.original_filename] = {
           URL: data.secure_url,
@@ -36,8 +35,6 @@ export async function uploadImagesCloudinary(images = [], clientId = '') {
         };
       }
     });
-    console.log(photos);
-
     // TODO Guardar en DB
     API.uploadImagesDB({ clientId, imgs: Object.values(photos) });
   } catch (err) {

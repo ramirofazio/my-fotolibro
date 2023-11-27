@@ -13,7 +13,7 @@ export function CreateClient() {
   async function submitClient(e) {
     e.preventDefault();
     const res = await API.createClient(client);
-    console.log(res);
+
     if(res?.data) {
       toast.success("Cliente creado")
     } else {

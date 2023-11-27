@@ -1,7 +1,7 @@
 import {
   XCircleIcon,
   PencilSquareIcon,
-  LinkIcon,
+  PaperClipIcon
 } from "@heroicons/react/24/outline";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { API } from "../../api_instance";
@@ -30,7 +30,7 @@ export function ClientCard({ name, email, phone, id, dni }) {
           <CopyToClipboard
             text={`http://localhost:5173/client/${id}/client_data`} // TODO cambiar a url de producción
           >
-            <LinkIcon
+            <PaperClipIcon
               onClick={() => toast("URL copiado", { icon: "📎" })}
               className="w-9 h-9 text-gray-400 hover:text-white"
             />

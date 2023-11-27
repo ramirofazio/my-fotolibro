@@ -2,9 +2,10 @@ import {
   FolderIcon,
   ArrowDownTrayIcon,
   XCircleIcon,
+  LinkIcon
 } from "@heroicons/react/24/outline";
 import { API } from "../../api_instance";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export function FolderCard({ name, id }) {
@@ -12,40 +13,48 @@ export function FolderCard({ name, id }) {
   const navigate = useNavigate();
   const [url, setUrl] = useState(false);
 
+
   function handleDelete() {
     setUrl(false);
     API.deleteFolder(id).then((res) => {
-      console.log(res.data);
-      API.deleteClient(id).then(() =>
-        {
-          setUrl(true) // ? sirve??
-          navigate(`/admin/${params?.adminId}/folders/`)
-        }
-      );
+      if(res.data) {
+
+        API.deleteClient(id).then(() =>
+          {
+            navigate(`/admin/${params?.adminId}/folders/`)
+          }
+        );
+      }
     });
   }
 
-  useEffect(() => {
-    console.log(url);
-    if (!url) {
-      API.getDownloadUrl(id).then((res) => {
-        console.log(res);
-        setUrl(res.data);
-      });
-    }
-  }, []);
+  function generateDownloadUrl() {
+    API.addDownloadImgsIndex(id)
+    .then(res => {
+      if(res.data) {
+        setUrl(res.data)
+        API.getDownloadUrl(id)
+        .catch(() => setUrl(false))
+      }
+    })
+  }
+
 
   return (
     <div className="border-2  w-fit rounded-md px-1">
-      <div className="w-fit ml-auto my-1">
-        {!url ? (
-          <div
-            className="inline-block mx-3 h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+      <div className="w-fit ml-auto my-1 flex gap-2">
+      {!url ? (
+          <button
+            className="text-white text-xl "
             role="status"
-          ></div>
+            title="Click para generar desarga"
+            onClick={generateDownloadUrl}
+          >
+            <LinkIcon className="w-9 h-9"/>
+          </button>
         ) : (
           <a href={url}>
-            <ArrowDownTrayIcon className="w-9 inline mx-3 text-green-600 hover:opacity-75" />
+            <ArrowDownTrayIcon className="w-9 inline  text-green-600 hover:opacity-75" />
           </a>
         )}
         <XCircleIcon

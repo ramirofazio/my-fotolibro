@@ -41,7 +41,7 @@ export const API = {
     return api.put(`client/index_images`, {imgs})
   },
   addDownloadImgsIndex: (clientId) => {
-    return api.get(`cloudinary/sort_download_imgs/${clientId}`, )
+    return api.post(`cloudinary/sort_download_imgs/${clientId}`, )
   },
   /* getBooks: () => {
     return api.get("cloudinary/book");
