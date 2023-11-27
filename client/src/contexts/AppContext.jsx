@@ -45,8 +45,8 @@ export const AppProvider = ({ children }) => {
 
     setStatus((cur) => ({
       ...cur,
-      pending: cur.pending - number,
-      uploaded: cur.uploaded + number,
+      pending: Math.max(0, cur.pending - number),
+      uploaded: Math.min(cur.uploaded + number, images.length - 1),
     }));
     setImages(uploaded);
   };
@@ -54,7 +54,7 @@ export const AppProvider = ({ children }) => {
   const removeImages = (index, type = 'pending') => {
     setStatus((cur) => ({
       ...cur,
-      [type]: cur[type] - 1,
+      [type]: Math.max(0, cur[type] - 1),
     }));
     setImages((cur) => cur.filter((img, i) => i !== index));
   };
@@ -63,6 +63,38 @@ export const AppProvider = ({ children }) => {
     setImages(images);
   };
 
+  const existImage = (nameImage) => {
+    if (images.length === 0) return null;
+
+    const objWithKeys = images.reduce((acc, obj) => {
+      acc[obj.originalName] = obj;
+      return acc;
+    }, {});
+
+    return !!objWithKeys[nameImage];
+  };
+
+  const updateInfoImages = (images) => {
+    setImages(
+      images.map((image) => ({
+        ...image,
+        upload: true,
+      }))
+    );
+    setStatus((cur) => ({
+      ...cur,
+      uploaded: images.length,
+    }));
+  };
+
+  const arrayToObject = () => {
+    const objWithKeys = images.reduce((acc, obj) => {
+      acc[obj.originalName] = obj;
+      return acc;
+    }, {});
+
+    return objWithKeys;
+  };
   return (
     <AppContext.Provider
       value={{
@@ -72,6 +104,8 @@ export const AppProvider = ({ children }) => {
         reorderImages,
         addImagesUploaded,
         status,
+        existImage,
+        updateInfoImages,
       }}
     >
       {children}

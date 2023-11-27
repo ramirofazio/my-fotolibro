@@ -1,12 +1,22 @@
 import { useParams } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { CloudArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { getSizeImage, uploadImagesCloudinary } from '../../utils';
+import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 export function UploadImages() {
   const { clientId } = useParams();
-  const { images, addImages, removeImages, addImagesUploaded, status } =
-    useApp();
+  const {
+    images,
+    addImages,
+    removeImages,
+    addImagesUploaded,
+    status,
+    existImage,
+  } = useApp();
+  const [Loading, setLoading] = useState(false);
+  const handleLoading = () => setLoading((cur) => !cur);
 
   function handleImages({ target }) {
     const files = target.files;
@@ -18,10 +28,17 @@ export function UploadImages() {
 
       const reader = new FileReader();
       let aux = file.name.split('.');
+      let aux2 = aux.slice(0, aux.length - 1).join('.');
+
+      const exist = existImage(aux2);
+      if (exist) {
+        toast.error('La imagen ' + aux2 + ' ya existe');
+        continue;
+      }
       reader.onload = () => {
         addImages({
           id: images.length + i + 1,
-          originalName: aux.slice(0, aux.length - 1).join('.'),
+          originalName: aux2,
           URL: typeof reader.result === 'string' ? reader.result : '',
           file: file,
           size: file.size,
@@ -33,8 +50,10 @@ export function UploadImages() {
 
   const uploadImagesToCloudinary = async () => {
     if (!images[0]) return;
+    handleLoading();
     const upImage = await uploadImagesCloudinary(images, clientId);
     addImagesUploaded(upImage);
+    handleLoading();
   };
 
   return (
@@ -56,10 +75,20 @@ export function UploadImages() {
             </label>
           ) : (
             <button
-              className="w-fit cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium self-center md:self-end"
+              className={`w-fit cursor-pointer ${
+                status.pending === 0 ? 'bg-green-600' : 'bg-blue-700'
+              } px-5 py-3 rounded hover:font-medium self-center md:self-end `}
               onClick={() => uploadImagesToCloudinary()}
+              disabled={Loading}
             >
-              {status.pending === 0 ? 'Imagenes Subidas' : 'Subir Imagenes'}
+              <span
+                className={`flex gap-2 items-center ${
+                  Loading ? 'animate-pulse' : ''
+                }`}
+              >
+                Subir Imagenes
+                <CloudArrowUpIcon className="w-6 aspect-square " />
+              </span>
             </button>
           )}
         </div>
@@ -98,14 +127,21 @@ export function UploadImages() {
                 !image.upload ? 'from-black/70' : 'from-green-800/70'
               } to-transparent`}
             >
-              <p className="flex flex-col">
-                <span className="text-sm font-medium">
-                  {!image.upload ? 'Imagen no subida' : 'Imagen Subida'}
-                </span>
-                <span className="text-[12px] text-gray-200">
-                  {getSizeImage(image.size)}
-                </span>
-              </p>
+              <div className="flex gap-2 items-center">
+                <div
+                  className={`border-gray-300 h-6 aspect-square animate-spin rounded-full border-[5px] border-t-primary ${
+                    Loading && !image.upload ? 'visible' : 'invisible'
+                  }`}
+                />
+                <p className="flex flex-col">
+                  <span className="text-sm font-medium">
+                    {!image.upload ? 'Imagen no subida' : 'Imagen Subida'}
+                  </span>
+                  <span className="text-[12px] text-gray-200">
+                    {getSizeImage(image.size)}
+                  </span>
+                </p>
+              </div>
               <button
                 onClick={() =>
                   removeImages(i, image.upload ? 'uploaded' : 'pending')
