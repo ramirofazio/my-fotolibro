@@ -43,18 +43,19 @@ export function SortImages() {
           </ul>
         </SortableContext>
       </DndContext>
-      <div className="flex justify-end mt-2">
+      <div className="flex flex-col  items-center mt-2 gap-4 ">
         <button
           onClick={() => API.addImgsIndex(images).then(res => {
             if(res.data) {
               toast.success("Se ordenaron las fotos")
             }
           })}
-          className="w-fit text-white  cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
+          className="w-fit text-white border-2 !self-end  cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
         >
           Guardar orden de las fotos
           <PaperAirplaneIcon className="w-6 aspect-square stroke-2" />
         </button>
+        <h1 className="text-2xl text-white underline  w-fit p-0">Recuerde cerrar la ventana una vez haya finalizado!</h1>
       </div>
     </div>
   );
@@ -91,7 +92,7 @@ function Item({ image, index }) {
         style={style}
         className="p-2 flex justify-between items-center bg-slate-300 rounded"
       >
-        <span className="text-xl font-bold  rounded-full mr-4">
+        <span className="text-xl font-bold  rounded-full mr-1.5 md:mr-4">
           {index + 1}
         </span>
         <img
@@ -103,7 +104,7 @@ function Item({ image, index }) {
       </li>
       <button
         onClick={handleDelete}
-        className="border-2 border-black hover:border-red-600 w-12 h-12 mx-2 hover:text-red-800 rounded-full hover:bg-gray-400/40"
+        className="border-2 border-black hover:border-red-600 w-8 h-8 md:w-12 md:h-12  md:mx-2 hover:text-red-800 rounded-full hover:bg-gray-400/40"
         title="Eliminar"
       >
         <XMarkIcon />
