@@ -28,6 +28,10 @@ export function Routes() {
         },
         {
           path: '/client/:clientId/sort_images',
+          loader: async ({ params }) => {
+            const preivusImgs = await API.getPreviusImgs(params.clientId);
+            return preivusImgs.data;
+          },
           element: <SortImages />,
         },
       ],

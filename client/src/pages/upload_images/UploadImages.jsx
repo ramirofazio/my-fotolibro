@@ -3,11 +3,18 @@ import { useApp } from '../../contexts/AppContext';
 import { CloudArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { getSizeImage, uploadImagesCloudinary } from '../../utils';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 export function UploadImages() {
   const { clientId } = useParams();
-  const { images, addImages, removeImages, addImagesUploaded, status } =
-    useApp();
+  const {
+    images,
+    addImages,
+    removeImages,
+    addImagesUploaded,
+    status,
+    existImage,
+  } = useApp();
   const [Loading, setLoading] = useState(false);
   const handleLoading = () => setLoading((cur) => !cur);
 
@@ -21,10 +28,17 @@ export function UploadImages() {
 
       const reader = new FileReader();
       let aux = file.name.split('.');
+      let aux2 = aux.slice(0, aux.length - 1).join('.');
+
+      const exist = existImage(aux2);
+      if (exist) {
+        toast.error('La imagen ' + aux2 + ' ya existe');
+        continue;
+      }
       reader.onload = () => {
         addImages({
           id: images.length + i + 1,
-          originalName: aux.slice(0, aux.length - 1).join('.'),
+          originalName: aux2,
           URL: typeof reader.result === 'string' ? reader.result : '',
           file: file,
           size: file.size,
