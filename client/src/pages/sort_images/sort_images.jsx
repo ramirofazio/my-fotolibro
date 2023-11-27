@@ -8,7 +8,8 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useApp } from '../../contexts/AppContext';
-import { useLoaderData } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
+import { API } from '../../api_instance';
 
 export function SortImages() {
   const prev = useLoaderData()
@@ -39,6 +40,7 @@ export function SortImages() {
 }
 
 function Item({ image }) {
+  const navigate = useNavigate()
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: image.id,
@@ -49,6 +51,13 @@ function Item({ image }) {
   };
 
   const { URL, originalName } = image;
+
+  async function handleDelete() {
+    const d = await API.deleteSingleImg(image.publicId)
+    navigate("/") // reload
+    console.log(d)
+  }
+
   return (
     <li
       ref={setNodeRef}
@@ -64,6 +73,7 @@ function Item({ image }) {
       />
       <p className="w-full text-gray-800 ml-3">{originalName}</p>
       <button
+        onClick={handleDelete}
         className="w-7 h-7 hover:text-red-800 rounded-full hover:bg-gray-400/40"
         title="Eliminar"
       >
