@@ -37,6 +37,9 @@ export const API = {
   getPreviusImgs: (clientId) => {
     return api.get(`client/imgs/${clientId}`)
   },
+  addImgsIndex: (imgs) => {
+    return api.put(`client/index_images`, {imgs})
+  },
   addDownloadImgsIndex: (clientId) => {
     return api.get(`cloudinary/sort_download_imgs/${clientId}`, )
   },
