@@ -8,8 +8,11 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useApp } from '../../contexts/AppContext';
+import { useLoaderData } from 'react-router-dom';
 
 export function SortImages() {
+  const prev = useLoaderData()
+  console.log(prev)
   const { images, reorderImages } = useApp();
   console.log(images);
 

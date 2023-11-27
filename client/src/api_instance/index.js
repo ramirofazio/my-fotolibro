@@ -41,8 +41,14 @@ export const API = {
     return api.put(`client/index_images`, {imgs})
   },
   addDownloadImgsIndex: (clientId) => {
-    return api.post(`cloudinary/sort_download_imgs/${clientId}`, )
+    return api.post(`cloudinary/sort_download_imgs/${clientId}`)
   },
+  deleteSingleImg: (publicId) => {
+    console.log(JSON.stringify(publicId))
+    return api.delete(`cloudinary/single_img/`, {
+      publicId, // ? si tiene espacios?
+    } )
+  }
   /* getBooks: () => {
     return api.get("cloudinary/book");
   },
