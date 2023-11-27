@@ -17,6 +17,7 @@ export async function uploadImagesCloudinary(images = [], clientId = '') {
       const formdata = new FormData();
       formdata.append('file', file);
       formdata.append('upload_preset', clientId);
+      formdata.append('public_id', `-0-"${file?.name}"`);
       promises.push(axios.post(URL, formdata));
     }
   });
