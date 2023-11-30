@@ -34,6 +34,14 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      last_link_download: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      created_at: {
+        type: DataTypes.STRING,
+        allowNull: true
+      }
     },
     {
       timestamps: false,

@@ -1,22 +1,22 @@
 import {
   XCircleIcon,
   PencilSquareIcon,
-  PaperClipIcon
+  PaperClipIcon,
 } from "@heroicons/react/24/outline";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { API } from "../../api_instance";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-hot-toast";
 
-export function ClientCard({ name, email, phone, id, dni }) {
+export function ClientCard({ name, email, phone, id, dni, created_at }) {
   const navigate = useNavigate();
   const params = useParams();
 
   async function handleDelete() {
     const deleted = await API.deleteClient(id);
-    
+
     toast.success(`Se elimino "${name}"`);
-    navigate(0)
+    navigate(0);
     //navigate(`/admin/${params?.adminId}/clients/create`);
   }
 
@@ -27,7 +27,11 @@ export function ClientCard({ name, email, phone, id, dni }) {
       } `}
     >
       <section>
-        <picture className="flex w-fit ml-auto gap-3">
+        <picture className="flex items-center justify-end ml-auto gap-3">
+          <span className="mr-auto my-2">
+            <p>Creado</p>
+            <p className=" font-bold">{created_at}</p>
+          </span>
           <CopyToClipboard
             text={`http://localhost:5173/client/${id}/client_data`} // TODO cambiar a url de producción
           >
