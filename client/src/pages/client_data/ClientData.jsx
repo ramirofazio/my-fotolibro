@@ -15,6 +15,7 @@ export function ClientData() {
       .then((res) => {
         if (res.data) {
           toast.success("Se cargaron sus datos correctamente");
+          
           navigate(`/client/${_client.id}/upload_images`);
         }
       })

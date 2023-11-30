@@ -21,7 +21,8 @@ export function FolderCard({ name, id }) {
 
         API.deleteClient(id).then(() =>
           {
-            navigate(`/admin/${params?.adminId}/folders/`)
+            navigate(0)
+            //navigate(`/admin/${params?.adminId}/folders/`)
           }
         );
       }
@@ -31,10 +32,13 @@ export function FolderCard({ name, id }) {
   function generateDownloadUrl() {
     API.addDownloadImgsIndex(id)
     .then(res => {
+      console.log("index", res.data)
       if(res.data) {
-        setUrl(res.data)
         API.getDownloadUrl(id)
-        .catch(() => setUrl(false))
+        .then(url => setUrl(url.data))
+        .catch(() => {
+          setUrl(false)
+        })
       }
     })
   }
