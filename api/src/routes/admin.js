@@ -3,7 +3,7 @@ const router = Router();
 const { Admin } = require("../db.js");
 const transporter = require("../node_mailer");
 require("dotenv").config();
-const { EMAIL_USER } = process.env;
+const { EMAIL_USER, ENV } = process.env;
 
 router.post("/create", async (req, res) => {
   try {
@@ -47,7 +47,11 @@ router.post("/send_client_url", async (req, res) => {
       <b>Cargue sus fotos!</b>
       <h2>Ya esta disponilbe el link para la carga de sus fotos</h2>
       <br/>
-      <h1> http://localhost:5173/client/${clientId}/client_data </h1>
+      <h1> ${
+        ENV === "production"
+          ? `http://85.31.231.196:51735/client/${clientId}/client_data`
+          : `http://localhost:5173/client/${clientId}/client_data`
+      } </h1>
       `,
     });
     res.json(info);

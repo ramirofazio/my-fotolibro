@@ -8,7 +8,7 @@
     "start": "node ./",
     "test": "mocha -w ./tests/**/*.spec.js"
   },
-  "author": "Henry",
+  "author": "Real Labs",
   "license": "ISC",
   "engines": {
     "node": ">=12.18.3",

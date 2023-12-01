@@ -1,7 +1,7 @@
 import {
   XCircleIcon,
   PencilSquareIcon,
-  PaperClipIcon
+  PaperClipIcon,
 } from "@heroicons/react/24/outline";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { API } from "../../api_instance";
@@ -14,9 +14,9 @@ export function ClientCard({ name, email, phone, id, dni }) {
 
   async function handleDelete() {
     const deleted = await API.deleteClient(id);
-    
+
     toast.success(`Se elimino "${name}"`);
-    navigate(0)
+    navigate(0);
     //navigate(`/admin/${params?.adminId}/clients/create`);
   }
 
@@ -29,7 +29,11 @@ export function ClientCard({ name, email, phone, id, dni }) {
       <section>
         <picture className="flex w-fit ml-auto gap-3">
           <CopyToClipboard
-            text={`http://localhost:5173/client/${id}/client_data`} // TODO cambiar a url de producción
+            text={
+              import.meta.env.VITE_ENV === "production"
+                ? `http://85.31.231.196:51735/client/${id}/client_data`
+                : `http://localhost:5173/client/${id}/client_data`
+            }
           >
             <PaperClipIcon
               onClick={() => toast("URL copiado", { icon: "📎" })}
