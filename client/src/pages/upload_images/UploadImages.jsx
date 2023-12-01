@@ -1,11 +1,12 @@
-import { useParams } from 'react-router-dom';
+import { useLoaderData, useParams } from 'react-router-dom';
 import { useApp } from '../../contexts/AppContext';
 import { CloudArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { getSizeImage, uploadImagesCloudinary } from '../../utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 export function UploadImages() {
+  const { handleNextStep, updateInfoImages } = useApp();
   const { clientId } = useParams();
   const {
     images,
@@ -17,7 +18,10 @@ export function UploadImages() {
   } = useApp();
   const [Loading, setLoading] = useState(false);
   const handleLoading = () => setLoading((cur) => !cur);
-
+  const previus = useLoaderData();
+  useEffect(() => {
+    updateInfoImages(previus.photos);
+  }, []);
   function handleImages({ target }) {
     const files = target.files;
     if (!files) return;
@@ -56,6 +60,15 @@ export function UploadImages() {
     handleLoading();
   };
 
+  useEffect(() => {
+    const size = status.pending + status.uploaded;
+
+    if (size < 1 || status.pending > 0) {
+      handleNextStep({ index: 2, access: false });
+    } else {
+      handleNextStep({ index: 2, access: true });
+    }
+  }, [status]);
   return (
     <div className="p-3">
       <div className="flex  flex-col justify-center items-center text-white mt-4 mb-4">

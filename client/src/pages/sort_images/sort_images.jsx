@@ -9,17 +9,10 @@ import { CSS } from '@dnd-kit/utilities';
 import { PaperAirplaneIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useApp } from '../../contexts/AppContext';
 import { API } from '../../api_instance';
-import { useLoaderData } from 'react-router-dom';
-import { useEffect } from 'react';
 
 export function SortImages() {
-  const { images, reorderImages, updateInfoImages } = useApp();
-  const previus = useLoaderData();
-  useEffect(() => {
-    updateInfoImages(previus.photos);
-  }, []);
-  console.log(previus);
-  console.log(images);
+  const { images, reorderImages } = useApp();
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
     const oldIndex = images.findIndex((user) => user.id === active.id);
