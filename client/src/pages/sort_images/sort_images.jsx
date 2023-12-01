@@ -1,4 +1,4 @@
-import { DndContext, closestCenter } from "@dnd-kit/core";
+import { DndContext, closestCenter } from '@dnd-kit/core';
 import {
   SortableContext,
   arrayMove,
@@ -9,6 +9,8 @@ import { CSS } from '@dnd-kit/utilities';
 import { PaperAirplaneIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useApp } from '../../contexts/AppContext';
 import { API } from '../../api_instance';
+import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 export function SortImages() {
   const { images, reorderImages } = useApp();
@@ -37,17 +39,21 @@ export function SortImages() {
       </DndContext>
       <div className="flex flex-col  items-center mt-2 gap-4 ">
         <button
-          onClick={() => API.addImgsIndex(images).then(res => {
-            if(res.data) {
-              toast.success("Se ordenaron las fotos")
-            }
-          })}
+          onClick={() =>
+            API.addImgsIndex(images).then((res) => {
+              if (res.data) {
+                toast.success('Se ordenaron las fotos');
+              }
+            })
+          }
           className="w-fit text-white border-2 !self-end  cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
         >
           Guardar orden de las fotos
           <PaperAirplaneIcon className="w-6 aspect-square stroke-2" />
         </button>
-        <h1 className="text-2xl text-white underline  w-fit p-0">Recuerde cerrar la ventana una vez haya finalizado!</h1>
+        <h1 className="text-2xl text-white underline  w-fit p-0">
+          Recuerde cerrar la ventana una vez haya finalizado!
+        </h1>
       </div>
     </div>
   );
@@ -69,9 +75,9 @@ function Item({ image, index }) {
 
   async function handleDelete() {
     const res = await API.deleteSingleImg({ publicId, id });
-    if(res.data) {
-      toast.success(`Se elimino ${originalName}`)
-      navigate(0)
+    if (res.data) {
+      toast.success(`Se elimino ${originalName}`);
+      navigate(0);
     }
   }
 
