@@ -14,9 +14,10 @@ export function ClientCard({ name, email, phone, id, dni }) {
 
   async function handleDelete() {
     const deleted = await API.deleteClient(id);
-    console.log(deleted);
+    
     toast.success(`Se elimino "${name}"`);
-    navigate(`/admin/${params?.adminId}/clients/create`);
+    navigate(0)
+    //navigate(`/admin/${params?.adminId}/clients/create`);
   }
 
   return (

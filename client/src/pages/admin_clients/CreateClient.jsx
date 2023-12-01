@@ -19,8 +19,8 @@ export function CreateClient() {
     } else {
       toast.success("error del servidor", {style: {borderColor: "red"}})
     }
-
-    navigate(`/admin/${params?.adminId}/clients/create`)
+    navigate(0)
+    //navigate(`/admin/${params?.adminId}/clients/create`)
   }
 
   return (
