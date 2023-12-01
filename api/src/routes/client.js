@@ -264,4 +264,20 @@ router.put("/timestamp/:clientId", async (req, res) => {
   }
 });
 
+router.put("/activeClient/:clientId", async (req, res) => {
+  try {
+    const { clientId } = req.params;
+    const client = await Client.findByPk(clientId);
+    const paused = await client.update({
+      active_link: client.active_link === true ? false : true
+    });
+    res.json(paused)
+  } 
+  catch (e) {
+    res.status(404).json({
+      e
+    })
+  }
+})
+
 module.exports = router;

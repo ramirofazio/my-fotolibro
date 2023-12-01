@@ -41,6 +41,10 @@ module.exports = (sequelize) => {
       created_at: {
         type: DataTypes.STRING,
         allowNull: true
+      },
+      active_link: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
       }
     },
     {

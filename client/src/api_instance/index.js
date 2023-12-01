@@ -48,6 +48,9 @@ export const API = {
     console.log(publicId, id);
     return api.post(`cloudinary/delete/single_img/`, {publicId, id});
   },
+  updateActiveClient: (clientId) => {
+    return api.put(`client/activeClient/${clientId}`);
+  },
   /* getBooks: () => {
     return api.get("cloudinary/book");
   },

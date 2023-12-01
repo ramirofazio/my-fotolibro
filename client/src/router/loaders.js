@@ -1,7 +1,12 @@
 import {API} from "../api_instance/index"
 
 export async function verifyClient({ params }) {
-  return (await API.getCLientById(params.clientId)).data;
+  const { data } = await API.getCLientById(params.clientId);
+  console.log(data)
+  if(data.active_link === false) {
+    throw new Error("Link deshabilitado", {cause: "zaracatunga"})
+  }
+  return data
 }
 
 export async function getPrevImgs({ params }) {
