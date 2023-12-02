@@ -4,8 +4,10 @@ import { CloudArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { getSizeImage, uploadImagesCloudinary } from '../../utils';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { API } from '../../api_instance';
 
 export function UploadImages() {
+  //const navigate = useNavigate()
   const { handleNextStep, updateInfoImages } = useApp();
   const { clientId } = useParams();
   const {
@@ -156,8 +158,14 @@ export function UploadImages() {
                 </p>
               </div>
               <button
-                onClick={() =>
-                  removeImages(i, image.upload ? 'uploaded' : 'pending')
+                onClick={async () =>
+                  {
+                    if(image.upload) {
+                      await API.deleteSingleImg({publicId: image.publicId, id: image.id})
+                    }
+                    removeImages(i, image.upload ? 'uploaded' : 'pending')
+                    //navigate(0)   Posible reload de data
+                  }
                 }
                 className=" w-7 aspect-square p-0.5 hover:text-red-800 text-gray-700 rounded-full bg-gray-400/40  hover:bg-gray-400 "
                 title="Eliminar"
