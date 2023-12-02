@@ -11,17 +11,18 @@ import { PaperAirplaneIcon, XMarkIcon, AdjustmentsHorizontalIcon } from "@heroic
 import { useApp } from "../../contexts/AppContext";
 import { API } from "../../api_instance";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
 import { toast } from "react-hot-toast";
+import { useEffect } from "react";
 
 export function SortImages() {
   const navigate = useNavigate()
   const { clientId } = useParams();
-  const { images, reorderImages, updateInfoImages } = useApp();
+  const { images, reorderImages, updateInfoImages} = useApp();
   const previus = useLoaderData();
+  console.log(previus)
 
   useEffect(() => {
-    updateInfoImages(previus.photos);
+    updateInfoImages(previus?.photos);
   }, []);
 
   const handleDragEnd = (event) => {
@@ -76,14 +77,14 @@ export function SortImages() {
           <section>
             <button
               id="finish"
-              disabled={previus.canFinish ? false : true}
+              disabled={previus?.canFinish ? false : true}
               onClick={submitBook}
               className="disabled:opacity-50 w-fit font-bold bg-green-600 text-white border-2 !self-end  cursor-pointer border-green-800 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
             >
               Finalizar y enviar Book
               <PaperAirplaneIcon className="w-6 aspect-square stroke-2" />
             </button>
-            {!previus.canFinish && (
+            {!previus?.canFinish && (
               <p className="absolute  text-red-500 w-fit mx-auto">
                 Ordene todas las fotos primero
               </p>
@@ -93,23 +94,6 @@ export function SortImages() {
         <h1 className="text-2xl my-4 text-white underline  w-fit p-0">
           Recuerde cerrar la ventana una vez haya finalizado!
         </h1>
-        {/* ------- */}
-        {/* <button
-          onClick={() =>
-            API.addImgsIndex(images).then((res) => {
-              if (res.data) {
-                toast.success("Se ordenaron las fotos");
-              }
-            })
-          }
-          className="w-fit text-white border-2 !self-end  cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
-        >
-          Guardar orden de las fotos
-          <PaperAirplaneIcon className="w-6 aspect-square stroke-2" />
-        </button>
-        <h1 className="text-2xl text-white underline  w-fit p-0">
-          Recuerde cerrar la ventana una vez haya finalizado!
-        </h1> */}
       </div>
     </div>
   );

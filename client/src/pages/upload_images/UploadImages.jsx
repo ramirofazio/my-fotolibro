@@ -80,6 +80,7 @@ export function UploadImages() {
       handleNextStep({ index: 2, access: true });
     }
   }, [status]);
+  
   return (
     <div className="p-3">
       <div className="flex  flex-col justify-center items-center text-white mt-4 mb-4">
@@ -169,8 +170,10 @@ export function UploadImages() {
               <button
                 onClick={async () =>
                   {
+                    console.log(image)
                     if(image.upload) {
-                      await API.deleteSingleImg({publicId: image.publicId, id: image.id})
+                      let res = await API.deleteSingleImg({publicId: image.publicId, id: image.id})
+                      console.log(res)
                     }
                     removeImages(i, image.upload ? 'uploaded' : 'pending')
                     //navigate(0)   Posible reload de data

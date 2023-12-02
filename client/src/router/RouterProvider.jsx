@@ -26,15 +26,19 @@ export function Routes() {
           path: '/client/:clientId/upload_images',
           loader: async ({ params }) => {
             const {photos} = (await API.getPreviusImgs(params.clientId)).data;
-            const { canFinish } = (await API.canFinish(params.clientId)).data;
-            
-            return { photos, canFinish};
-            
+            return { photos};
           },
           element: <UploadImages />,
         },
         {
           path: '/client/:clientId/sort_images',
+          loader: async ({ params }) => {
+            const {photos} = (await API.getPreviusImgs(params.clientId)).data;
+            const {canFinish} = (await API.canFinish(params.clientId)).data
+            console.log(canFinish)
+            return { photos, canFinish};
+            
+          },
           element: <SortImages />,
         },
       ],
