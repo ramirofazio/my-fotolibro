@@ -39,6 +39,7 @@ export function SortImages() {
       clientId,
       photos_length: images.length,
     });
+    toast.success("Book enviado con exito")
     navigate(0);
   }
 
@@ -58,18 +59,18 @@ export function SortImages() {
         </SortableContext>
       </DndContext>
       <div className="flex flex-col  items-center mt-2 gap-4 ">
-        <span className="flex justify-around items-center w-full">
+        <span className="flex flex-col gap-10 justify-around items-center w-full">
           <button
             onClick={() =>
               API.addImgsIndex(images).then((res) => {
                 console.log(images);
                 if (res.data) {
                   toast.success("Se ordenaron las fotos");
-                  navigate(0)
+                  navigate(0);
                 }
               })
             }
-            className="w-fit text-white border-2 !self-end  cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
+            className="w-fit text-white border-2   cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
           >
             Guardar orden de las fotos
             <AdjustmentsHorizontalIcon className="w-6 aspect-square stroke-2" />
@@ -84,7 +85,11 @@ export function SortImages() {
               Finalizar y enviar Book
               <PaperAirplaneIcon className="w-6 aspect-square stroke-2" />
             </button>
-            {!previus.canFinish && <p className="absolute  text-red-500 w-fit mx-auto">Ordene todas las fotos primero</p>}
+            {!previus.canFinish && (
+              <p className="absolute  text-red-500 w-fit mx-auto">
+                Ordene todas las fotos primero
+              </p>
+            )}
           </section>
         </span>
         <h1 className="text-2xl my-4 text-white underline  w-fit p-0">
@@ -118,13 +123,13 @@ function Item({ image, index }) {
   }
 
   return (
-    <div className="p-2 flex justify-between items-center bg-slate-300 rounded">
+    <div className="p-2 flex  items-center bg-slate-300 rounded ">
       <li
         ref={setNodeRef}
         {...attributes}
         {...listeners}
         style={style}
-        className="p-2 flex justify-between items-center bg-slate-300 rounded"
+        className="p-2 flex justify-around items-center bg-slate-300 rounded"
       >
         <span className="text-xl font-bold  rounded-full mr-1.5 md:mr-4">
           {index + 1}
@@ -132,17 +137,21 @@ function Item({ image, index }) {
         <img
           src={URL}
           alt="image"
-          className={`w-[60px] aspect-square rounded-md object-cover`}
+          className={`w-[60px] mr-auto aspect-square rounded-md object-cover`}
         />
-        <p className="w-full text-gray-800 ml-3">{originalName}</p>
-      </li>
-      <button
-        onClick={handleDelete}
-        className="border-2 border-black hover:border-red-600 w-8 h-8 md:w-12 md:h-12  md:mx-2 hover:text-red-800 rounded-full hover:bg-gray-400/40"
-        title="Eliminar"
-      >
-        <XMarkIcon />
-      </button>
+        <p className="mr-auto  text-sm lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis max-w-[60%] w-full ml-3">
+          {originalName}
+        </p>
+       </li>
+      <span className=" right-8 ml-auto">
+        <button
+          onClick={handleDelete}
+          className="border-2 ml-auto border-black hover:border-red-600 w-8 h-8 md:w-12 md:h-12  md:mx-2 hover:text-red-800 rounded-full hover:bg-gray-400/40"
+          title="Eliminar"
+        >
+          <XMarkIcon />
+        </button>
+      </span>
     </div>
   );
 }
