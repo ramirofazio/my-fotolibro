@@ -23,11 +23,7 @@ export function Routes() {
           element: <ClientData />,
         },
         {
-          path: "/client/:clientId/upload_images",
-          element: <UploadImages />,
-        },
-        {
-          path: "/client/:clientId/sort_images",
+          path: '/client/:clientId/upload_images',
           loader: async ({ params }) => {
             const {photos} = (await API.getPreviusImgs(params.clientId)).data;
             const { canFinish } = (await API.canFinish(params.clientId)).data;
@@ -35,6 +31,10 @@ export function Routes() {
             return { photos, canFinish};
             
           },
+          element: <UploadImages />,
+        },
+        {
+          path: '/client/:clientId/sort_images',
           element: <SortImages />,
         },
       ],

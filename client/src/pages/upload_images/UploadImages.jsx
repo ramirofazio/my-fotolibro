@@ -1,12 +1,15 @@
-import { useParams } from "react-router-dom";
-import { useApp } from "../../contexts/AppContext";
-import { CloudArrowUpIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { getSizeImage, uploadImagesCloudinary } from "../../utils";
-import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
-import Compressor from "compressorjs";
+import { useLoaderData, useParams } from 'react-router-dom';
+import { useApp } from '../../contexts/AppContext';
+import { CloudArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { getSizeImage, uploadImagesCloudinary } from '../../utils';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { API } from '../../api_instance';
+import Compressor from "compressorjs"
 
 export function UploadImages() {
+  //const navigate = useNavigate()
+  const { handleNextStep, updateInfoImages } = useApp();
   const { clientId } = useParams();
   const {
     images,
@@ -18,11 +21,10 @@ export function UploadImages() {
   } = useApp();
   const [Loading, setLoading] = useState(false);
   const handleLoading = () => setLoading((cur) => !cur);
-
+  const previus = useLoaderData();
   useEffect(() => {
-    console.log(images);
-  }, [images]);
-
+    updateInfoImages(previus.photos);
+  }, []);
   function handleImages({ target }) {
     const files = target.files;
     if (!files) return;
@@ -58,27 +60,6 @@ export function UploadImages() {
           reader.readAsDataURL(compressed)
         },
       });
-      
-      
-      /* new Compressor(file, {
-        quality: 0.6,
-        success: (compressed) => {
-          console.log("comprimida", compressed);
-
-          const reader = new FileReader();
-          reader.onload = () => {
-            const blobURL = reader.result
-            addImages({
-              id: images.length + i + 1,
-              originalName: aux2,
-              URL: blobURL,
-              file: file,
-              size: file.size,
-            });
-          };
-          reader.readAsDataURL(compressed);
-        },
-      }); */
     }
   }
 
@@ -90,6 +71,15 @@ export function UploadImages() {
     handleLoading();
   };
 
+  useEffect(() => {
+    const size = status.pending + status.uploaded;
+
+    if (size < 1 || status.pending > 0) {
+      handleNextStep({ index: 2, access: false });
+    } else {
+      handleNextStep({ index: 2, access: true });
+    }
+  }, [status]);
   return (
     <div className="p-3">
       <div className="flex  flex-col justify-center items-center text-white mt-4 mb-4">
@@ -177,8 +167,14 @@ export function UploadImages() {
                 </p>
               </div>
               <button
-                onClick={() =>
-                  removeImages(i, image.upload ? "uploaded" : "pending")
+                onClick={async () =>
+                  {
+                    if(image.upload) {
+                      await API.deleteSingleImg({publicId: image.publicId, id: image.id})
+                    }
+                    removeImages(i, image.upload ? 'uploaded' : 'pending')
+                    //navigate(0)   Posible reload de data
+                  }
                 }
                 className=" w-7 aspect-square p-0.5 hover:text-red-800 text-gray-700 rounded-full bg-gray-400/40  hover:bg-gray-400 "
                 title="Eliminar"

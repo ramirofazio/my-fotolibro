@@ -4,13 +4,10 @@ import {
   arrayMove,
   useSortable,
   verticalListSortingStrategy,
+  
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-  PaperAirplaneIcon,
-  XMarkIcon,
-  AdjustmentsHorizontalIcon,
-} from "@heroicons/react/24/outline";
+import { PaperAirplaneIcon, XMarkIcon, AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
 import { useApp } from "../../contexts/AppContext";
 import { API } from "../../api_instance";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
@@ -18,15 +15,16 @@ import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 
 export function SortImages() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const { clientId } = useParams();
   const { images, reorderImages, updateInfoImages } = useApp();
   const previus = useLoaderData();
+
   useEffect(() => {
-    updateInfoImages(previus?.photos);
+    updateInfoImages(previus.photos);
   }, []);
 
-  const handleDragEnd = (event) => { // * Bug al ordenar enmtre varias fotos
+  const handleDragEnd = (event) => {
     const { active, over } = event;
     const oldIndex = images.findIndex((user) => user.id === active.id);
     const newIndex = images.findIndex((user) => user.id === over.id);
@@ -39,7 +37,7 @@ export function SortImages() {
       clientId,
       photos_length: images.length,
     });
-    toast.success("Book enviado con exito")
+    toast.success("Book enviado con exito");
     navigate(0);
   }
 
@@ -95,6 +93,23 @@ export function SortImages() {
         <h1 className="text-2xl my-4 text-white underline  w-fit p-0">
           Recuerde cerrar la ventana una vez haya finalizado!
         </h1>
+        {/* ------- */}
+        {/* <button
+          onClick={() =>
+            API.addImgsIndex(images).then((res) => {
+              if (res.data) {
+                toast.success("Se ordenaron las fotos");
+              }
+            })
+          }
+          className="w-fit text-white border-2 !self-end  cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
+        >
+          Guardar orden de las fotos
+          <PaperAirplaneIcon className="w-6 aspect-square stroke-2" />
+        </button>
+        <h1 className="text-2xl text-white underline  w-fit p-0">
+          Recuerde cerrar la ventana una vez haya finalizado!
+        </h1> */}
       </div>
     </div>
   );
@@ -142,7 +157,7 @@ function Item({ image, index }) {
         <p className="mr-auto  text-sm lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis max-w-[60%] w-full ml-3">
           {originalName}
         </p>
-       </li>
+      </li>
       <span className=" right-8 ml-auto">
         <button
           onClick={handleDelete}
