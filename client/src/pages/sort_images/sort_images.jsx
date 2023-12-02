@@ -6,27 +6,41 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { PaperAirplaneIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  PaperAirplaneIcon,
+  XMarkIcon,
+  AdjustmentsHorizontalIcon,
+} from "@heroicons/react/24/outline";
 import { useApp } from "../../contexts/AppContext";
 import { API } from "../../api_instance";
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import {toast} from "react-hot-toast"
+import { toast } from "react-hot-toast";
 
 export function SortImages() {
+  const navigate = useNavigate();
+  const { clientId } = useParams();
   const { images, reorderImages, updateInfoImages } = useApp();
   const previus = useLoaderData();
   useEffect(() => {
-    updateInfoImages(previus.photos);
+    updateInfoImages(previus?.photos);
   }, []);
-  console.log(previus);
-  console.log(images);
+
   const handleDragEnd = (event) => {
     const { active, over } = event;
     const oldIndex = images.findIndex((user) => user.id === active.id);
     const newIndex = images.findIndex((user) => user.id === over.id);
     return reorderImages(arrayMove(images, oldIndex, newIndex));
   };
+
+  async function submitBook() {
+    await API.updateActiveClient(clientId);
+    await API.finishUpload({
+      clientId,
+      photos_length: images.length,
+    });
+    navigate(0);
+  }
 
   return (
     <div className="touch-none w-[85%] mx-auto">
@@ -44,18 +58,38 @@ export function SortImages() {
         </SortableContext>
       </DndContext>
       <div className="flex flex-col  items-center mt-2 gap-4 ">
-        <button
-          onClick={() => API.addImgsIndex(images).then(res => {
-            if(res.data) {
-              toast.success("Se ordenaron las fotos")
+        <span className="flex justify-around items-center w-full">
+          <button
+            onClick={() =>
+              API.addImgsIndex(images).then((res) => {
+                console.log(images);
+                if (res.data) {
+                  toast.success("Se ordenaron las fotos");
+                  navigate(0)
+                }
+              })
             }
-          })}
-          className="w-fit text-white border-2 !self-end  cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
-        >
-          Guardar orden de las fotos
-          <PaperAirplaneIcon className="w-6 aspect-square stroke-2" />
-        </button>
-        <h1 className="text-2xl text-white underline  w-fit p-0">Recuerde cerrar la ventana una vez haya finalizado!</h1>
+            className="w-fit text-white border-2 !self-end  cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
+          >
+            Guardar orden de las fotos
+            <AdjustmentsHorizontalIcon className="w-6 aspect-square stroke-2" />
+          </button>
+          <section>
+            <button
+              id="finish"
+              disabled={previus.canFinish ? false : true}
+              onClick={submitBook}
+              className="disabled:opacity-50 w-fit font-bold bg-green-600 text-white border-2 !self-end  cursor-pointer border-green-800 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
+            >
+              Finalizar y enviar Book
+              <PaperAirplaneIcon className="w-6 aspect-square stroke-2" />
+            </button>
+            {!previus.canFinish && <p className="absolute  text-red-500 w-fit mx-auto">Ordene todas las fotos primero</p>}
+          </section>
+        </span>
+        <h1 className="text-2xl my-4 text-white underline  w-fit p-0">
+          Recuerde cerrar la ventana una vez haya finalizado!
+        </h1>
       </div>
     </div>
   );
@@ -77,9 +111,9 @@ function Item({ image, index }) {
 
   async function handleDelete() {
     const res = await API.deleteSingleImg({ publicId, id });
-    if(res.data) {
-      toast.success(`Se elimino ${originalName}`)
-      navigate(0)
+    if (res.data) {
+      toast.success(`Se elimino ${originalName}`);
+      navigate(0);
     }
   }
 

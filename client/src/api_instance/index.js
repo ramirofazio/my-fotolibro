@@ -46,10 +46,19 @@ export const API = {
   deleteSingleImg: ({ publicId, id }) => {
     //console.log(JSON.stringify(publicId));
     console.log(publicId, id);
-    return api.post(`cloudinary/delete/single_img/`, {publicId, id});
+    return api.post(`cloudinary/delete/single_img/`, { publicId, id });
   },
   updateActiveClient: (clientId) => {
     return api.put(`client/activeClient/${clientId}`);
+  },
+  canFinish: (clientId) => {
+    return api.get(`client/canFinish/${clientId}`);
+  },
+  finishUpload: ({ clientId, photos_length }) => {
+    return api.post(`client/finish_upload/`, {
+      clientId,
+      photos_length,
+    });
   },
   /* getBooks: () => {
     return api.get("cloudinary/book");
