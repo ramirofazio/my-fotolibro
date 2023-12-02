@@ -1,6 +1,5 @@
-let img = "hola como estas"
+const { DateTime } = require("luxon");
 
-let obj = {
-  str: img
-}
-console.log(JSON.stringify(obj))
+const d = DateTime.now().setLocale("es").toFormat("dd/MM/yyyy");
+
+console.log(d)

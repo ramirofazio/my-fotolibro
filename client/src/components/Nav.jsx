@@ -1,26 +1,44 @@
-import { NavLink } from "react-router-dom";
-
-const links = [
-  { link: "client_data", text: "Completa tus datos" },
-  { link: "upload_images", text: "Subi tus fotos" },
-  { link: "sort_images", text: "Ordena las fotos" },
-];
+import { NavLink, useLocation } from 'react-router-dom';
+import { useApp } from '../contexts/AppContext';
 
 export function Nav() {
+  const routes = useApp().getSteps();
+  let pathname = useLocation().pathname.split('/');
+  pathname = pathname[pathname.length - 1];
+
   return (
     <nav className="border-2  border-black grid grid-cols-3 gap-2 px-1">
-      {links.map((l, i) => (
-        <NavLink
+      {routes.map(({ to, text, access }, i) => (
+        <ContainerLink
+          to={to}
           key={i}
-          to={l.link}
-          className={({ isActive }) =>
-            `flex flex-col rounded-md bg-base items-center py-2 border-2 ${isActive ? "border-white bg-gray-500" : " border-black opacity-30"}`
-          }
+          access={access}
+          current={pathname === to}
         >
-          <div className={`justify-self-center rounded-full w-fit px-2 bg-blue-700`}><p>{i + 1}</p></div>
-          <p className="text-center text-lg">{l.text}</p>
-        </NavLink>
+          <div
+            className={`justify-self-center cur rounded-full w-fit px-2 bg-blue-700`}
+          >
+            <p>{i + 1}</p>
+          </div>
+          <p className="text-center text-lg">{text}</p>
+        </ContainerLink>
       ))}
     </nav>
   );
 }
+
+const ContainerLink = ({ children, access = true, to, current }) => {
+  const className = `flex flex-col rounded-md bg-base items-center py-2 border-2 ${
+    current
+      ? 'border-white bg-gray-500 cursor-default'
+      : ' border-black opacity-30'
+  }  ${access ? 'cursor-pointer' : 'cursor-no-drop'}`;
+
+  if (!access) return <div className={className}>{children}</div>;
+  else
+    return (
+      <NavLink to={to} className={className}>
+        {children}
+      </NavLink>
+    );
+};
