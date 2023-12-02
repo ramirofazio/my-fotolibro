@@ -1,16 +1,16 @@
-import { PersonalData } from './';
-import { useEffect, useState } from 'react';
-import { useLoaderData, useNavigate } from 'react-router-dom';
-import { API } from '../../api_instance';
-import { toast } from 'react-hot-toast';
-import { useApp } from '../../contexts/AppContext';
+import { PersonalData } from "./";
+import { useEffect, useState } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { API } from "../../api_instance";
+import { toast } from "react-hot-toast";
+import { useApp } from "../../contexts/AppContext";
 
 export function ClientData() {
   const { handleNextStep } = useApp();
   const navigate = useNavigate();
   const _client = useLoaderData();
   const [client, setClient] = useState(_client);
-
+  const [errs, setErrs] = useState({});
   useEffect(() => {
     if (!_client?.id) {
       handleNextStep({ index: 1, access: false });
@@ -24,12 +24,12 @@ export function ClientData() {
     API.updateClient({ clientId: _client.id, newData: client })
       .then((res) => {
         if (res.data) {
-          toast.success('Se cargaron sus datos correctamente');
+          toast.success("Se cargaron sus datos correctamente");
           navigate(`/client/${_client.id}/upload_images`);
         }
       })
       .catch((e) => {
-        toast.error('Error al cargar sus datos');
+        toast.error("Error al cargar sus datos");
         console.log(e);
       });
   }
@@ -43,17 +43,27 @@ export function ClientData() {
         className="flex items-center flex-col gap-3"
         onSubmit={handleSubmit}
       >
-        <PersonalData client={client} _client={_client} setClient={setClient} />
+        <PersonalData
+          errs={errs}
+          setErrs={setErrs}
+          client={client}
+          _client={_client}
+          setClient={setClient}
+        />
         <button
-          className=" text-primary bg-white text-3xl p-2 rounded-lg hover:bg-gray-400  border-gray-400"
+          disabled={
+            Object.values(errs)?.length ||
+            !client.email ||
+            !client.dni ||
+            !client.phone
+              ? true
+              : false
+          }
+          className="disabled:opacity-40 text-primary bg-white text-3xl p-2 rounded-lg hover:bg-gray-400  border-gray-400"
           type="submit"
         >
           Guardar
         </button>
-        <section className="w-[70%] mt-7  flex flex-col justify-center items-center">
-          <p className="w-fit">Observaciones: </p>
-          <textarea className="resize-none w-[70%] h-20 my-3" />
-        </section>
       </form>
     </div>
   );
