@@ -1,14 +1,12 @@
 import { PersonalData } from "../client_data";
 import { useState } from "react";
 import { API } from "../../api_instance/index";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {toast} from "react-hot-toast"
 
 export function CreateClient() {
   const navigate = useNavigate();
   const [client, setClient] = useState({});
-
-  const params = useParams();
 
   async function submitClient(e) {
     e.preventDefault();
@@ -30,7 +28,7 @@ export function CreateClient() {
         imagenes
       </h1>
       <form onSubmit={submitClient} className="">
-        <PersonalData admin={false} setClient={setClient} />
+        <PersonalData admin={true} setClient={setClient} />
         <div className="mx-auto w-fit">
           <button
             disabled={!client?.name && true}

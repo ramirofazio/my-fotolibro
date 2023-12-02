@@ -34,6 +34,18 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      last_link_download: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      created_at: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      active_link: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+      }
     },
     {
       timestamps: false,
