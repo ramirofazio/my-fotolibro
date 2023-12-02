@@ -1,11 +1,12 @@
-import { useLoaderData, useParams } from 'react-router-dom';
-import { useApp } from '../../contexts/AppContext';
-import { CloudArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { getSizeImage, uploadImagesCloudinary } from '../../utils';
-import { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
-import { API } from '../../api_instance';
-import Compressor from "compressorjs"
+import { useLoaderData, useParams } from "react-router-dom";
+import { useApp } from "../../contexts/AppContext";
+import { CloudArrowUpIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { getSizeImage, uploadImagesCloudinary } from "../../utils";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import { API } from "../../api_instance";
+import Compressor from "compressorjs";
+import { Loader } from "../../components/Loader";
 
 export function UploadImages() {
   //const navigate = useNavigate()
@@ -42,11 +43,10 @@ export function UploadImages() {
         continue;
       }
       console.log("prev", file.size);
-      console.log(aux2)
+      console.log(aux2);
       new Compressor(file, {
         quality: 0.6,
         success: (compressed) => {
-          console.log("comprimida", compressed);
           const reader = new FileReader();
           reader.onload = () => {
             addImages({
@@ -56,8 +56,8 @@ export function UploadImages() {
               file: compressed,
               size: compressed.size,
             });
-          }
-          reader.readAsDataURL(compressed)
+          };
+          reader.readAsDataURL(compressed);
         },
       });
     }
@@ -65,10 +65,15 @@ export function UploadImages() {
 
   const uploadImagesToCloudinary = async () => {
     if (!images[0]) return;
-    handleLoading();
-    const upImage = await uploadImagesCloudinary(images, clientId);
-    addImagesUploaded(upImage);
-    handleLoading();
+    //handleLoading();
+    try {
+      setLoading(true);
+      const upImage = await uploadImagesCloudinary(images, clientId);
+      addImagesUploaded(upImage);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -80,9 +85,10 @@ export function UploadImages() {
       handleNextStep({ index: 2, access: true });
     }
   }, [status]);
-  
+
   return (
     <div className="p-3">
+      {Loading && <Loader />}
       <div className="flex  flex-col justify-center items-center text-white mt-4 mb-4">
         <h2 className="font-semibold text-2xl">Subi Tus Fotos!</h2>
         <div className="flex flex-col md:flex-row gap-y-2 justify-between w-full">
@@ -134,7 +140,9 @@ export function UploadImages() {
           type="file"
           accept="image/*"
           multiple
-          onChange={handleImages}
+          onChange={(e) => {
+            handleImages(e);
+          }}
         />
       </div>
 
@@ -168,17 +176,20 @@ export function UploadImages() {
                 </p>
               </div>
               <button
-                onClick={async () =>
-                  {
-                    console.log(image)
-                    if(image.upload) {
-                      let res = await API.deleteSingleImg({publicId: image.publicId, id: image.id})
-                      console.log(res)
-                    }
-                    removeImages(i, image.upload ? 'uploaded' : 'pending')
-                    //navigate(0)   Posible reload de data
+                onClick={async () => {
+                  console.log(image);
+                  if (image.upload) {
+                    setLoading(true);
+                    await API.deleteSingleImg({
+                      publicId: image.publicId,
+                      id: image.id,
+                    });
+
+                    setLoading(false);
                   }
-                }
+                  removeImages(i, image.upload ? "uploaded" : "pending");
+                  //navigate(0)   Posible reload de data
+                }}
                 className=" w-7 aspect-square p-0.5 hover:text-red-800 text-gray-700 rounded-full bg-gray-400/40  hover:bg-gray-400 "
                 title="Eliminar"
               >
