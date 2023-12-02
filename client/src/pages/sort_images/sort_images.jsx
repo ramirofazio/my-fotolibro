@@ -26,7 +26,7 @@ export function SortImages() {
     updateInfoImages(previus?.photos);
   }, []);
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = (event) => { // * Bug al ordenar enmtre varias fotos
     const { active, over } = event;
     const oldIndex = images.findIndex((user) => user.id === active.id);
     const newIndex = images.findIndex((user) => user.id === over.id);
