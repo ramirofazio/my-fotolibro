@@ -21,7 +21,7 @@ export function UploadImages() {
     existImage,
   } = useApp();
   const [Loading, setLoading] = useState(false);
-  const handleLoading = () => setLoading((cur) => !cur);
+  //const handleLoading = () => setLoading((cur) => !cur);
   const previus = useLoaderData();
   useEffect(() => {
     updateInfoImages(previus.photos);
@@ -42,8 +42,7 @@ export function UploadImages() {
         toast.error("La imagen " + aux2 + " ya existe");
         continue;
       }
-      console.log("prev", file.size);
-      console.log(aux2);
+
       new Compressor(file, {
         quality: 0.6,
         success: (compressed) => {

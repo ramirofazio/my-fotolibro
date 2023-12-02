@@ -4,10 +4,13 @@ import {
   arrayMove,
   useSortable,
   verticalListSortingStrategy,
-  
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { PaperAirplaneIcon, XMarkIcon, AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
+import {
+  PaperAirplaneIcon,
+  XMarkIcon,
+  AdjustmentsHorizontalIcon,
+} from "@heroicons/react/24/outline";
 import { useApp } from "../../contexts/AppContext";
 import { API } from "../../api_instance";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
@@ -15,11 +18,10 @@ import { toast } from "react-hot-toast";
 import { useEffect } from "react";
 
 export function SortImages() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { clientId } = useParams();
-  const { images, reorderImages, updateInfoImages} = useApp();
+  const { images, reorderImages, updateInfoImages } = useApp();
   const previus = useLoaderData();
-  console.log(previus)
 
   useEffect(() => {
     updateInfoImages(previus?.photos);
@@ -62,7 +64,6 @@ export function SortImages() {
           <button
             onClick={() =>
               API.addImgsIndex(images).then((res) => {
-                console.log(images);
                 if (res.data) {
                   toast.success("Se ordenaron las fotos");
                   navigate(0);

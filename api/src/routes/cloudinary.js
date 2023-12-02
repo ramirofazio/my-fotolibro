@@ -73,8 +73,7 @@ router.post("/upload", async (req, res) => {
   try {
     const { files } = req.body; // pasarlo a una funcion, que cree una promesa por cada img y las resuelva
 
-    console.log("ENTRO A LA RUTA");
-    console.log(req.body);
+   
 
     for (let [name, value] of files) {
       console.log(`${name} = ${value}`);
@@ -112,7 +111,7 @@ router.post("/upload", async (req, res) => {
 });
 
 router.delete("/images/:clientId", async (req, res) => {
-  console.log("entro a destoroy");
+  
   try {
     const { clientId } = req.params;
 
@@ -156,7 +155,7 @@ router.delete("/images/:clientId", async (req, res) => {
 });
 
 router.post("/delete/single_img", async (req, res) => {
-  console.log("palta");
+  
   try {
     const { publicId, id } = req.body;
     console.log(req.body);
@@ -216,7 +215,6 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
     photos.map(async (p) => {
       try {
         const [folder, originalName] = p?.publicId.split("/");
-        console.log(folder, originalName);
         const indexedName = originalName.replace("-0-", `${p?.index}-`);
         const newImg = await cloudinary.v2.uploader.rename(
           p?.publicId,

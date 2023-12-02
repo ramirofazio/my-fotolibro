@@ -44,8 +44,6 @@ export const API = {
     return api.post(`cloudinary/sort_download_imgs/${clientId}`);
   },
   deleteSingleImg: ({ publicId, id }) => {
-    //console.log(JSON.stringify(publicId));
-    console.log(publicId, id);
     return api.post(`cloudinary/delete/single_img/`, { publicId, id });
   },
   updateActiveClient: (clientId) => {

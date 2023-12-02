@@ -28,7 +28,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
+    
     const client = await Client.findOne({
       where: {
         id,
@@ -49,7 +49,6 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    console.log(req.body);
 
     const { name } = req.body;
     if (!name) {
@@ -60,12 +59,12 @@ router.post("/", async (req, res) => {
     }
     // ? Se crea el usuario, y se utiliza su ID para
     // ? crear su "upload_preset" y su respectiva carpeta
-    console.log(req.body);
+    
     const newClient = await Client.create({
       ...req.body,
       created_at: DateTime.now().setLocale("es").toFormat("dd/MM/yyyy"),
     });
-    console.log(newClient);
+    
 
     cloudinary.v2.api
       .create_upload_preset({
@@ -90,9 +89,8 @@ router.post("/", async (req, res) => {
 router.put("/edit_client/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
-    console.log(req.params);
-    console.log(req.body);
+    
+    
     const updated = await Client.update(
       {
         ...req.body,
@@ -144,7 +142,7 @@ router.get("/imgs/:clientId", async (req, res) => {
         clientId,
       },
     });
-    console.log(photos);
+   
     return res.json({
       photos,
     });
@@ -184,7 +182,7 @@ router.get("/canFinish/:clientId", async (req, res) => {
         index: {[Op.is]: null}
       },
     });
-    console.log(photos);
+    
     return res.json({
       canFinish: photos.length ? false : true,
     });
@@ -212,7 +210,7 @@ router.post("/finish_upload", async (req, res) => {
       <h2>Termino su book con ${photos_length} fotos</h1>
       `,
     });
-    console.log(info);
+    
     res.json(info);
   } catch (err) {
     console.log(err);
@@ -227,7 +225,7 @@ router.get("/connect/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
-    console.log(client);
+    
     const connected = await client.update({
       online: true,
     });
@@ -242,7 +240,7 @@ router.get("/disconnect/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
-    console.log(client);
+    
     const connected = await client.update({
       online: false,
     });
@@ -277,7 +275,7 @@ router.put("/timestamp/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
-    console.log(client);
+    
     const newDate = await client.update({
       last_link_download: Date.now(),
     });
