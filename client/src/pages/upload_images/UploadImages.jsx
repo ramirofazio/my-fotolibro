@@ -1,9 +1,10 @@
-import { useParams } from 'react-router-dom';
-import { useApp } from '../../contexts/AppContext';
-import { CloudArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { getSizeImage, uploadImagesCloudinary } from '../../utils';
-import { useState } from 'react';
-import { toast } from 'react-hot-toast';
+import { useParams } from "react-router-dom";
+import { useApp } from "../../contexts/AppContext";
+import { CloudArrowUpIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { getSizeImage, uploadImagesCloudinary } from "../../utils";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import Compressor from "compressorjs";
 
 export function UploadImages() {
   const { clientId } = useParams();
@@ -18,6 +19,10 @@ export function UploadImages() {
   const [Loading, setLoading] = useState(false);
   const handleLoading = () => setLoading((cur) => !cur);
 
+  useEffect(() => {
+    console.log(images);
+  }, [images]);
+
   function handleImages({ target }) {
     const files = target.files;
     if (!files) return;
@@ -26,25 +31,54 @@ export function UploadImages() {
       const file = files[i];
       if (!file) continue;
 
-      const reader = new FileReader();
-      let aux = file.name.split('.');
-      let aux2 = aux.slice(0, aux.length - 1).join('.');
+      let aux = file.name.split(".");
+      let aux2 = aux.slice(0, aux.length - 1).join(".");
 
       const exist = existImage(aux2);
       if (exist) {
-        toast.error('La imagen ' + aux2 + ' ya existe');
+        toast.error("La imagen " + aux2 + " ya existe");
         continue;
       }
-      reader.onload = () => {
-        addImages({
-          id: images.length + i + 1,
-          originalName: aux2,
-          URL: typeof reader.result === 'string' ? reader.result : '',
-          file: file,
-          size: file.size,
-        });
-      };
-      reader.readAsDataURL(file);
+      console.log("prev", file.size);
+      console.log(aux2)
+      new Compressor(file, {
+        quality: 0.6,
+        success: (compressed) => {
+          console.log("comprimida", compressed);
+          const reader = new FileReader();
+          reader.onload = () => {
+            addImages({
+              id: images.length + i + 1,
+              originalName: aux2,
+              URL: typeof reader.result === "string" ? reader.result : "",
+              file: compressed,
+              size: compressed.size,
+            });
+          }
+          reader.readAsDataURL(compressed)
+        },
+      });
+      
+      
+      /* new Compressor(file, {
+        quality: 0.6,
+        success: (compressed) => {
+          console.log("comprimida", compressed);
+
+          const reader = new FileReader();
+          reader.onload = () => {
+            const blobURL = reader.result
+            addImages({
+              id: images.length + i + 1,
+              originalName: aux2,
+              URL: blobURL,
+              file: file,
+              size: file.size,
+            });
+          };
+          reader.readAsDataURL(compressed);
+        },
+      }); */
     }
   }
 
@@ -76,14 +110,14 @@ export function UploadImages() {
           ) : (
             <button
               className={`w-fit cursor-pointer ${
-                status.pending === 0 ? 'bg-green-600' : 'bg-blue-700'
+                status.pending === 0 ? "bg-green-600" : "bg-blue-700"
               } px-5 py-3 rounded hover:font-medium self-center md:self-end `}
               onClick={() => uploadImagesToCloudinary()}
               disabled={Loading}
             >
               <span
                 className={`flex gap-2 items-center ${
-                  Loading ? 'animate-pulse' : ''
+                  Loading ? "animate-pulse" : ""
                 }`}
               >
                 Subir Imagenes
@@ -124,18 +158,18 @@ export function UploadImages() {
             />
             <div
               className={`absolute top-0 left-0 w-full p-1 flex justify-between items-center bg-gradient-to-b ${
-                !image.upload ? 'from-black/70' : 'from-green-800/70'
+                !image.upload ? "from-black/70" : "from-green-800/70"
               } to-transparent`}
             >
               <div className="flex gap-2 items-center">
                 <div
                   className={`border-gray-300 h-6 aspect-square animate-spin rounded-full border-[5px] border-t-primary ${
-                    Loading && !image.upload ? 'visible' : 'invisible'
+                    Loading && !image.upload ? "visible" : "invisible"
                   }`}
                 />
                 <p className="flex flex-col">
                   <span className="text-sm font-medium">
-                    {!image.upload ? 'Imagen no subida' : 'Imagen Subida'}
+                    {!image.upload ? "Imagen no subida" : "Imagen Subida"}
                   </span>
                   <span className="text-[12px] text-gray-200">
                     {getSizeImage(image.size)}
@@ -144,7 +178,7 @@ export function UploadImages() {
               </div>
               <button
                 onClick={() =>
-                  removeImages(i, image.upload ? 'uploaded' : 'pending')
+                  removeImages(i, image.upload ? "uploaded" : "pending")
                 }
                 className=" w-7 aspect-square p-0.5 hover:text-red-800 text-gray-700 rounded-full bg-gray-400/40  hover:bg-gray-400 "
                 title="Eliminar"

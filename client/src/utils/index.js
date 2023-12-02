@@ -11,13 +11,14 @@ export async function uploadImagesCloudinary(images = [], clientId = '') {
   const photos = {};
   const promises = [];
 
-  images.forEach(({ file, upload }) => {
+  images.forEach(({ file, originalName, upload }) => {
     // TODO integrar compressor.js aqui
     if (!upload) {
       const formdata = new FormData();
       formdata.append('file', file);
       formdata.append('upload_preset', clientId);
-      formdata.append('public_id', `-0-"${file?.name}"`);
+      formdata.append("filename_override", originalName)
+      formdata.append('public_id', `-0-"${originalName}"`);
       promises.push(axios.post(URL, formdata));
     }
   });
@@ -26,6 +27,7 @@ export async function uploadImagesCloudinary(images = [], clientId = '') {
     const responses = await Promise.all(promises);
     responses.forEach(({ data }) => {
       if (data.secure_url) {
+        console.log(data)
         photos[data.original_filename] = {
           URL: data.secure_url,
           id: data.asset_id,
