@@ -12,6 +12,8 @@ const router = Router();
 const { Client, Photo, Admin } = require("../db.js");
 const cloudinary = require("cloudinary");
 const transporter = require("../node_mailer");
+const { DateTime } = require("luxon");
+const { Op } = require("sequelize");
 
 router.get("/", async (req, res) => {
   try {
@@ -26,7 +28,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
+    
     const client = await Client.findOne({
       where: {
         id,
@@ -47,7 +49,6 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    console.log(req.body);
 
     const { name } = req.body;
     if (!name) {
@@ -58,9 +59,12 @@ router.post("/", async (req, res) => {
     }
     // ? Se crea el usuario, y se utiliza su ID para
     // ? crear su "upload_preset" y su respectiva carpeta
-    console.log(req.body);
-    const newClient = await Client.create(req.body);
-    console.log(newClient);
+    
+    const newClient = await Client.create({
+      ...req.body,
+      created_at: DateTime.now().setLocale("es").toFormat("dd/MM/yyyy"),
+    });
+    
 
     cloudinary.v2.api
       .create_upload_preset({
@@ -85,9 +89,7 @@ router.post("/", async (req, res) => {
 router.put("/edit_client/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
-    console.log(req.params);
-    console.log(req.body);
+    
     const updated = await Client.update(
       {
         ...req.body,
@@ -139,7 +141,7 @@ router.get("/imgs/:clientId", async (req, res) => {
         clientId,
       },
     });
-    console.log(photos);
+   
     return res.json({
       photos,
     });
@@ -170,21 +172,44 @@ router.post("/imgs", async (req, res) => {
   }
 });
 
-router.post("/finish_upload", async (req, res) => {
-  const { client, photos_length } = req.body;
+router.get("/canFinish/:clientId", async (req, res) => {
+  try {
+    const { clientId } = req.params;
+    const photos = await Photo.findAll({
+      where: {
+        clientId,
+        index: {[Op.is]: null}
+      },
+    });
+    
+    return res.json({
+      canFinish: photos.length ? false : true,
+    });
+  } catch (e) {
+    console.log(e);
+    return res.json({
+      e,
+    });
+  }
+});
 
+router.post("/finish_upload", async (req, res) => {
+  const { clientId, photos_length } = req.body;
+  const client = await Client.findByPk(clientId);
   try {
     const info = await transporter.sendMail({
       from: `"myfotolibro 📷" <${EMAIL_USER}>`,
       to: ADMIN_EMAIL,
-      subject: "subida de fotos",
+      subject: "Se cargó nuevo book",
       text: "Hello world?",
       html: `
-      <b>Se cargaron nuevas fotos</b>
-      <h1>El cliente ${client?.name} con el id: ${client?.id} termino de cargar ${photos_length} fotos</h1>
+      <h1>El cliente ${client?.name}</h1>
+      <h3>ID: ${client?.id}</h3>
+      <hr/>
+      <h2>Termino su book con ${photos_length} fotos</h1>
       `,
     });
-    console.log(info);
+    
     res.json(info);
   } catch (err) {
     console.log(err);
@@ -199,7 +224,7 @@ router.get("/connect/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
-    console.log(client);
+    
     const connected = await client.update({
       online: true,
     });
@@ -214,7 +239,7 @@ router.get("/disconnect/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
-    console.log(client);
+    
     const connected = await client.update({
       online: false,
     });
@@ -242,6 +267,37 @@ router.put("/index_images", async (req, res) => {
     return res.status(401).json({
       e,
     });
+  }
+});
+
+router.put("/timestamp/:clientId", async (req, res) => {
+  try {
+    const { clientId } = req.params;
+    const client = await Client.findByPk(clientId);
+    
+    const newDate = await client.update({
+      last_link_download: Date.now(),
+    });
+    res.json(newDate);
+  } catch (e) {
+    console.log(e);
+    res.json({ e });
+  }
+});
+
+router.put("/activeClient/:clientId", async (req, res) => {
+  try {
+    const { clientId } = req.params;
+    const client = await Client.findByPk(clientId);
+    const paused = await client.update({
+      active_link: client.active_link === true ? false : true
+    });
+    res.json(paused)
+  } 
+  catch (e) {
+    res.status(404).json({
+      e
+    })
   }
 });
 
