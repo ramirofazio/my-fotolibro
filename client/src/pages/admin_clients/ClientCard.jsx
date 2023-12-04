@@ -71,7 +71,11 @@ export function ClientCard({
             {name}
           </h1>
           <CopyToClipboard
-            text={`http://localhost:5173/client/${id}/client_data`} // TODO cambiar a url de producción
+            text={
+              import.meta.env.VITE_ENV === "production"
+                ? `http://85.31.231.196:51735/client/${id}/client_data`
+                : `http://localhost:5173/client/${id}/client_data`
+            }
           >
             <PaperClipIcon
               onClick={() => toast("URL copiado", { icon: "📎" })}

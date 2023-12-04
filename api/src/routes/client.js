@@ -90,7 +90,6 @@ router.put("/edit_client/:id", async (req, res) => {
   try {
     const { id } = req.params;
     
-    
     const updated = await Client.update(
       {
         ...req.body,
@@ -300,6 +299,6 @@ router.put("/activeClient/:clientId", async (req, res) => {
       e
     })
   }
-})
+});
 
 module.exports = router;
