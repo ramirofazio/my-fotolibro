@@ -81,7 +81,7 @@ export function SortImages() {
                   className="mx-2 border-2 ml-auto border-black hover:border-red-600 w-8 h-8 md:w-12 md:h-12  md:mx-2 hover:text-red-800 rounded-full hover:bg-gray-400/40"
                   title="Eliminar"
                 >
-                  <XMarkIcon />
+                  <XMarkIcon className="text-white"/>
                 </button>
               </li>
             ))}
@@ -166,7 +166,7 @@ function Item({ image, index }) {
           alt="image"
           className={`w-[60px] mr-auto aspect-square rounded-md object-cover`}
         />
-        <p className="mr-auto  text-sm lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis max-w-[60%] w-full ml-3">
+        <p className="mr-auto  text-sm lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis max-w-[60%] w-[90%] ml-3">
           {originalName}
         </p>
       </div>
