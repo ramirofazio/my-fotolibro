@@ -123,7 +123,7 @@ router.delete("/:clientId", async (req, res) => {
       clientId
     );
     res.json({
-      message: `cliente ${id} eliminado`,
+      message: `cliente ${clientId} eliminado`,
       upload_preset: deleted_upload_preset,
       deleted,
     });

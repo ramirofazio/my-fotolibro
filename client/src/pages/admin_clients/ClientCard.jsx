@@ -21,19 +21,17 @@ export function ClientCard({
   const params = useParams();
 
   async function handleDelete() {
-    const deleted = await API.deleteClient(id);
-
+    await API.deleteClient(id);
+    await API.deleteFolder(id);
     toast.success(`Se elimino "${name}"`);
     navigate(0);
-    //navigate(`/admin/${params?.adminId}/clients/create`);
+    navigate(`/admin/${params?.adminId}/clients/create`);
   }
 
   async function updateActiveClient() {
-    const updated = await API.updateActiveClient(id);
-
+    await API.updateActiveClient(id);
     toast.success(`Se actualizo el estado`);
     navigate(0);
-    //navigate(`/admin/${params?.adminId}/clients/create`);
   }
 
 

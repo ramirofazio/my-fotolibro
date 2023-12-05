@@ -1,21 +1,21 @@
-import { DndContext, closestCenter } from '@dnd-kit/core';
+import { DndContext, closestCenter } from "@dnd-kit/core";
 import {
   SortableContext,
   arrayMove,
   useSortable,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
   PaperAirplaneIcon,
   XMarkIcon,
   AdjustmentsHorizontalIcon,
-} from '@heroicons/react/24/outline';
-import { useApp } from '../../contexts/AppContext';
-import { API } from '../../api_instance';
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { useEffect } from 'react';
+} from "@heroicons/react/24/outline";
+import { useApp } from "../../contexts/AppContext";
+import { API } from "../../api_instance";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useEffect } from "react";
 
 export function SortImages() {
   const { handleNextStep } = useApp();
@@ -24,10 +24,15 @@ export function SortImages() {
   const { images, reorderImages, updateInfoImages } = useApp();
   const previus = useLoaderData();
 
-  
   useEffect(() => {
-    handleNextStep({ index: 0, access: true });
-    handleNextStep({ index: 1, access: true });
+    const hasToSort = previus?.photos.filter((prev) => prev.index === null);
+    if (hasToSort.length) {
+      handleNextStep({ index: 0, access: false });
+      handleNextStep({ index: 1, access: false });
+    } else {
+      handleNextStep({ index: 0, access: true });
+      handleNextStep({ index: 1, access: true });
+    }
     updateInfoImages(previus?.photos);
   }, []);
 
@@ -44,8 +49,19 @@ export function SortImages() {
       clientId,
       photos_length: images.length,
     });
-    toast.success('Book enviado con exito');
+    toast.success("Book enviado con exito");
     navigate(0);
+  }
+
+  async function handleDelete(image) {
+    const {originalName, id, publicId } = image;
+    console.log(publicId)
+    const res = await API.deleteSingleImg({ publicId, id });
+    console.log(res);
+    if (res.data) {
+      toast.success(`Se elimino ${originalName}`);
+      navigate(0);
+    }
   }
 
   return (
@@ -58,7 +74,16 @@ export function SortImages() {
         <SortableContext items={images} strategy={verticalListSortingStrategy}>
           <ul className="flex flex-col gap-3 py-2">
             {images.map((image, i) => (
-              <Item key={i} image={image} index={i} />
+              <li className="gap-2 flex items-center border-2 rounded-lg" key={i}>
+                <Item key={i} image={image} index={i} />
+                <button
+                  onClick={() => handleDelete(image)}
+                  className="mx-2 border-2 ml-auto border-black hover:border-red-600 w-8 h-8 md:w-12 md:h-12  md:mx-2 hover:text-red-800 rounded-full hover:bg-gray-400/40"
+                  title="Eliminar"
+                >
+                  <XMarkIcon />
+                </button>
+              </li>
             ))}
           </ul>
         </SortableContext>
@@ -70,7 +95,7 @@ export function SortImages() {
               evt.preventDefault();
               API.addImgsIndex(images).then((res) => {
                 if (res.data) {
-                  toast.success('Se ordenaron las fotos');
+                  toast.success("Se ordenaron las fotos");
                   navigate(0);
                 }
               });
@@ -106,7 +131,7 @@ export function SortImages() {
 }
 
 function Item({ image, index }) {
-  const navigate = useNavigate();
+  
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: image.id,
@@ -117,25 +142,22 @@ function Item({ image, index }) {
     transition,
   };
 
-  const { URL, originalName, id, publicId } = image;
+  const { URL, originalName} = image;
 
-  async function handleDelete() {
-    const res = await API.deleteSingleImg({ publicId, id });
-    if (res.data) {
-      toast.success(`Se elimino ${originalName}`);
-      navigate(0);
-    }
-  }
 
   return (
-    <li
+    <div
       ref={setNodeRef}
       {...attributes}
       {...listeners}
+      onClick={() => console.log("test")}
       style={style}
-      className="p-2 flex items-center bg-slate-300 rounded"
+      className="w-[95%]"
     >
-      <div className="flex gap-2 w-1/2 items-center">
+      <div
+        onClick={() => console.log("zara")}
+        className=" gap-2  p-2 flex items-center bg-slate-300 rounded"
+      >
         <span className="text-xl font-bold  rounded-full mr-1.5 md:mr-4">
           {index + 1}
         </span>
@@ -148,15 +170,6 @@ function Item({ image, index }) {
           {originalName}
         </p>
       </div>
-      <span className=" right-8 ml-auto">
-        <button
-          onClick={handleDelete}
-          className="border-2 ml-auto border-black hover:border-red-600 w-8 h-8 md:w-12 md:h-12  md:mx-2 hover:text-red-800 rounded-full hover:bg-gray-400/40"
-          title="Eliminar"
-        >
-          <XMarkIcon />
-        </button>
-      </span>
-    </li>
+    </div>
   );
 }

@@ -31,9 +31,7 @@ sequelize.models = Object.fromEntries(capsEntries);
 
 const { Client, Photo, Book } = sequelize.models;
 
-/* Book.belongsTo(Client);
-Book.hasMany(Photo); */
-Client.hasMany(Photo);
+Client.hasMany(Photo, {onDelete: 'CASCADE'});
 Photo.belongsTo(Client);
 
 module.exports = {

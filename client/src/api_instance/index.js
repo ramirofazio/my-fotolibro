@@ -16,14 +16,14 @@ export const API = {
   deleteClient: (clientId) => {
     return api.delete(`client/${clientId}`);
   },
+  deleteFolder: (clientId) => {
+    return api.delete(`cloudinary/images/${clientId}`);
+  },
   uploadImagesDB: ({ imgs, clientId }) => {
     return api.post("client/imgs", { imgs, clientId });
   },
   getDownloadUrl: (clientId) => {
     return api.get(`cloudinary/download/${clientId}`);
-  },
-  deleteFolder: (clientId) => {
-    return api.delete(`cloudinary/images/${clientId}`);
   },
   isAdmin: (adminId) => {
     return api.get(`admin/verify/${adminId}`);
