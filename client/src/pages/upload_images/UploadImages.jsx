@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 import { API } from "../../api_instance";
 import Compressor from "compressorjs";
 import { Loader } from "../../components/Loader";
-
+//<-  ->
 export function UploadImages() {
   //const navigate = useNavigate()
   const { handleNextStep, updateInfoImages } = useApp();
