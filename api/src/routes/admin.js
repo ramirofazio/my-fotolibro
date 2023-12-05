@@ -49,7 +49,7 @@ router.post("/send_client_url", async (req, res) => {
       <br/>
       <h1> ${
         ENV === "production"
-          ? `http://85.31.231.196:51735/client/${clientId}/client_data`
+          ? `http://myfotolibro.cloud/client/${clientId}/client_data`
           : `http://localhost:5173/client/${clientId}/client_data`
       } </h1>
       `,

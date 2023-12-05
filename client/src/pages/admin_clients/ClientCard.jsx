@@ -71,7 +71,7 @@ export function ClientCard({
           <CopyToClipboard
             text={
               import.meta.env.VITE_ENV === "production"
-                ? `http://85.31.231.196:51735/client/${id}/client_data`
+                ? `http://myfotolibro.cloud/client/${id}/client_data`
                 : `http://localhost:5173/client/${id}/client_data`
             }
           >
