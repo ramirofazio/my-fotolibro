@@ -21,19 +21,17 @@ export function ClientCard({
   const params = useParams();
 
   async function handleDelete() {
-    const deleted = await API.deleteClient(id);
-
+    await API.deleteClient(id);
+    await API.deleteFolder(id);
     toast.success(`Se elimino "${name}"`);
     navigate(0);
-    //navigate(`/admin/${params?.adminId}/clients/create`);
+    navigate(`/admin/${params?.adminId}/clients/create`);
   }
 
   async function updateActiveClient() {
-    const updated = await API.updateActiveClient(id);
-
+    await API.updateActiveClient(id);
     toast.success(`Se actualizo el estado`);
     navigate(0);
-    //navigate(`/admin/${params?.adminId}/clients/create`);
   }
 
 
@@ -71,7 +69,11 @@ export function ClientCard({
             {name}
           </h1>
           <CopyToClipboard
-            text={`http://localhost:5173/client/${id}/client_data`} // TODO cambiar a url de producción
+            text={
+              import.meta.env.VITE_ENV === "production"
+                ? `http://myfotolibro.cloud/client/${id}/client_data`
+                : `http://localhost:5173/client/${id}/client_data`
+            }
           >
             <PaperClipIcon
               onClick={() => toast("URL copiado", { icon: "📎" })}

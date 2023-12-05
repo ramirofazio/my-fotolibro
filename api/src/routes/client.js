@@ -90,7 +90,6 @@ router.put("/edit_client/:id", async (req, res) => {
   try {
     const { id } = req.params;
     
-    
     const updated = await Client.update(
       {
         ...req.body,
@@ -124,7 +123,7 @@ router.delete("/:clientId", async (req, res) => {
       clientId
     );
     res.json({
-      message: `cliente ${id} eliminado`,
+      message: `cliente ${clientId} eliminado`,
       upload_preset: deleted_upload_preset,
       deleted,
     });
@@ -300,6 +299,6 @@ router.put("/activeClient/:clientId", async (req, res) => {
       e
     })
   }
-})
+});
 
 module.exports = router;

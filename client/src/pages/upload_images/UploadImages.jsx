@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 import { API } from "../../api_instance";
 import Compressor from "compressorjs";
 import { Loader } from "../../components/Loader";
-
+//<-  ->
 export function UploadImages() {
   //const navigate = useNavigate()
   const { handleNextStep, updateInfoImages } = useApp();
@@ -21,11 +21,12 @@ export function UploadImages() {
     existImage,
   } = useApp();
   const [Loading, setLoading] = useState(false);
-  //const handleLoading = () => setLoading((cur) => !cur);
+
   const previus = useLoaderData();
   useEffect(() => {
     updateInfoImages(previus.photos);
   }, []);
+
   function handleImages({ target }) {
     const files = target.files;
     if (!files) return;
@@ -77,7 +78,9 @@ export function UploadImages() {
 
   useEffect(() => {
     const size = status.pending + status.uploaded;
-
+    if (status.pending > 0) {
+      handleNextStep({ index: 0, access: false });
+    }
     if (size < 1 || status.pending > 0) {
       handleNextStep({ index: 2, access: false });
     } else {

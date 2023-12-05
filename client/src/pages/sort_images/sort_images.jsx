@@ -18,12 +18,21 @@ import { toast } from "react-hot-toast";
 import { useEffect } from "react";
 
 export function SortImages() {
+  const { handleNextStep } = useApp();
   const navigate = useNavigate();
   const { clientId } = useParams();
   const { images, reorderImages, updateInfoImages } = useApp();
   const previus = useLoaderData();
 
   useEffect(() => {
+    const hasToSort = previus?.photos.filter((prev) => prev.index === null);
+    if (hasToSort.length) {
+      handleNextStep({ index: 0, access: false });
+      handleNextStep({ index: 1, access: false });
+    } else {
+      handleNextStep({ index: 0, access: true });
+      handleNextStep({ index: 1, access: true });
+    }
     updateInfoImages(previus?.photos);
   }, []);
 
@@ -44,6 +53,17 @@ export function SortImages() {
     navigate(0);
   }
 
+  async function handleDelete(image) {
+    const {originalName, id, publicId } = image;
+    console.log(publicId)
+    const res = await API.deleteSingleImg({ publicId, id });
+    console.log(res);
+    if (res.data) {
+      toast.success(`Se elimino ${originalName}`);
+      navigate(0);
+    }
+  }
+
   return (
     <div className="touch-none w-[85%] mx-auto">
       <div className="flex  flex-col justify-center items-center text-white mt-4 mb-4">
@@ -54,7 +74,16 @@ export function SortImages() {
         <SortableContext items={images} strategy={verticalListSortingStrategy}>
           <ul className="flex flex-col gap-3 py-2">
             {images.map((image, i) => (
-              <Item key={i} image={image} index={i} />
+              <li className="gap-2 flex items-center border-2 rounded-lg" key={i}>
+                <Item key={i} image={image} index={i} />
+                <button
+                  onClick={() => handleDelete(image)}
+                  className="mx-2 border-2 ml-auto border-black hover:border-red-600 w-8 h-8 md:w-12 md:h-12  md:mx-2 hover:text-red-800 rounded-full hover:bg-gray-400/40"
+                  title="Eliminar"
+                >
+                  <XMarkIcon className="text-white"/>
+                </button>
+              </li>
             ))}
           </ul>
         </SortableContext>
@@ -62,14 +91,15 @@ export function SortImages() {
       <div className="flex flex-col  items-center mt-2 gap-4 ">
         <span className="flex flex-col gap-10 justify-around items-center w-full">
           <button
-            onClick={() =>
+            onClick={(evt) => {
+              evt.preventDefault();
               API.addImgsIndex(images).then((res) => {
                 if (res.data) {
                   toast.success("Se ordenaron las fotos");
                   navigate(0);
                 }
-              })
-            }
+              });
+            }}
             className="w-fit text-white border-2   cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
           >
             Guardar orden de las fotos
@@ -101,7 +131,7 @@ export function SortImages() {
 }
 
 function Item({ image, index }) {
-  const navigate = useNavigate();
+  
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: image.id,
@@ -112,24 +142,21 @@ function Item({ image, index }) {
     transition,
   };
 
-  const { URL, originalName, id, publicId } = image;
+  const { URL, originalName} = image;
 
-  async function handleDelete() {
-    const res = await API.deleteSingleImg({ publicId, id });
-    if (res.data) {
-      toast.success(`Se elimino ${originalName}`);
-      navigate(0);
-    }
-  }
 
   return (
-    <div className="p-2 flex  items-center bg-slate-300 rounded ">
-      <li
-        ref={setNodeRef}
-        {...attributes}
-        {...listeners}
-        style={style}
-        className="p-2 flex justify-around items-center bg-slate-300 rounded"
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      onClick={() => console.log("test")}
+      style={style}
+      className="w-[95%]"
+    >
+      <div
+        onClick={() => console.log("zara")}
+        className=" gap-2  p-2 flex items-center bg-slate-300 rounded"
       >
         <span className="text-xl font-bold  rounded-full mr-1.5 md:mr-4">
           {index + 1}
@@ -139,19 +166,10 @@ function Item({ image, index }) {
           alt="image"
           className={`w-[60px] mr-auto aspect-square rounded-md object-cover`}
         />
-        <p className="mr-auto  text-sm lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis max-w-[60%] w-full ml-3">
+        <p className="mr-auto  text-sm lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis max-w-[60%] w-[90%] ml-3">
           {originalName}
         </p>
-      </li>
-      <span className=" right-8 ml-auto">
-        <button
-          onClick={handleDelete}
-          className="border-2 ml-auto border-black hover:border-red-600 w-8 h-8 md:w-12 md:h-12  md:mx-2 hover:text-red-800 rounded-full hover:bg-gray-400/40"
-          title="Eliminar"
-        >
-          <XMarkIcon />
-        </button>
-      </span>
+      </div>
     </div>
   );
 }
