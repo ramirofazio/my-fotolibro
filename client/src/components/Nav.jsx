@@ -1,5 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
+import toast from 'react-hot-toast';
 
 export function Nav() {
   const routes = useApp().getSteps();
@@ -12,6 +13,7 @@ export function Nav() {
         <ContainerLink
           to={to}
           key={i}
+          index={i}
           access={access}
           current={pathname === to}
         >
@@ -27,14 +29,22 @@ export function Nav() {
   );
 }
 
-const ContainerLink = ({ children, access = true, to, current }) => {
+const ContainerLink = ({ children, access = true, to, current, index }) => {
   const className = `flex flex-col rounded-md bg-base items-center py-2 border-2 ${
     current
       ? 'border-white bg-gray-500 cursor-default'
       : ' border-black opacity-30'
   }  ${access ? 'cursor-pointer' : 'cursor-no-drop'}`;
 
-  if (!access) return <div className={className}>{children}</div>;
+  if (!access)
+    return (
+      <div
+        onClick={() => toast.error('Complete el paso ' + index)}
+        className={className}
+      >
+        {children}
+      </div>
+    );
   else
     return (
       <NavLink to={to} className={className}>

@@ -1,29 +1,33 @@
-import { DndContext, closestCenter } from "@dnd-kit/core";
+import { DndContext, closestCenter } from '@dnd-kit/core';
 import {
   SortableContext,
   arrayMove,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import {
   PaperAirplaneIcon,
   XMarkIcon,
   AdjustmentsHorizontalIcon,
-} from "@heroicons/react/24/outline";
-import { useApp } from "../../contexts/AppContext";
-import { API } from "../../api_instance";
-import { useLoaderData, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-hot-toast";
-import { useEffect } from "react";
+} from '@heroicons/react/24/outline';
+import { useApp } from '../../contexts/AppContext';
+import { API } from '../../api_instance';
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { useEffect } from 'react';
 
 export function SortImages() {
+  const { handleNextStep } = useApp();
   const navigate = useNavigate();
   const { clientId } = useParams();
   const { images, reorderImages, updateInfoImages } = useApp();
   const previus = useLoaderData();
 
+  
   useEffect(() => {
+    handleNextStep({ index: 0, access: true });
+    handleNextStep({ index: 1, access: true });
     updateInfoImages(previus?.photos);
   }, []);
 
@@ -40,7 +44,7 @@ export function SortImages() {
       clientId,
       photos_length: images.length,
     });
-    toast.success("Book enviado con exito");
+    toast.success('Book enviado con exito');
     navigate(0);
   }
 
@@ -62,14 +66,15 @@ export function SortImages() {
       <div className="flex flex-col  items-center mt-2 gap-4 ">
         <span className="flex flex-col gap-10 justify-around items-center w-full">
           <button
-            onClick={() =>
+            onClick={(evt) => {
+              evt.preventDefault();
               API.addImgsIndex(images).then((res) => {
                 if (res.data) {
-                  toast.success("Se ordenaron las fotos");
+                  toast.success('Se ordenaron las fotos');
                   navigate(0);
                 }
-              })
-            }
+              });
+            }}
             className="w-fit text-white border-2   cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
           >
             Guardar orden de las fotos
@@ -123,14 +128,14 @@ function Item({ image, index }) {
   }
 
   return (
-    <div className="p-2 flex  items-center bg-slate-300 rounded ">
-      <li
-        ref={setNodeRef}
-        {...attributes}
-        {...listeners}
-        style={style}
-        className="p-2 flex justify-around items-center bg-slate-300 rounded"
-      >
+    <li
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={style}
+      className="p-2 flex items-center bg-slate-300 rounded"
+    >
+      <div className="flex gap-2 w-1/2 items-center">
         <span className="text-xl font-bold  rounded-full mr-1.5 md:mr-4">
           {index + 1}
         </span>
@@ -142,7 +147,7 @@ function Item({ image, index }) {
         <p className="mr-auto  text-sm lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis max-w-[60%] w-full ml-3">
           {originalName}
         </p>
-      </li>
+      </div>
       <span className=" right-8 ml-auto">
         <button
           onClick={handleDelete}
@@ -152,6 +157,6 @@ function Item({ image, index }) {
           <XMarkIcon />
         </button>
       </span>
-    </div>
+    </li>
   );
 }
