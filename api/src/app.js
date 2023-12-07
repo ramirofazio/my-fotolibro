@@ -17,9 +17,12 @@ server.use(bodyParser.json({ limit: "50mb" }));
 server.use(cookieParser());
 server.use(morgan("dev"));
 server.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", CLIENT_URL);
-  res.header("Access-Control-Allow-Credentials", "true"); // TODO Fijarse credenciales
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+  res.setHeader("Access-Control-Allow-Origin", CLIENT_URL);
+  res.setHeader("Access-Control-Allow-Credentials", "false"); // TODO Fijarse credenciales
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, DELETE"
+  );
   next();
 });
 
