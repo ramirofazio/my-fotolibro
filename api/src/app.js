@@ -26,8 +26,6 @@ server.use((req, res, next) => {
   next();
 });
 
-// ... rest of your server code
-
 server.use(router);
 // Error catching endware.
 server.use((err, req, res, next) => {
