@@ -18,7 +18,7 @@ server.use(cookieParser());
 server.use(morgan("dev"));
 // Handle preflight (OPTIONS) requests
 server.options("*", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", CLIENT_URL);
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, DELETE"
@@ -30,7 +30,7 @@ server.options("*", (req, res) => {
 
 // Add your existing CORS middleware
 server.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", CLIENT_URL);
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader(
     "Access-Control-Allow-Methods",
