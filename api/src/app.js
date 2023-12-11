@@ -19,12 +19,13 @@ server.use(morgan("dev"));
 
 // Update CORS middleware
 server.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*"); // Allow any origin
+  res.setHeader("Access-Control-Allow-Origin", "https://myfotolibro.cloud");
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, OPTIONS, PUT, DELETE"
   );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   next();
 });
 
