@@ -46,6 +46,7 @@ export function Routes() {
     {
       path: "/admin/:adminId",
       loader: async ({ params }) => {
+        console.log(API)
         const isAdmin = await API.isAdmin(params.adminId);
         return isAdmin;
       },
