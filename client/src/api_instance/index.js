@@ -58,6 +58,9 @@ export const API = {
       photos_length,
     });
   },
+  resetCloudinaryIndex: (clientId) => {
+    return api.post(`reset_cloudinary_index/${clientId}`);
+  },
   /* getBooks: () => {
     return api.get("cloudinary/book");
   },

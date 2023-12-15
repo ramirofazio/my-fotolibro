@@ -93,7 +93,7 @@ export function SortImages() {
           <button
             onClick={(evt) => {
               evt.preventDefault();
-              API.addImgsIndex(images).then((res) => {
+              API.addImgsIndex(images).then((res) => { // ONLY DB
                 if (res.data) {
                   toast.success("Se ordenaron las fotos");
                   navigate(0);

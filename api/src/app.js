@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const router = require("./routes/index.js");
 require("dotenv").config();
 const { CLIENT_URL } = process.env;
-
+const cors = require("cors")
 require("./db.js");
 
 const server = express();
@@ -19,7 +19,7 @@ server.use(morgan("dev"));
 
 // Update CORS middleware
 server.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "https://myfotolibro.cloud");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
   res.setHeader("Access-Control-Allow-Credentials", "true");
   res.setHeader(
     "Access-Control-Allow-Methods",

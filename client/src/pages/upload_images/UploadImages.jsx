@@ -66,12 +66,15 @@ export function UploadImages() {
   const uploadImagesToCloudinary = async () => {
     if (!images[0]) return;
     //handleLoading();
+    console.log("entro")
     try {
       setLoading(true);
       const upImage = await uploadImagesCloudinary(images, clientId);
+      console.log(upImage)
       addImagesUploaded(upImage);
       setLoading(false);
     } catch (error) {
+      console.log(error)
       setLoading(false);
     }
   };

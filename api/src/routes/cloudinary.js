@@ -39,7 +39,7 @@ router.get("/download/:clientId", async (req, res) => {
       cloud_name: CLOUDINARY_CLOUD_NAME,
       prefixes: "/",
     });
-
+    
     return res.send(download_url);
   } catch (e) {
     console.log(e);
@@ -199,6 +199,46 @@ router.get("/book/:id", async (req, res) => {
   }
 });
 
+router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
+  try {
+    const { clientId } = req.params;
+
+    const photos = await Photo.findAll({
+      where: { clientId },
+    });
+
+    cloudinary.v2.config({
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+    });
+
+    
+    photos.map(async (p) => {
+      try {
+        const [folder, originalName] = p?.publicId.split("/");
+        const oldIndex = originalName.slice(0,4)
+        console.log("old", oldIndex)
+        let resetedIndex = originalName.replace(oldIndex, "000-");
+        const newImg = await cloudinary.v2.uploader.rename(p?.publicId, resetedIndex, {})
+        console.log(newImg)
+        return newImg;
+      } catch (e) {
+        console.log(e);
+      }
+    });
+    return res.json({
+      photos,
+    });
+  } catch (e) {
+    console.log(e);
+    return res.status(401).json({
+      e,
+      clientId,
+    });
+  }
+});
+
 router.post("/sort_download_imgs/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
@@ -214,13 +254,22 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
     });
     photos.map(async (p) => {
       try {
+        console.log("PUBLIC,", p.publicId)
         const [folder, originalName] = p?.publicId.split("/");
-        const indexedName = originalName.replace("-0-", `${p?.index}-`);
+        let index = `${p.index}`        
+        let newIndex = ""
+        if(index?.length === 1) newIndex = `00${index}-`;
+        else if(index?.length === 2) newIndex = `0${index}-`;
+        else if(index?.length === 3) newIndex = `${index}-`;
+        console.log("originalIndex", newIndex)
+        const indexedName = originalName.replace("000-", newIndex);
+        console.log("modified", indexedName)
         const newImg = await cloudinary.v2.uploader.rename(
           p?.publicId,
           `${folder}/${indexedName}`,
           {}
-        );
+          );
+        
         return newImg;
       } catch (e) {
         console.log(e);

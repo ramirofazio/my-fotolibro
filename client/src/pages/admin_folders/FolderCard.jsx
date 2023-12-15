@@ -41,6 +41,7 @@ export function FolderCard({ name, id, last_link_download }) {
   function updateLastDownloadDate() {
     const actual_date = DateTime.now().setLocale("es").toFormat("dd/MM/yyyy")
     API.updateClient({ clientId: id, newData: {last_link_download: actual_date} })
+    /* API.resetCloudinaryIndex(id).then(res => console.log(res)) */
   }
 
 
