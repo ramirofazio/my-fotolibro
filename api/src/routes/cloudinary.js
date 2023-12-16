@@ -33,13 +33,15 @@ router.get("/signature", (req, res) => {
 router.get("/download/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
+    const client = await Client.findByPk(clientId);
     const download_url = await cloudinary.v2.utils.download_folder(clientId, {
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
       cloud_name: CLOUDINARY_CLOUD_NAME,
       prefixes: "/",
+      target_public_id: client?.name,
     });
-    
+
     return res.send(download_url);
   } catch (e) {
     console.log(e);
@@ -72,8 +74,6 @@ router.get("/folders", async (req, res) => {
 router.post("/upload", async (req, res) => {
   try {
     const { files } = req.body; // pasarlo a una funcion, que cree una promesa por cada img y las resuelva
-
-   
 
     for (let [name, value] of files) {
       console.log(`${name} = ${value}`);
@@ -111,7 +111,6 @@ router.post("/upload", async (req, res) => {
 });
 
 router.delete("/images/:clientId", async (req, res) => {
-  
   try {
     const { clientId } = req.params;
 
@@ -155,7 +154,6 @@ router.delete("/images/:clientId", async (req, res) => {
 });
 
 router.post("/delete/single_img", async (req, res) => {
-  
   try {
     const { publicId, id } = req.body;
     console.log(req.body);
@@ -213,16 +211,22 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
       cloud_name: CLOUDINARY_CLOUD_NAME,
     });
 
-    
     photos.map(async (p) => {
       try {
         const [folder, originalName] = p?.publicId.split("/");
-        const oldIndex = originalName.slice(0,4)
-        console.log("old", oldIndex)
+        const oldIndex = originalName.slice(0, 4);
+        console.log("old", oldIndex);
+        if (oldIndex === "000-") return;
+
         let resetedIndex = originalName.replace(oldIndex, "000-");
-        const newImg = await cloudinary.v2.uploader.rename(p?.publicId, resetedIndex, {})
-        console.log(newImg)
-        return newImg;
+        const newImg = await cloudinary.v2.uploader.rename(
+          p?.publicId,
+          `${folder}/${resetedIndex}`,
+          {}
+        );
+        const dbPhoto = await Photo.findByPk(p.id);
+        const dbUpdate = await dbPhoto.update({ publicId: newImg.public_id });
+        return { newImg, dbUpdate };
       } catch (e) {
         console.log(e);
       }
@@ -234,7 +238,6 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
     console.log(e);
     return res.status(401).json({
       e,
-      clientId,
     });
   }
 });
@@ -252,29 +255,34 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
       api_secret: CLOUDINARY_API_SECRET,
       cloud_name: CLOUDINARY_CLOUD_NAME,
     });
-    photos.map(async (p) => {
+
+    await photos.map(async (p) => {
       try {
-        console.log("PUBLIC,", p.publicId)
         const [folder, originalName] = p?.publicId.split("/");
-        let index = `${p.index}`        
-        let newIndex = ""
-        if(index?.length === 1) newIndex = `00${index}-`;
-        else if(index?.length === 2) newIndex = `0${index}-`;
-        else if(index?.length === 3) newIndex = `${index}-`;
-        console.log("originalIndex", newIndex)
+        let index = `${p.index}`;
+        let newIndex = "";
+
+        if (p.index === 0) return;
+        else if (index?.length === 1) newIndex = `00${index}-`;
+        else if (index?.length === 2) newIndex = `0${index}-`;
+        else if (index?.length === 3) newIndex = `${index}-`;
+
         const indexedName = originalName.replace("000-", newIndex);
-        console.log("modified", indexedName)
+        console.log("modified", indexedName);
+
         const newImg = await cloudinary.v2.uploader.rename(
           p?.publicId,
           `${folder}/${indexedName}`,
           {}
-          );
-        
-        return newImg;
+        );
+        const dbPhoto = await Photo.findByPk(p.id);
+        const dbUpdate = await dbPhoto.update({ publicId: newImg.public_id });
+
       } catch (e) {
         console.log(e);
       }
     });
+
     return res.json({
       photos,
     });

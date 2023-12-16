@@ -59,7 +59,7 @@ export const API = {
     });
   },
   resetCloudinaryIndex: (clientId) => {
-    return api.post(`reset_cloudinary_index/${clientId}`);
+    return api.post(`cloudinary/reset_cloudinary_index/${clientId}`);
   },
   /* getBooks: () => {
     return api.get("cloudinary/book");
