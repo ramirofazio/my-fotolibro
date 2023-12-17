@@ -261,7 +261,7 @@ router.put("/index_images", async (req, res) => {
     const { imgs } = req.body;
 
     const indexedImgs = await imgs.forEach(async (img, i) => {
-      await Photo.update({ index: i }, { where: { id: img.id } });
+      await Photo.update({ index: i + 1 }, { where: { id: img.id } });
     });
 
     return res.json({

@@ -18,11 +18,11 @@ export function Nav() {
           current={pathname === to}
         >
           <div
-            className={`justify-self-center cur rounded-full w-fit px-2 bg-blue-700`}
+            className={`justify-self-center cur rounded-full text-4xl w-fit py-2 px-4 bg-blue-700`}
           >
             <p>{i + 1}</p>
           </div>
-          <p className="text-center text-lg">{text}</p>
+          <p className="text-center text-xl md:text-4xl">{text}</p>
         </ContainerLink>
       ))}
     </nav>
