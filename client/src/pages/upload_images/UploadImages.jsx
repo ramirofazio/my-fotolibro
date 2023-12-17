@@ -69,9 +69,11 @@ export function UploadImages() {
     try {
       setLoading(true);
       const upImage = await uploadImagesCloudinary(images, clientId);
+      console.log(upImage)
       addImagesUploaded(upImage);
       setLoading(false);
     } catch (error) {
+      console.log(error)
       setLoading(false);
     }
   };
@@ -124,6 +126,12 @@ export function UploadImages() {
               </span>
             </button>
           )}
+          {/* Agrwgar otro boton para navegar al "ordenar fotos" */}
+          {/* <button
+            className="border-2 rounded-lg w-fi h-fit px-2 py-4 text-2xl bg-blue-500 text-blue-"
+          >
+            Ordenar fotos
+          </button> */}
         </div>
       </div>
       <div className="text-white border-dashed border relative overflow-hidden flex flex-col justify-center items-center  p-4">

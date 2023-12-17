@@ -36,6 +36,7 @@ export function Routes() {
             const {photos} = (await API.getPreviusImgs(params.clientId)).data;
             const {canFinish} = (await API.canFinish(params.clientId)).data
             console.log(canFinish)
+            console.log(photos)
             return { photos, canFinish};
             
           },

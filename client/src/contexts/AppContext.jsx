@@ -10,17 +10,17 @@ export const AppProvider = ({ children }) => {
     0: {
       to: 'client_data',
       access: true,
-      text: 'Completa tus datos!',
+      text: 'Completa tus datos',
     },
     1: {
       to: 'upload_images',
       access: false,
-      text: 'Subi tus fotos!',
+      text: 'Subi tus fotos',
     },
     2: {
       to: 'sort_images',
       access: false,
-      text: 'Ordena tus fotos!',
+      text: 'Ordena tus fotos',
     },
   });
 
@@ -64,7 +64,7 @@ export const AppProvider = ({ children }) => {
     setStatus((cur) => ({
       ...cur,
       pending: Math.max(0, cur.pending - number),
-      uploaded: Math.min(cur.uploaded + number, images.length - 1),
+      uploaded: Math.min(cur.uploaded + number, images.length),
     }));
     setImages(uploaded);
   };
