@@ -17,7 +17,6 @@ export function FolderCard({ name, id, last_link_download }) {
   function handleDelete() {
     setUrl(false);
     API.deleteFolder(id).then((res) => {
-      console.log(res)
       if (res.data) {
         API.deleteClient(id).then(() => {
           navigate(0);
@@ -28,7 +27,6 @@ export function FolderCard({ name, id, last_link_download }) {
 
   function generateDownloadUrl() {
     API.addDownloadImgsIndex(id).then((res) => {
-      console.log("index", res.data);
       if (res.data) {
         API.getDownloadUrl(id)
           .then((url) => setUrl(url.data))

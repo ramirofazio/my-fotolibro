@@ -23,7 +23,6 @@ export function ClientData() {
       })
       .catch((e) => {
         toast.error('Error al cargar sus datos')
-        console.log(e)
       })
   }
 

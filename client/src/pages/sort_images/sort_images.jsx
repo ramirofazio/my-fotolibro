@@ -1,36 +1,36 @@
-import { DndContext, closestCenter } from '@dnd-kit/core'
+import { DndContext, closestCenter } from "@dnd-kit/core";
 import {
   SortableContext,
   arrayMove,
   useSortable,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
   PaperAirplaneIcon,
   XMarkIcon,
   AdjustmentsHorizontalIcon,
-} from '@heroicons/react/24/outline'
-import { useApp } from '../../contexts/AppContext'
-import { API } from '../../api_instance'
-import { useLoaderData, useNavigate, useParams } from 'react-router-dom'
-import { toast } from 'react-hot-toast'
-import { useEffect, useState } from 'react'
+} from "@heroicons/react/24/outline";
+import { useApp } from "../../contexts/AppContext";
+import { API } from "../../api_instance";
+import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useEffect, useState } from "react";
 
 export function SortImages() {
-  const navigate = useNavigate()
-  const { clientId } = useParams()
-  const { images, reorderImages, updateInfoImages } = useApp()
-  const previus = useLoaderData()
-  const [trySort, setTrySort] = useState(false)
-  console.log(previus)
+  const navigate = useNavigate();
+  const { clientId } = useParams();
+  const { images, reorderImages, updateInfoImages } = useApp();
+  const previus = useLoaderData();
+  const [trySort, setTrySort] = useState(false);
+
   const handleDragEnd = (event) => {
-    const { active, over } = event
-    const oldIndex = images.findIndex((user) => user.id === active.id)
-    const newIndex = images.findIndex((user) => user.id === over.id)
-    if (trySort === false) setTrySort(true)
-    return reorderImages(arrayMove(images, oldIndex, newIndex))
-  }
+    const { active, over } = event;
+    const oldIndex = images.findIndex((user) => user.id === active.id);
+    const newIndex = images.findIndex((user) => user.id === over.id);
+    if (trySort === false) setTrySort(true);
+    return reorderImages(arrayMove(images, oldIndex, newIndex));
+  };
 
   function submitBook() {
     return API.addImgsIndex(images)
@@ -42,32 +42,29 @@ export function SortImages() {
         })
       )
       .then((result) => {
-        setTimeout(() => navigate(0), 3000)
-        return result
+        setTimeout(() => navigate(0), 3000);
+        return result;
       })
       .catch((error) => {
-        throw error
-      })
+        throw error;
+      });
   }
 
   async function handleDelete(image) {
-    console.log(image)
-    const { originalName, id, publicId } = image
-    console.log(publicId)
-    const res = await API.deleteSingleImg({ publicId, id })
-    console.log(res)
+    const { originalName, id, publicId } = image;
+    const res = await API.deleteSingleImg({ publicId, id });
     if (res.data) {
-      toast.success(`Se elimino ${originalName}`)
-      navigate(0)
+      toast.success(`Se elimino ${originalName}`);
+      navigate(0);
     }
   }
   useEffect(() => {
-    updateInfoImages(previus?.photos)
+    updateInfoImages(previus?.photos);
     if (!previus?.photos?.length) {
-      toast.error('Uups, Imagenes no cargadas')
-      navigate(`/client/${clientId}/upload_images`) // redirecciona directo a upload_images
+      toast.error("Uups, Imagenes no cargadas");
+      navigate(`/client/${clientId}/upload_images`); // redirecciona directo a upload_images
     }
-  }, [])
+  }, []);
 
   return (
     <div className="touch-none w-[85%] mx-auto">
@@ -96,12 +93,11 @@ export function SortImages() {
         <div className="flex gap-2">
           <button
             onClick={() => {
-              console.log(images)
               toast.promise(API.addImgsIndex(images), {
-                loading: 'Ordenando fotos.',
-                success: 'Las imagenes fueron ordenadas',
-                error: 'Algo salio mal, Intenta de nuevo',
-              })
+                loading: "Ordenando fotos.",
+                success: "Las imagenes fueron ordenadas",
+                error: "Algo salio mal, Intenta de nuevo",
+              });
             }}
             className="w-fit text-white   cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
           >
@@ -113,10 +109,10 @@ export function SortImages() {
             disabled={previus?.canFinish || trySort ? false : true}
             onClick={() => {
               toast.promise(submitBook(), {
-                loading: 'Enviando Imagenes',
-                success: 'Las imagenes fueron Enviadas',
-                error: 'Algo salio mal, Intenta de nuevo',
-              })
+                loading: "Enviando Imagenes",
+                success: "Las imagenes fueron Enviadas",
+                error: "Algo salio mal, Intenta de nuevo",
+              });
             }}
             className="relative disabled:opacity-50 w-fit font-bold bg-green-600 text-white border-2 !self-end  cursor-pointer border-green-800 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
           >
@@ -134,33 +130,31 @@ export function SortImages() {
         </p>
       </div>
     </div>
-  )
+  );
 }
 
 function Item({ image, index }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: image.id,
-    })
+    });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  }
+  };
 
-  const { URL, originalName } = image
+  const { URL, originalName } = image;
 
   return (
     <div
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      onClick={() => console.log('test')}
       style={style}
       className="w-[95%]"
     >
       <div
-        onClick={() => console.log('zara')}
         className=" gap-2  p-2 flex items-center bg-slate-300 rounded"
       >
         <span className="text-xl font-bold  rounded-full mr-1.5 md:mr-4">
@@ -176,5 +170,5 @@ function Item({ image, index }) {
         </p>
       </div>
     </div>
-  )
+  );
 }
