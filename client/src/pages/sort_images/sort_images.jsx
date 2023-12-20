@@ -20,7 +20,7 @@ import { useEffect, useState } from 'react'
 export function SortImages() {
   const navigate = useNavigate()
   const { clientId } = useParams()
-  const { images, reorderImages } = useApp()
+  const { images, reorderImages, updateInfoImages } = useApp()
   const previus = useLoaderData()
   const [trySort, setTrySort] = useState(false)
   console.log(previus)
@@ -28,7 +28,7 @@ export function SortImages() {
     const { active, over } = event
     const oldIndex = images.findIndex((user) => user.id === active.id)
     const newIndex = images.findIndex((user) => user.id === over.id)
-    if(trySort === false) setTrySort(true)
+    if (trySort === false) setTrySort(true)
     return reorderImages(arrayMove(images, oldIndex, newIndex))
   }
 
@@ -62,6 +62,7 @@ export function SortImages() {
     }
   }
   useEffect(() => {
+    updateInfoImages(previus?.photos)
     if (!previus?.photos?.length) {
       toast.error('Uups, Imagenes no cargadas')
       navigate(`/client/${clientId}/upload_images`) // redirecciona directo a upload_images
@@ -121,11 +122,11 @@ export function SortImages() {
           >
             Finalizar y enviar Book
             <PaperAirplaneIcon className="w-6 aspect-square stroke-2" />
-          {!previus?.canFinish && !trySort && (
-            <p className="absolute -bottom-12 sm:-bottom-6 right-0 text-red-500 w-fit mx-auto">
-              Ordene todas las fotos primero
-            </p>
-          )}
+            {!previus?.canFinish && !trySort && (
+              <p className="absolute -bottom-12 sm:-bottom-6 right-0 text-red-500 w-fit mx-auto">
+                Ordene todas las fotos primero
+              </p>
+            )}
           </button>
         </div>
         <p className="text-2xl my-5 text-white underline  w-fit p-0">
