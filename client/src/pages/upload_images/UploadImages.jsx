@@ -35,7 +35,7 @@ export function UploadImages() {
     } else if (images.length === 0) {
       setStepContinue({
         value: false,
-        msg: 'NO has seleccionado ninguna imagen',
+        msg: 'No has seleccionado ninguna imagen',
       })
     } else {
       setStepContinue({ value: true })
