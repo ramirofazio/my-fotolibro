@@ -112,7 +112,7 @@ export function UploadImages() {
             </label>
           ) : (
             <button
-              className={`w-fit cursor-pointer ${
+              className={`w-fit cursor-pointer text-xl ${
                 status.pending === 0 ? 'bg-green-600' : 'bg-blue-700'
               } px-5 py-3 rounded hover:font-medium self-center md:self-end `}
               onClick={() => uploadImagesToCloudinary()}
@@ -124,7 +124,7 @@ export function UploadImages() {
                 }`}
               >
                 Subir Imagenes
-                <CloudArrowUpIcon className="w-6 aspect-square " />
+                <CloudArrowUpIcon className="w-8 aspect-square " />
               </span>
             </button>
           )}

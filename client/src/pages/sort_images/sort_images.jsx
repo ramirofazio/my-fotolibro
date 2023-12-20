@@ -51,6 +51,7 @@ export function SortImages() {
   }
 
   async function handleDelete(image) {
+    console.log(image)
     const { originalName, id, publicId } = image
     console.log(publicId)
     const res = await API.deleteSingleImg({ publicId, id })
@@ -61,13 +62,12 @@ export function SortImages() {
     }
   }
   useEffect(() => {
-    if (images.length === 0) {
+    if (!previus?.photos?.length) {
       toast.error('Uups, Imagenes no cargadas')
-      navigate(`/client/${clientId}/upload_images`)
+      navigate(`/client/${clientId}/upload_images`) // redirecciona directo a upload_images
     }
   }, [])
 
-  if (images.length === 0) return null
   return (
     <div className="touch-none w-[85%] mx-auto">
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
