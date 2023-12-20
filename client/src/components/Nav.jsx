@@ -1,16 +1,14 @@
-import { useLocation } from 'react-router-dom'
 import { useNavigation } from '../contexts/NavigationContext'
 
 export function Nav() {
   const routes = useNavigation().getSteps()
   const { current } = useNavigation()
-  let pathname = useLocation().pathname.split('/')
-  pathname = pathname[pathname.length - 1]
 
   return (
     <nav className="grid grid-cols-3 px-1">
       {routes.map(({ text, index }, i) => (
         <div
+          key={i}
           className={`flex flex-col items-center justify-center py-2 ${
             current === index
               ? ' border-b-2 border-blue-700 text-xl font-medium'

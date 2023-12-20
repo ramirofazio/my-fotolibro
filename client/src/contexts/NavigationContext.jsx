@@ -7,6 +7,10 @@ export const useNavigation = () => useContext(NavigationContext)
 export const NavProvider = ({ children }) => {
   const [Steps, setSteps] = useState({
     current: 0,
+    access: {
+      value: null,
+      msg: '',
+    },
     routes: {
       client_data: {
         to: 'client_data',
@@ -25,7 +29,7 @@ export const NavProvider = ({ children }) => {
         to: 'sort_images',
         access: false,
         text: 'Ordena tus fotos',
-        nextText: 'Ahora a ordenar',
+        nextText: 'Pasar a ordenar',
         index: 2,
       },
     },
@@ -41,9 +45,25 @@ export const NavProvider = ({ children }) => {
     }
     return routes
   }
+
+  const setStepContinue = ({ value, msg = '' }) =>
+    setSteps((cur) => ({
+      ...cur,
+      access: {
+        value,
+        msg,
+      },
+    }))
+
   return (
     <NavigationContext.Provider
-      value={{ current: Steps.current, getSteps, setCurrent }}
+      value={{
+        current: Steps.current,
+        getSteps,
+        setCurrent,
+        setStepContinue,
+        accessNext: Steps.access,
+      }}
     >
       {children}
     </NavigationContext.Provider>

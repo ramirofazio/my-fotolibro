@@ -4,6 +4,7 @@ import { UrlInUse } from '../components/UrlInUse'
 import { useEffect } from 'react'
 import { API } from '../api_instance'
 import { PreviousNext } from '../components/PreviousNext'
+import { SuccessPage } from './SuccessPage'
 
 export function Root() {
   const client = useLoaderData()
@@ -19,6 +20,9 @@ export function Root() {
     }
   }, [])
 
+  if (!client.active_link) {
+    return <SuccessPage />
+  }
   return (
     <div className="bg-main min-h-screen">
       {client?.online ? (

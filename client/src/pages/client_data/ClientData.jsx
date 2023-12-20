@@ -3,8 +3,10 @@ import { useEffect, useState } from 'react'
 import { useLoaderData, useNavigate } from 'react-router-dom'
 import { API } from '../../api_instance'
 import { toast } from 'react-hot-toast'
+import { useNavigation } from '../../contexts/NavigationContext'
 
 export function ClientData() {
+  const { setStepContinue } = useNavigation()
   const navigate = useNavigate()
   const _client = useLoaderData()
   const [client, setClient] = useState(_client)
@@ -25,6 +27,13 @@ export function ClientData() {
       })
   }
 
+  useEffect(() => {
+    if (_client.email && _client.dni && _client.phone && _client.id) {
+      setStepContinue({ value: true })
+    } else {
+      setStepContinue({ value: false, msg: 'Por favor Completa tus datos' })
+    }
+  }, [_client])
   return (
     <div className="h-full ">
       <h1 className="w-[75%] text-white mx-auto text-center mt-10">
