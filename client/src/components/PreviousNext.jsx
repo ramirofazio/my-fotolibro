@@ -14,7 +14,7 @@ export function PreviousNext() {
   return (
     <>
       <div
-        className={`flex mt-2 ${
+        className={`flex mt-2 px-1 ${
           current === 0
             ? "justify-end"
             : current === 2
@@ -24,25 +24,25 @@ export function PreviousNext() {
       >
         {current !== 0 && (
           <NavLink
-            className="md:text-2xl border-b-2 p-1 border-violet-500 flex gap-2 items-center group hover:font-medium"
+            className=" md:text-2xl lg:text-3xl border-b-2 p-1 border-violet-500 flex gap-2 items-center group hover:font-medium"
             to={getSteps()[current - 1]?.to}
           >
-            <ChevronLeftIcon className="aspect-square w-7 group-hover:bg-blue-700 rounded-full text-center p-1 group-hover:scale-125" />
+            <ChevronLeftIcon className="md:w-10 animation aspect-square w-7 group-hover:bg-blue-700 rounded-full text-center p-1 group-hover:scale-125" />
             Atras
           </NavLink>
         )}
         {current !== 2 &&
           (accessNext.value ? (
             <NavLink
-              className="md:text-2xl border-b-2 border-violet-500 flex gap-2 items-center group hover:font-medium"
+              className="animate-pulse md:text-2xl lg:text-3xl border-b-2 border-violet-500 flex gap-2 items-center group hover:font-medium"
               to={getSteps()[current + 1]?.to}
             >
               {getSteps()[current + 1]?.nextText}
-              <ChevronRightIcon className="aspect-square w-7 group-hover:bg-blue-700 rounded-full text-center p-1 group-hover:scale-125" />
+              <ChevronRightIcon className="md:w-10 aspect-square w-7 group-hover:bg-blue-700 rounded-full text-center p-1 group-hover:scale-125" />
             </NavLink>
           ) : (
             <button
-              className="border-b-2 p-2 border-violet-500 md:text-2xl flex gap-2 items-center group hover:font-medium hover:text-gray-400"
+              className=" border-b-2 p-2 border-violet-500 md:text-2xl lg:text-3xl flex gap-2 items-center group hover:font-medium hover:text-gray-400"
               onClick={() => toast.error(accessNext.msg)}
             >
               {getSteps()[current + 1]?.nextText}

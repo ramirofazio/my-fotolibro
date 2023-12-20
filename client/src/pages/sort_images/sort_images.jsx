@@ -15,18 +15,20 @@ import { useApp } from '../../contexts/AppContext'
 import { API } from '../../api_instance'
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'react-hot-toast'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export function SortImages() {
   const navigate = useNavigate()
   const { clientId } = useParams()
   const { images, reorderImages } = useApp()
   const previus = useLoaderData()
-
+  const [trySort, setTrySort] = useState(false)
+  console.log(previus)
   const handleDragEnd = (event) => {
     const { active, over } = event
     const oldIndex = images.findIndex((user) => user.id === active.id)
     const newIndex = images.findIndex((user) => user.id === over.id)
+    if(trySort === false) setTrySort(true)
     return reorderImages(arrayMove(images, oldIndex, newIndex))
   }
 
@@ -93,6 +95,7 @@ export function SortImages() {
         <div className="flex gap-2">
           <button
             onClick={() => {
+              console.log(images)
               toast.promise(API.addImgsIndex(images), {
                 loading: 'Ordenando fotos.',
                 success: 'Las imagenes fueron ordenadas',
@@ -106,7 +109,7 @@ export function SortImages() {
           </button>
           <button
             id="finish"
-            disabled={previus?.canFinish ? false : true}
+            disabled={previus?.canFinish || trySort ? false : true}
             onClick={() => {
               toast.promise(submitBook(), {
                 loading: 'Enviando Imagenes',
@@ -114,18 +117,18 @@ export function SortImages() {
                 error: 'Algo salio mal, Intenta de nuevo',
               })
             }}
-            className="disabled:opacity-50 w-fit font-bold bg-green-600 text-white border-2 !self-end  cursor-pointer border-green-800 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
+            className="relative disabled:opacity-50 w-fit font-bold bg-green-600 text-white border-2 !self-end  cursor-pointer border-green-800 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
           >
             Finalizar y enviar Book
             <PaperAirplaneIcon className="w-6 aspect-square stroke-2" />
-          </button>
-          {!previus?.canFinish && (
-            <p className="absolute  text-red-500 w-fit mx-auto">
+          {!previus?.canFinish && !trySort && (
+            <p className="absolute -bottom-12 sm:-bottom-6 right-0 text-red-500 w-fit mx-auto">
               Ordene todas las fotos primero
             </p>
           )}
+          </button>
         </div>
-        <p className="text-2xl my-4 text-white underline  w-fit p-0">
+        <p className="text-2xl my-5 text-white underline  w-fit p-0">
           Recuerde cerrar la ventana una vez haya finalizado!
         </p>
       </div>
