@@ -1,17 +1,18 @@
-import { useLoaderData, useParams } from "react-router-dom";
-import { useApp } from "../../contexts/AppContext";
-import { CloudArrowUpIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { getSizeImage, uploadImagesCloudinary } from "../../utils";
-import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
-import { API } from "../../api_instance";
-import Compressor from "compressorjs";
-import { Loader } from "../../components/Loader";
-//<-  ->
+import { useLoaderData, useParams } from 'react-router-dom'
+import { useApp } from '../../contexts/AppContext'
+import { CloudArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { getSizeImage, uploadImagesCloudinary } from '../../utils'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import { API } from '../../api_instance'
+import Compressor from 'compressorjs'
+import { Loader } from '../../components/Loader'
+import { useNavigation } from '../../contexts/NavigationContext'
+
 export function UploadImages() {
-  //const navigate = useNavigate()
-  const { handleNextStep, updateInfoImages } = useApp();
-  const { clientId } = useParams();
+  const { setStepContinue } = useNavigation()
+
+  const { clientId } = useParams()
   const {
     images,
     addImages,
@@ -19,82 +20,81 @@ export function UploadImages() {
     addImagesUploaded,
     status,
     existImage,
-  } = useApp();
-  const [Loading, setLoading] = useState(false);
+    updateInfoImages,
+  } = useApp()
+  const [Loading, setLoading] = useState(false)
 
-  const previus = useLoaderData();
+  const previus = useLoaderData()
   useEffect(() => {
-    updateInfoImages(previus.photos);
-  }, []);
+    updateInfoImages(previus.photos)
+  }, [])
+
+  useEffect(() => {
+    if (status.pending > 0) {
+      setStepContinue({ value: false, msg: 'Asegurate de subir las Imagenes' })
+    } else if (images.length === 0) {
+      setStepContinue({
+        value: false,
+        msg: 'No has seleccionado ninguna imagen',
+      })
+    } else {
+      setStepContinue({ value: true })
+    }
+  }, [status])
 
   function handleImages({ target }) {
-    const files = target.files;
-    if (!files) return;
+    const files = target.files
+    if (!files) return
 
     for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (!file) continue;
+      const file = files[i]
+      if (!file) continue
 
-      let aux = file.name.split(".");
-      let aux2 = aux.slice(0, aux.length - 1).join(".");
+      let aux = file.name.split('.')
+      let aux2 = aux.slice(0, aux.length - 1).join('.')
 
-      const exist = existImage(aux2);
+      const exist = existImage(aux2)
       if (exist) {
-        toast.error("La imagen " + aux2 + " ya existe");
-        continue;
+        toast.error('La imagen ' + aux2 + ' ya existe')
+        continue
       }
 
       new Compressor(file, {
         quality: 0.6,
         success: (compressed) => {
-          const reader = new FileReader();
+          const reader = new FileReader()
           reader.onload = () => {
             addImages({
               id: images.length + i + 1,
               originalName: aux2,
-              URL: typeof reader.result === "string" ? reader.result : "",
+              URL: typeof reader.result === 'string' ? reader.result : '',
               file: compressed,
               size: compressed.size,
-            });
-          };
-          reader.readAsDataURL(compressed);
+            })
+          }
+          reader.readAsDataURL(compressed)
         },
-      });
+      })
     }
   }
 
   const uploadImagesToCloudinary = async () => {
-    if (!images[0]) return;
+    if (!images[0]) return
     //handleLoading();
     try {
-      setLoading(true);
-      const upImage = await uploadImagesCloudinary(images, clientId);
-      console.log(upImage)
-      addImagesUploaded(upImage);
-      setLoading(false);
+      setLoading(true)
+      const upImage = await uploadImagesCloudinary(images, clientId)
+      addImagesUploaded(upImage)
+      setLoading(false)
     } catch (error) {
-      console.log(error)
-      setLoading(false);
+      setLoading(false)
     }
-  };
-
-  useEffect(() => {
-    const size = status.pending + status.uploaded;
-    if (status.pending > 0) {
-      handleNextStep({ index: 0, access: false });
-    }
-    if (size < 1 || status.pending > 0) {
-      handleNextStep({ index: 2, access: false });
-    } else {
-      handleNextStep({ index: 2, access: true });
-    }
-  }, [status]);
+  }
 
   return (
     <div className="p-3">
       {Loading && <Loader />}
       <div className="flex  flex-col justify-center items-center text-white mt-4 mb-4">
-        <h2 className="font-semibold text-2xl">Subi Tus Fotos!</h2>
         <div className="flex flex-col md:flex-row gap-y-2 justify-between w-full">
           <p className="flex flex-col text-lg font-medium">
             <span>Fotos selecionadas: {status.pending + status.uploaded} </span>
@@ -110,28 +110,22 @@ export function UploadImages() {
             </label>
           ) : (
             <button
-              className={`w-fit cursor-pointer ${
-                status.pending === 0 ? "bg-green-600" : "bg-blue-700"
+              className={`w-fit cursor-pointer text-xl ${
+                status.pending === 0 ? 'bg-green-600' : 'bg-blue-700'
               } px-5 py-3 rounded hover:font-medium self-center md:self-end `}
               onClick={() => uploadImagesToCloudinary()}
               disabled={Loading}
             >
               <span
                 className={`flex gap-2 items-center ${
-                  Loading ? "animate-pulse" : ""
+                  Loading ? 'animate-pulse' : ''
                 }`}
               >
                 Subir Imagenes
-                <CloudArrowUpIcon className="w-6 aspect-square " />
+                <CloudArrowUpIcon className="w-8 aspect-square " />
               </span>
             </button>
           )}
-          {/* Agrwgar otro boton para navegar al "ordenar fotos" */}
-          {/* <button
-            className="border-2 rounded-lg w-fi h-fit px-2 py-4 text-2xl bg-blue-500 text-blue-"
-          >
-            Ordenar fotos
-          </button> */}
         </div>
       </div>
       <div className="text-white border-dashed border relative overflow-hidden flex flex-col justify-center items-center  p-4">
@@ -151,7 +145,7 @@ export function UploadImages() {
           accept="image/*"
           multiple
           onChange={(e) => {
-            handleImages(e);
+            handleImages(e)
           }}
         />
       </div>
@@ -167,18 +161,18 @@ export function UploadImages() {
             />
             <div
               className={`absolute top-0 left-0 w-full p-1 flex justify-between items-center bg-gradient-to-b ${
-                !image.upload ? "from-black/70" : "from-green-800/70"
+                !image.upload ? 'from-black/70' : 'from-green-800/70'
               } to-transparent`}
             >
               <div className="flex gap-2 items-center">
                 <div
                   className={`border-gray-300 h-6 aspect-square animate-spin rounded-full border-[5px] border-t-primary ${
-                    Loading && !image.upload ? "visible" : "invisible"
+                    Loading && !image.upload ? 'visible' : 'invisible'
                   }`}
                 />
                 <p className="flex flex-col">
                   <span className="text-sm font-medium">
-                    {!image.upload ? "Imagen no subida" : "Imagen Subida"}
+                    {!image.upload ? 'Imagen no subida' : 'Imagen Subida'}
                   </span>
                   <span className="text-[12px] text-gray-200">
                     {getSizeImage(image.size)}
@@ -187,18 +181,16 @@ export function UploadImages() {
               </div>
               <button
                 onClick={async () => {
-                  console.log(image);
                   if (image.upload) {
-                    setLoading(true);
+                    setLoading(true)
                     await API.deleteSingleImg({
                       publicId: image.publicId,
                       id: image.id,
-                    });
+                    })
 
-                    setLoading(false);
+                    setLoading(false)
                   }
-                  removeImages(i, image.upload ? "uploaded" : "pending");
-                  //navigate(0)   Posible reload de data
+                  removeImages(i, image.upload ? 'uploaded' : 'pending')
                 }}
                 className=" w-7 aspect-square p-0.5 hover:text-red-800 text-gray-700 rounded-full bg-gray-400/40  hover:bg-gray-400 "
                 title="Eliminar"
@@ -210,5 +202,5 @@ export function UploadImages() {
         ))}
       </div>
     </div>
-  );
+  )
 }
