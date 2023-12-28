@@ -27,9 +27,13 @@ export function FolderCard({ name, id, last_link_download }) {
 
   function generateDownloadUrl() {
     API.addDownloadImgsIndex(id).then((res) => {
+      console.log(res.data)
       if (res.data) {
         API.getDownloadUrl(id)
-          .then((url) => setUrl(url.data))
+          .then((url) =>{
+            console.log(url.data)
+             setUrl(url.data)
+            })
           .catch(() => {
             setUrl(false);
           });
@@ -37,6 +41,7 @@ export function FolderCard({ name, id, last_link_download }) {
     });
   }
 
+  //asincrono y esperar + notificacion
   function updateLastDownloadDate() {
     const actual_date = DateTime.now().setLocale("es").toFormat("dd/MM/yyyy")
     API.updateClient({ clientId: id, newData: {last_link_download: actual_date} })

@@ -20,6 +20,7 @@ export const API = {
     return api.delete(`cloudinary/images/${clientId}`);
   },
   uploadImagesDB: ({ imgs, clientId }) => {
+    console.log("manda: ", imgs.length )
     return api.post("client/imgs", { imgs, clientId });
   },
   getDownloadUrl: (clientId) => {

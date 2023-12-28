@@ -163,8 +163,6 @@ router.post("/imgs", async (req, res) => {
       res.status(401).send("faltan parametros");
     }
 
-    const client = await Client.findByPk(clientId);
-
     const rawImgs = imgs.map((i) => {
       return { ...i, clientId };
     });
