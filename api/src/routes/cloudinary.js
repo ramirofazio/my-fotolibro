@@ -241,6 +241,7 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
         const dbUpdate = await dbPhoto.update({ publicId: newImg.public_id });
         return { newImg, dbUpdate };
       } catch (e) {
+        console.log("no encontro", p)
         console.log(e);
       }
     });
@@ -268,27 +269,27 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
       api_secret: CLOUDINARY_API_SECRET,
       cloud_name: CLOUDINARY_CLOUD_NAME,
     });
-    
-    let slices = []
+
+    let slices = [];
     const sliceSize = Math.ceil(photos.length / 5);
 
-
     for (let i = 0; i < 5; i++) {
-      try {
-        let begin = i * sliceSize;
-        let slice = photos.slice(begin, begin + 5);
-        slice.map(async (p) => {
+      let begin = i * sliceSize;
+      let slice = photos.slice(begin, begin + 5);
+      // ---
+      let newImgs = slice.map(async (p) => {
+        try {
           const [folder, originalName] = p?.publicId.split("/");
           let index = `${p.index}`;
           let newIndex = "";
-  
+
           if (p.index === 0) return;
           else if (index?.length === 1) newIndex = `00${index}-`;
           else if (index?.length === 2) newIndex = `0${index}-`;
           else if (index?.length === 3) newIndex = `${index}-`;
-  
+
           const indexedName = originalName.replace("000-", newIndex);
-  
+
           const newImg = await cloudinary.v2.uploader.rename(
             p?.publicId,
             `${folder}/${indexedName}`,
@@ -299,46 +300,19 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
           return {
             IMG_CLOUDINARY: newImg,
             IMG_DB: dbUpdate,
-          }
-        })
-        slices.push(slice)
-      } catch (e) {
-        console.log(e);
-      }
+          };
+        } catch (e) {
+          console.log(e);
+        }
+        //---
+        slices.push(newImgs)
+      });
     }
-    const renamedPhotos = await photos.map(async (p) => {
-      try {
-        /* const [folder, originalName] = p?.publicId.split("/");
-        let index = `${p.index}`;
-        let newIndex = "";
-
-        if (p.index === 0) return;
-        else if (index?.length === 1) newIndex = `00${index}-`;
-        else if (index?.length === 2) newIndex = `0${index}-`;
-        else if (index?.length === 3) newIndex = `${index}-`;
-
-        const indexedName = originalName.replace("000-", newIndex);
-
-        const newImg = await cloudinary.v2.uploader.rename(
-          p?.publicId,
-          `${folder}/${indexedName}`,
-          {}
-        );
-        const dbPhoto = await Photo.findByPk(p.id);
-        const dbUpdate = await dbPhoto.update({ publicId: newImg.public_id });
-        return {
-          IMG_CLOUDINARY: newImg,
-          IMG_DB: dbUpdate,
-        }; */
-      } catch (e) {
-        console.log(e);
-      }
-    });
-
     return res.json({
-      renamedPhotos,
+      renamedPhotos: slices,
       photos,
     });
+  
   } catch (e) {
     console.log(e);
     const { clientId } = req.body;

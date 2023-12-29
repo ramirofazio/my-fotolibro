@@ -7,12 +7,11 @@ import {
 import { API } from "../../api_instance";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {DateTime} from "luxon"
+import { DateTime } from "luxon";
 
 export function FolderCard({ name, id, last_link_download }) {
   const navigate = useNavigate();
   const [url, setUrl] = useState(false);
-  
 
   function handleDelete() {
     setUrl(false);
@@ -25,29 +24,30 @@ export function FolderCard({ name, id, last_link_download }) {
     });
   }
 
-  function generateDownloadUrl() {
-    API.addDownloadImgsIndex(id).then((res) => {
-      console.log(res.data)
-      if (res.data) {
-        API.getDownloadUrl(id)
-          .then((url) =>{
-            console.log(url.data)
-             setUrl(url.data)
-            })
-          .catch(() => {
-            setUrl(false);
-          });
-      }
-    });
+  async function generateDownloadUrl() {
+    try {
+      /* const reset = await API.resetCloudinaryIndex(id)
+      console.log(reset) */
+      const res = await API.addDownloadImgsIndex(id);
+      console.log("INDEX_CLOUD", res.data)
+      const url = await API.getDownloadUrl(id);
+      console.log(url.data);
+      setUrl(url.data);
+    } catch (err) {
+      console.log(err)
+      setUrl(false);
+    }
   }
 
   //asincrono y esperar + notificacion
   function updateLastDownloadDate() {
-    const actual_date = DateTime.now().setLocale("es").toFormat("dd/MM/yyyy")
-    API.updateClient({ clientId: id, newData: {last_link_download: actual_date} })
-    API.resetCloudinaryIndex(id).then(res => console.log(res))
+    const actual_date = DateTime.now().setLocale("es").toFormat("dd/MM/yyyy");
+    API.updateClient({
+      clientId: id,
+      newData: { last_link_download: actual_date },
+    });
+    API.resetCloudinaryIndex(id).then((res) => console.log(res));
   }
-
 
   return (
     <div className="border-2  w-fit rounded-md px-1">
