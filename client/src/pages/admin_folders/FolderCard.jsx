@@ -75,9 +75,14 @@ export function FolderCard({ name, id, last_link_download }) {
             <LinkIcon className="w-9 h-9" />
           </button>
         ) : (
-          <a onClick={updateLastDownloadDate} href={url} target="_self" rel="nofollow">
+          <>
+          {/* <a onClick={updateLastDownloadDate} href={url}>
             <ArrowDownTrayIcon className="w-9 inline  text-green-600 hover:opacity-75" />
-          </a>
+          </a> */}
+          <button onClick={() => window.location.replace(url)}>
+            <ArrowDownTrayIcon className="w-9 inline  text-green-600 hover:opacity-75" />
+          </button>
+          </>
         )}
         <XCircleIcon
           onClick={handleDelete}
