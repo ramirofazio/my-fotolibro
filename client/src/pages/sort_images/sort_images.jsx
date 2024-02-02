@@ -1,36 +1,36 @@
-import { DndContext, closestCenter } from "@dnd-kit/core";
+import { DndContext, closestCenter } from '@dnd-kit/core'
 import {
   SortableContext,
   arrayMove,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import {
   PaperAirplaneIcon,
   XMarkIcon,
   AdjustmentsHorizontalIcon,
-} from "@heroicons/react/24/outline";
-import { useApp } from "../../contexts/AppContext";
-import { API } from "../../api_instance";
-import { useLoaderData, useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-hot-toast";
-import { useEffect, useState } from "react";
+} from '@heroicons/react/24/outline'
+import { useApp } from '../../contexts/AppContext'
+import { API } from '../../api_instance'
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'react-hot-toast'
+import { useEffect, useState } from 'react'
 
 export function SortImages() {
-  const navigate = useNavigate();
-  const { clientId } = useParams();
-  const { images, reorderImages, updateInfoImages } = useApp();
-  const previus = useLoaderData();
-  const [trySort, setTrySort] = useState(false);
+  const navigate = useNavigate()
+  const { clientId } = useParams()
+  const { images, reorderImages, updateInfoImages } = useApp()
+  const previus = useLoaderData()
+  const [trySort, setTrySort] = useState(false)
 
   const handleDragEnd = (event) => {
-    const { active, over } = event;
-    const oldIndex = images.findIndex((user) => user.id === active.id);
-    const newIndex = images.findIndex((user) => user.id === over.id);
-    if (trySort === false) setTrySort(true);
-    return reorderImages(arrayMove(images, oldIndex, newIndex));
-  };
+    const { active, over } = event
+    const oldIndex = images.findIndex((user) => user.id === active.id)
+    const newIndex = images.findIndex((user) => user.id === over.id)
+    if (trySort === false) setTrySort(true)
+    return reorderImages(arrayMove(images, oldIndex, newIndex))
+  }
 
   function submitBook() {
     return API.addImgsIndex(images)
@@ -42,29 +42,29 @@ export function SortImages() {
         })
       )
       .then((result) => {
-        setTimeout(() => navigate(0), 3000);
-        return result;
+        setTimeout(() => navigate(0), 3000)
+        return result
       })
       .catch((error) => {
-        throw error;
-      });
+        throw error
+      })
   }
 
   async function handleDelete(image) {
-    const { originalName, id, publicId } = image;
-    const res = await API.deleteSingleImg({ publicId, id });
+    const { originalName, id, publicId } = image
+    const res = await API.deleteSingleImg({ publicId, id })
     if (res.data) {
-      toast.success(`Se elimino ${originalName}`);
-      navigate(0);
+      toast.success(`Se elimino ${originalName}`)
+      navigate(0)
     }
   }
   useEffect(() => {
-    updateInfoImages(previus?.photos);
+    updateInfoImages(previus?.photos)
     if (!previus?.photos?.length) {
-      toast.error("Uups, Imagenes no cargadas");
-      navigate(`/client/${clientId}/upload_images`); // redirecciona directo a upload_images
+      toast.error('Uups, Imagenes no cargadas')
+      navigate(`/client/${clientId}/upload_images`) // redirecciona directo a upload_images
     }
-  }, []);
+  }, [])
 
   return (
     <div className="touch-none w-[85%] mx-auto">
@@ -72,19 +72,12 @@ export function SortImages() {
         <SortableContext items={images} strategy={verticalListSortingStrategy}>
           <ul className="flex flex-col gap-3 py-2">
             {images.map((image, i) => (
-              <li
-                className="gap-2 flex items-center border-2 rounded-lg"
-                key={i}
-              >
-                <Item key={i} image={image} index={i} />
-                <button
-                  onClick={() => handleDelete(image)}
-                  className="mx-2 border-2 ml-auto border-black hover:border-red-600 w-8 h-8 md:w-12 md:h-12  md:mx-2 hover:text-red-800 rounded-full hover:bg-gray-400/40"
-                  title="Eliminar"
-                >
-                  <XMarkIcon className="text-white" />
-                </button>
-              </li>
+              <Item
+                key={image.id}
+                image={image}
+                index={i}
+                onDelete={handleDelete}
+              />
             ))}
           </ul>
         </SortableContext>
@@ -94,10 +87,10 @@ export function SortImages() {
           <button
             onClick={() => {
               toast.promise(API.addImgsIndex(images), {
-                loading: "Ordenando fotos.",
-                success: "Las imagenes fueron ordenadas",
-                error: "Algo salio mal, Intenta de nuevo",
-              });
+                loading: 'Ordenando fotos.',
+                success: 'Las imagenes fueron ordenadas',
+                error: 'Algo salio mal, Intenta de nuevo',
+              })
             }}
             className="w-fit text-white   cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
           >
@@ -109,10 +102,10 @@ export function SortImages() {
             disabled={previus?.canFinish || trySort ? false : true}
             onClick={() => {
               toast.promise(submitBook(), {
-                loading: "Enviando Imagenes",
-                success: "Las imagenes fueron Enviadas",
-                error: "Algo salio mal, Intenta de nuevo",
-              });
+                loading: 'Enviando Imagenes',
+                success: 'Las imagenes fueron Enviadas',
+                error: 'Algo salio mal, Intenta de nuevo',
+              })
             }}
             className="relative disabled:opacity-50 w-fit font-bold bg-green-600 text-white border-2 !self-end  cursor-pointer border-green-800 px-5 py-3 rounded hover:font-medium flex items-center gap-2 "
           >
@@ -130,33 +123,32 @@ export function SortImages() {
         </p>
       </div>
     </div>
-  );
+  )
 }
 
-function Item({ image, index }) {
+function Item({ image, index, onDelete }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: image.id,
-    });
+    })
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  };
+  }
 
-  const { URL, originalName } = image;
+  const { URL, originalName } = image
 
   return (
     <div
       ref={setNodeRef}
       {...attributes}
       {...listeners}
+      onClick={() => console.log('test')}
       style={style}
-      className="w-[95%]"
+      className="w-[95%] flex bg-slate-300 rounded justify-between items-center"
     >
-      <div
-        className=" gap-2  p-2 flex items-center bg-slate-300 rounded"
-      >
+      <div className=" gap-2  p-2 flex items-center  ">
         <span className="text-xl font-bold  rounded-full mr-1.5 md:mr-4">
           {index + 1}
         </span>
@@ -169,6 +161,13 @@ function Item({ image, index }) {
           {originalName}
         </p>
       </div>
+      <button
+        onClick={() => onDelete(image)}
+        className="mx-2 border-2 ml-auto border-black group: hover:border-red-600 w-8 h-8 md:w-12 md:h-12  md:mx-2 hover:text-red-600 rounded-full hover:bg-gray-400/40"
+        title="Eliminar"
+      >
+        <XMarkIcon />
+      </button>
     </div>
-  );
+  )
 }
