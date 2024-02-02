@@ -29,13 +29,12 @@ export function FolderCard({ name, id, last_link_download }) {
       /* const reset = await API.resetCloudinaryIndex(id)
       console.log(reset) */
       const res = await API.addDownloadImgsIndex(id);
-      console.log("INDEX_CLOUD", res.data)
+      console.log("INDEX_CLOUD", res.data);
       const url = await API.getDownloadUrl(id);
       console.log(url.data);
-      setUrl(encodeURI(url.data))
-      //setUrl(url.data);
+      setUrl(url.data);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       setUrl(false);
     }
   }
@@ -51,8 +50,8 @@ export function FolderCard({ name, id, last_link_download }) {
   }
 
   useEffect(() => {
-    console.log("el efecto", url)
-  }, [url])
+    console.log("el efecto", url);
+  }, [url]);
   return (
     <div className="border-2  w-fit rounded-md px-1">
       <div className="ml-auto my-1 flex gap-2 items-center justify-end ">
@@ -76,7 +75,7 @@ export function FolderCard({ name, id, last_link_download }) {
             <LinkIcon className="w-9 h-9" />
           </button>
         ) : (
-          <a onClick={updateLastDownloadDate} href={url} download>
+          <a onClick={updateLastDownloadDate} href={url} target="_self" rel="nofollow">
             <ArrowDownTrayIcon className="w-9 inline  text-green-600 hover:opacity-75" />
           </a>
         )}
