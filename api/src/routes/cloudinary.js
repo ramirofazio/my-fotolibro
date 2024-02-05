@@ -224,35 +224,42 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
       cloud_name: CLOUDINARY_CLOUD_NAME,
     });
 
-    photos.map(async (p) => {
-      try {
-        const [folder, originalName] = p?.publicId.split("/");
-        const oldIndex = originalName.slice(0, 4);
-        console.log("old", oldIndex);
-        if (oldIndex === "000-") return;
+    let totalSlices = [];
+    const slices = Math.ceil(photos.length / 5);
+    let sliceSize = photos.length / slices; // 5
 
-        let resetedIndex = originalName.replace(oldIndex, "000-");
-        const newImg = await cloudinary.v2.uploader.rename(
-          p?.publicId,
-          `${folder}/${resetedIndex}`,
-          {}
-        );
-        const dbPhoto = await Photo.findByPk(p.id);
-        const dbUpdate = await dbPhoto.update({ publicId: newImg.public_id });
-        return { newImg, dbUpdate };
-      } catch (e) {
-        console.log("no encontro", p);
-        console.log(e);
-      }
-    });
+    for (let i = 0; i < slices; i++) {
+      let begin = i * sliceSize;
+      let slice = photos.slice(begin, begin + sliceSize);
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      const newImgs = slice.map(async (p) => {
+        try {
+          const [folder, originalName] = p?.publicId.split("/");
+          const oldIndex = originalName.slice(0, 4);
+          console.log("old", oldIndex);
+          if (oldIndex === "000-") return;
+
+          let resetedIndex = originalName.replace(oldIndex, "000-");
+          const newImg = await cloudinary.v2.uploader.rename(
+            p?.publicId,
+            `${folder}/${resetedIndex}`,
+            {}
+          );
+          const dbPhoto = await Photo.findByPk(p.id);
+          const dbUpdate = await dbPhoto.update({ publicId: newImg.public_id });
+          return { newImg, dbUpdate };
+        } catch (e) {
+          console.log("no encontro", p);
+          console.log(e);
+        }
+      });
+      totalSlices.push(newImgs);
+    }
     return res.json({
-      photos,
+      photos: totalSlices,
     });
   } catch (e) {
-    console.log(e);
-    return res.status(401).json({
-      e,
-    });
+    console.log("ERROR", e);
   }
 });
 
@@ -271,13 +278,13 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
     });
 
     let totalSlices = [];
-    const slices = Math.ceil(photos.length / 5)
+    const slices = Math.ceil(photos.length / 5);
     let sliceSize = photos.length / slices; // 5
     for (let i = 0; i < slices; i++) {
       let begin = i * sliceSize;
       let slice = photos.slice(begin, begin + sliceSize);
       // ---
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       let newImgs = slice.map(async (p) => {
         try {
           const [folder, originalName] = p?.publicId.split("/");
@@ -298,7 +305,7 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
           );
           const dbPhoto = await Photo.findByPk(p.id);
           const dbUpdate = await dbPhoto.update({ publicId: newImg.public_id });
-          
+
           return {
             IMG_CLOUDINARY: newImg,
             IMG_DB: dbUpdate,
@@ -306,8 +313,6 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
         } catch (e) {
           console.log("ERROR", e);
         }
-        //---
-        //console.log(newImgs.length)
         totalSlices.push(newImgs);
       });
     }

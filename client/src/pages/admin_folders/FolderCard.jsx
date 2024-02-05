@@ -26,8 +26,8 @@ export function FolderCard({ name, id, last_link_download }) {
 
   async function generateDownloadUrl() {
     try {
-      /* const reset = await API.resetCloudinaryIndex(id)
-      console.log(reset) */
+      /* const reset = await API.resetCloudinaryIndex(id);
+      console.log(reset); */
       const res = await API.addDownloadImgsIndex(id);
       console.log("INDEX_CLOUD", res.data);
       const url = await API.getDownloadUrl(id);
@@ -76,12 +76,12 @@ export function FolderCard({ name, id, last_link_download }) {
           </button>
         ) : (
           <>
-          {/* <a onClick={updateLastDownloadDate} href={url}>
-            <ArrowDownTrayIcon className="w-9 inline  text-green-600 hover:opacity-75" />
-          </a> */}
-          <button onClick={() => window.location.replace(url)}>
-            <ArrowDownTrayIcon className="w-9 inline  text-green-600 hover:opacity-75" />
-          </button>
+            <button onClick={() => {
+              window.location.replace(url)
+              updateLastDownloadDate()
+            }}>
+              <ArrowDownTrayIcon  className="w-9 inline  text-green-600 hover:opacity-75" />
+            </button>
           </>
         )}
         <XCircleIcon
