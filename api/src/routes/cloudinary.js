@@ -241,7 +241,7 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
         const dbUpdate = await dbPhoto.update({ publicId: newImg.public_id });
         return { newImg, dbUpdate };
       } catch (e) {
-        console.log("no encontro", p)
+        console.log("no encontro", p);
         console.log(e);
       }
     });
@@ -270,13 +270,14 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
       cloud_name: CLOUDINARY_CLOUD_NAME,
     });
 
-    let slices = [];
-    const sliceSize = Math.ceil(photos.length / 5);
-
-    for (let i = 0; i < 5; i++) {
+    let totalSlices = [];
+    const slices = Math.ceil(photos.length / 5)
+    let sliceSize = photos.length / slices; // 5
+    for (let i = 0; i < slices; i++) {
       let begin = i * sliceSize;
-      let slice = photos.slice(begin, begin + 5);
+      let slice = photos.slice(begin, begin + sliceSize);
       // ---
+      await new Promise(resolve => setTimeout(resolve, 100));
       let newImgs = slice.map(async (p) => {
         try {
           const [folder, originalName] = p?.publicId.split("/");
@@ -297,22 +298,23 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
           );
           const dbPhoto = await Photo.findByPk(p.id);
           const dbUpdate = await dbPhoto.update({ publicId: newImg.public_id });
+          
           return {
             IMG_CLOUDINARY: newImg,
             IMG_DB: dbUpdate,
           };
         } catch (e) {
-          console.log(e);
+          console.log("ERROR", e);
         }
         //---
-        slices.push(newImgs)
+        //console.log(newImgs.length)
+        totalSlices.push(newImgs);
       });
     }
     return res.json({
-      renamedPhotos: slices,
+      renamedPhotos: totalSlices,
       photos,
     });
-  
   } catch (e) {
     console.log(e);
     const { clientId } = req.body;
