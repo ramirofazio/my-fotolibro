@@ -20,6 +20,7 @@ export const API = {
     return api.delete(`cloudinary/images/${clientId}`);
   },
   uploadImagesDB: ({ imgs, clientId }) => {
+    console.log("manda: ", imgs.length )
     return api.post("client/imgs", { imgs, clientId });
   },
   getDownloadUrl: (clientId) => {
@@ -57,6 +58,9 @@ export const API = {
       clientId,
       photos_length,
     });
+  },
+  resetCloudinaryIndex: (clientId) => {
+    return api.post(`cloudinary/reset_cloudinary_index/${clientId}`);
   },
   /* getBooks: () => {
     return api.get("cloudinary/book");

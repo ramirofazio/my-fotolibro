@@ -141,9 +141,13 @@ router.get("/imgs/:clientId", async (req, res) => {
         clientId,
       },
     });
-   
+    const sortedPhotos = photos.sort((a, b) => {
+      if (a.index > b.index ) return 1
+      if (a.index  < b.index ) return -1
+      return 0
+    })
     return res.json({
-      photos,
+      photos: sortedPhotos,
     });
   } catch (e) {
     console.log(e);
@@ -156,8 +160,6 @@ router.post("/imgs", async (req, res) => {
     if (!imgs || !clientId) {
       res.status(401).send("faltan parametros");
     }
-
-    const client = await Client.findByPk(clientId);
 
     const rawImgs = imgs.map((i) => {
       return { ...i, clientId };
@@ -195,8 +197,8 @@ router.get("/canFinish/:clientId", async (req, res) => {
 
 router.post("/finish_upload", async (req, res) => {
   const { clientId, photos_length } = req.body;
-  const client = await Client.findByPk(clientId);
   try {
+    const client = await Client.findByPk(clientId);
     const info = await transporter.sendMail({
       from: `"myfotolibro 📷" <${EMAIL_USER}>`,
       to: ADMIN_EMAIL,
@@ -255,7 +257,12 @@ router.put("/index_images", async (req, res) => {
     const { imgs } = req.body;
 
     const indexedImgs = await imgs.forEach(async (img, i) => {
-      await Photo.update({ index: i }, { where: { id: img.id } });
+      try {
+        await Photo.update({ index: i + 1 }, { where: { id: img.id } });
+      }
+      catch(e) {
+        console.log(e)
+      }
     });
 
     return res.json({

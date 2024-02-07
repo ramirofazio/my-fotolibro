@@ -33,11 +33,15 @@ router.get("/signature", (req, res) => {
 router.get("/download/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
+    const client = await Client.findByPk(clientId);
+    const zipName = client?.name.trim().toLowerCase();
+    console.log(zipName);
     const download_url = await cloudinary.v2.utils.download_folder(clientId, {
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
       cloud_name: CLOUDINARY_CLOUD_NAME,
       prefixes: "/",
+      target_public_id: zipName,
     });
 
     return res.send(download_url);
@@ -72,8 +76,6 @@ router.get("/folders", async (req, res) => {
 router.post("/upload", async (req, res) => {
   try {
     const { files } = req.body; // pasarlo a una funcion, que cree una promesa por cada img y las resuelva
-
-   
 
     for (let [name, value] of files) {
       console.log(`${name} = ${value}`);
@@ -111,7 +113,6 @@ router.post("/upload", async (req, res) => {
 });
 
 router.delete("/images/:clientId", async (req, res) => {
-  
   try {
     const { clientId } = req.params;
 
@@ -120,30 +121,41 @@ router.delete("/images/:clientId", async (req, res) => {
       api_secret: CLOUDINARY_API_SECRET,
       cloud_name: CLOUDINARY_CLOUD_NAME,
     });
-
-    const folder = await cloudinary.v2.search
-      .expression(`folder=${clientId}`)
-      .sort_by("public_id", "desc")
-      .execute();
+    const folder = await cloudinary.v2.api.resources({
+      type: "upload",
+      prefix: clientId,
+      max_results: 400,
+    });
+    if (!folder.resources.length) return;
     const public_ids = folder.resources.map((asset) => asset.public_id);
+    console.log(public_ids.length);
 
-    const deleted_assets = await cloudinary.v2.api.delete_resources(
-      public_ids,
-      {
-        all: true,
+    const subArrNum = Math.ceil(public_ids.length / 100);
+    console.log(subArrNum);
+    let deleted_assets = [];
+    for (let i = 0; i < subArrNum; i++) {
+      try {
+        let begin = i * 100;
+        let slice = public_ids.slice(begin, begin + 100);
+        const res = await cloudinary.v2.api.delete_resources(slice, {
+          all: true,
+        });
+        deleted_assets.push(res.data);
+      } catch (e) {
+        console.log(e);
       }
-    );
+    }
 
     const deleted_folder = await cloudinary.v2.api.delete_folder(clientId);
-    const delete_upload_preset = await cloudinary.v2.api.delete_upload_preset(
+    /* const delete_upload_preset = await cloudinary.v2.api.delete_upload_preset(
       clientId
     );
-
+ */
     res.json({
       res: public_ids,
       deleted_assets,
       deleted_folder,
-      delete_upload_preset,
+      // delete_upload_preset,
     });
   } catch (error) {
     console.log(error);
@@ -155,7 +167,6 @@ router.delete("/images/:clientId", async (req, res) => {
 });
 
 router.post("/delete/single_img", async (req, res) => {
-  
   try {
     const { publicId, id } = req.body;
     console.log(req.body);
@@ -199,6 +210,59 @@ router.get("/book/:id", async (req, res) => {
   }
 });
 
+router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
+  try {
+    const { clientId } = req.params;
+
+    const photos = await Photo.findAll({
+      where: { clientId },
+    });
+
+    cloudinary.v2.config({
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+    });
+
+    let totalSlices = [];
+    const slices = Math.ceil(photos.length / 5);
+    let sliceSize = photos.length / slices; // 5
+
+    for (let i = 0; i < slices; i++) {
+      let begin = i * sliceSize;
+      let slice = photos.slice(begin, begin + sliceSize);
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      const newImgs = slice.map(async (p) => {
+        try {
+          const [folder, originalName] = p?.publicId.split("/");
+          const oldIndex = originalName.slice(0, 4);
+          console.log("old", oldIndex);
+          if (oldIndex === "000-") return;
+
+          let resetedIndex = originalName.replace(oldIndex, "000-");
+          const newImg = await cloudinary.v2.uploader.rename(
+            p?.publicId,
+            `${folder}/${resetedIndex}`,
+            {}
+          );
+          const dbPhoto = await Photo.findByPk(p.id);
+          const dbUpdate = await dbPhoto.update({ publicId: newImg.public_id });
+          return { newImg, dbUpdate };
+        } catch (e) {
+          console.log("no encontro", p);
+          console.log(e);
+        }
+      });
+      totalSlices.push(newImgs);
+    }
+    return res.json({
+      photos: totalSlices,
+    });
+  } catch (e) {
+    console.log("ERROR", e);
+  }
+});
+
 router.post("/sort_download_imgs/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
@@ -212,20 +276,64 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
       api_secret: CLOUDINARY_API_SECRET,
       cloud_name: CLOUDINARY_CLOUD_NAME,
     });
-    photos.map(async (p) => {
-      try {
-        const [folder, originalName] = p?.publicId.split("/");
-        const indexedName = originalName.replace("-0-", `${p?.index}-`);
-        const newImg = await cloudinary.v2.uploader.rename(
-          p?.publicId,
-          `${folder}/${indexedName}`,
-          {}
-        );
-        return newImg;
-      } catch (e) {
-        console.log(e);
-      }
-    });
+
+    const slices = Math.ceil(photos.length / 5);
+    let sliceSize = photos.length / slices; // 5
+    for (let i = 0; i < slices; i++) {
+      let begin = i * sliceSize;
+      let slice = photos.slice(begin, begin + sliceSize);
+      // ---
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      let newImgs = slice.map(async (p) => {
+        try {
+          const [folder, originalName] = p?.publicId.split("/");
+          let index = `${p.index}`;
+          let newIndex = "";
+
+          if (p.index === 0) return;
+          else if (index?.length === 1) newIndex = `00${index}-`;
+          else if (index?.length === 2) newIndex = `0${index}-`;
+          else if (index?.length === 3) newIndex = `${index}-`;
+          
+          const oldIndex = originalName.slice(0, 4);
+          
+          //console.log("Viejo index: ", oldIndex)
+          //console.log(oldIndex, "||", newIndex);
+
+          if (oldIndex !== newIndex) {
+            let indexedName = originalName.replace(oldIndex, newIndex);
+            const newImg = await cloudinary.v2.uploader.rename(
+              p?.publicId,
+              `${folder}/${indexedName}`,
+              {}
+            );
+            const dbPhoto = await Photo.findByPk(p.id);
+            const dbUpdate = await dbPhoto.update({ publicId: newImg.public_id });
+
+            return {
+              IMG_CLOUDINARY: newImg,
+              IMG_DB: dbUpdate,
+            };
+          }
+
+        } catch (e) {
+          console.log(e)
+          const [folder, originalName] = p?.publicId.split("/");
+          let index = `${p.index}`;
+          let newIndex = "";
+          if (p.index === 0) return;
+          else if (index?.length === 1) newIndex = `00${index}-`;
+          else if (index?.length === 2) newIndex = `0${index}-`;
+          else if (index?.length === 3) newIndex = `${index}-`;
+
+          const oldIndex = originalName.slice(0, 4);
+
+          console.log("ERR: " + originalName);
+          console.log("viejo: ", oldIndex)
+          console.log("nuevo: " + newIndex)
+        }
+      });
+    }
     return res.json({
       photos,
     });

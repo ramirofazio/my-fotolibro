@@ -19,11 +19,9 @@ export function UpdateClient() {
       dni,
       phone,
     };
-    const updated = await API.updateClient({ newData, clientId: _client?.id })
-    console.log(updated)
+    await API.updateClient({ newData, clientId: _client?.id })
     toast.success("Cliente actualizado")
     navigate(0)
-    //navigate(`/admin/${params?.adminId}/clients/update/${_client.id}`);
   }
 
   return (

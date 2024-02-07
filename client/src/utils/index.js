@@ -12,32 +12,51 @@ export async function uploadImagesCloudinary(images = [], clientId = "") {
   const promises = [];
 
   images.forEach(({ file, originalName, upload }) => {
-    // TODO integrar compressor.js aqui
     if (!upload) {
       const formdata = new FormData();
       formdata.append("file", file);
       formdata.append("upload_preset", clientId);
       formdata.append("filename_override", originalName);
-      formdata.append("public_id", `-0-"${originalName}"`);
+      formdata.append("public_id", `000-"${originalName}"`);
       promises.push(axios.post(URL, formdata));
     }
   });
 
   try {
+    console.log("PROMIS", promises.length);
     const responses = await Promise.all(promises);
-    responses.forEach(({ data }) => {
+    console.log("RESPONS", responses.length);
+    // AQUI LLEGAN 130 RESPONSES
+    responses.forEach((res, i) => {
+      const { data } = res;
       if (data.secure_url) {
-        photos[data.original_filename] = {
-          URL: data.secure_url,
-          id: data.asset_id,
-          originalName: data.original_filename,
-          size: data.bytes,
-          publicId: data.public_id,
-        };
+        if (photos[data.original_filename]) {
+          photos[data.original_filename + i] = {
+            URL: data.secure_url,
+            id: data.asset_id,
+            originalName: data.original_filename + i,
+            size: data.bytes,
+            publicId: data.public_id,
+          };
+        } else {
+          photos[data.original_filename] = {
+            URL: data.secure_url,
+            id: data.asset_id,
+            originalName: data.original_filename,
+            size: data.bytes,
+            publicId: data.public_id,
+          };
+        }
       }
     });
-    // TODO Guardar en DB
-    API.uploadImagesDB({ clientId, imgs: Object.values(photos) });
+    //AQUI 120
+    console.log(Object.values(photos).length);
+    console.log(photos);
+    const res = await API.uploadImagesDB({
+      clientId,
+      imgs: Object.values(photos),
+    });
+    console.log(res);
   } catch (err) {
     console.log(err);
   }
@@ -65,39 +84,6 @@ export function isValidClient({ name, email, dni, phone }) {
 
   return errs;
 }
-/**
- *  async function handleImgsUpload(files) {
-    let links = [];
-    let mockCounter = 1;
-    let imgsDB = [];
-    // setLoader
-    for (const img in files) {
-      try {
-        const formData = new FormData();
-        formData.append('file', files[img]);
-        formData.append('upload_preset', clientId);
-        formData.append('public_id', img);
-        const { data } = await axios.post(
-          'https://api.cloudinary.com/v1_1/dnxa8khx9/image/upload',
-          formData
-        );
-        imgsDB.push({
-          URL: data.secure_url,
-          index: mockCounter,
-          originalName: img,
-        });
-        links.push(data.secure_url);
-        mockCounter = mockCounter + 1;
-      } catch (e) {
-        console.log(e);
-      }
-    }
-    // setLoader
-    const res = await API.uploadImagesDB({ clientId, imgs: imgsDB });
-    console.log(res);
-    return links;
-  }
- */
 
 export function getSizeImage(size) {
   const DECIMALS = 3;

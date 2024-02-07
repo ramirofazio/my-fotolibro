@@ -9,6 +9,9 @@ export default {
         base: '#393E46',
         primary: '#00ADB5',
         accent: '#EEEEEE'
+      },
+      animation: {
+        continue: 'ping 3s '
       }
     },
   },
