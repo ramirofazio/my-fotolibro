@@ -10,7 +10,7 @@ export function CreateClient() {
 
   async function submitClient(e) {
     e.preventDefault();
-    const res = await API.createClient(client);
+    const res = await API.createClient({...client, name: client.name.toLowerCase().trim()});
 
     if(res?.data) {
       toast.success("Cliente creado")

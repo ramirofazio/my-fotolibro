@@ -1,5 +1,5 @@
 import { api } from "./base_api";
-
+console.log(api)
 export const API = {
   getClients: () => {
     return api.get("client");
@@ -20,6 +20,7 @@ export const API = {
     return api.delete(`cloudinary/images/${clientId}`);
   },
   uploadImagesDB: ({ imgs, clientId }) => {
+    console.log("manda: ", imgs.length )
     return api.post("client/imgs", { imgs, clientId });
   },
   getDownloadUrl: (clientId) => {

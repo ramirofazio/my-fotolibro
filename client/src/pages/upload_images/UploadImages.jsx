@@ -30,6 +30,10 @@ export function UploadImages() {
   }, [])
 
   useEffect(() => {
+    console.log(images)
+  }, [images])
+
+  useEffect(() => {
     if (status.pending > 0) {
       setStepContinue({ value: false, msg: 'Asegurate de subir las Imagenes' })
     } else if (images.length === 0) {
@@ -121,7 +125,7 @@ export function UploadImages() {
                   Loading ? 'animate-pulse' : ''
                 }`}
               >
-                Subir Imagenes
+                {status.pending === 0 ? "Imagenes subidas, seleccione mas o pase a ordenar": "Subir imagenes"}
                 <CloudArrowUpIcon className="w-8 aspect-square " />
               </span>
             </button>
@@ -192,7 +196,7 @@ export function UploadImages() {
                   }
                   removeImages(i, image.upload ? 'uploaded' : 'pending')
                 }}
-                className=" w-7 aspect-square p-0.5 hover:text-red-800 text-gray-700 rounded-full bg-gray-400/40  hover:bg-gray-400 "
+                className="w-7 aspect-square p-0.5 hover:text-red-800 text-gray-700 rounded-full bg-gray-400/40  hover:bg-gray-400 "
                 title="Eliminar"
               >
                 <XMarkIcon />
