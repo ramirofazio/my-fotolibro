@@ -1,5 +1,5 @@
 import { api } from "./base_api";
-
+console.log(api)
 export const API = {
   getClients: () => {
     return api.get("client");

@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const router = require("./routes/index.js");
 require("dotenv").config();
 const { CLIENT_URL } = process.env;
-
+const cors = require("cors")
 require("./db.js");
 
 const server = express();
@@ -18,6 +18,10 @@ server.use(cookieParser());
 server.use(morgan("dev"));
 
 // Update CORS middleware
+// CORS anteriores: 
+/* res.header("Access-Control-Allow-Origin", "http://localhost:5173/");
+  res.header("Access-Control-Allow-Credentials", "true"); 
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE"); */
 server.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", CLIENT_URL);
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -28,7 +32,7 @@ server.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   next();
 });
-
+server.use(cors())
 server.use(router);
 
 // Error catching endware.
