@@ -125,7 +125,7 @@ export function UploadImages() {
                   Loading ? 'animate-pulse' : ''
                 }`}
               >
-                Subir Imagenes
+                {status.pending === 0 ? "Imagenes subidas, seleccione mas o pase a ordenar": "Subir imagenes"}
                 <CloudArrowUpIcon className="w-8 aspect-square " />
               </span>
             </button>
