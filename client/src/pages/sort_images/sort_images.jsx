@@ -68,6 +68,7 @@ export function SortImages() {
 
   return (
     <div className="touch-none w-[85%] mx-auto">
+      <h2 className="w-fit text-white text-xl mx-auto my-2">Guarde el orden deseado para las fotos abajo del todo 👇</h2>
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={images} strategy={verticalListSortingStrategy}>
           <ul className="flex flex-col gap-3 py-2">
@@ -108,6 +109,7 @@ export function SortImages() {
             id="finish"
             disabled={previus?.canFinish || trySort ? false : true}
             onClick={() => {
+              setTrySort(true)
               toast.promise(submitBook(), {
                 loading: "Enviando Imagenes",
                 success: "Las imagenes fueron Enviadas",
