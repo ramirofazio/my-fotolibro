@@ -37,7 +37,7 @@ export function ClientCard({
 
   return (
     <div
-      className={`border-2 rounded p-2  bg-slate-700 border-base-[10%] ${
+      className={`border-2 rounded p-2 w-[80%]  bg-slate-700 border-base-[10%] ${
         params?.clientId === id && "border-4 border-red-500"
       } `}
     >
