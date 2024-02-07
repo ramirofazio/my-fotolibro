@@ -31,6 +31,7 @@ export function FolderCard({ name, id, last_link_download }) {
       const res = await API.addDownloadImgsIndex(id);
       console.log("INDEX_CLOUD", res.data);
       const url = await API.getDownloadUrl(id);
+      await updateLastDownloadDate()
       console.log(url.data);
       setUrl(url.data);
     } catch (err) {
@@ -40,13 +41,13 @@ export function FolderCard({ name, id, last_link_download }) {
   }
 
   //asincrono y esperar + notificacion
-  function updateLastDownloadDate() {
+  async function updateLastDownloadDate() {
     const actual_date = DateTime.now().setLocale("es").toFormat("dd/MM/yyyy");
-    API.updateClient({
+    await API.updateClient({
       clientId: id,
-      newData: { last_link_download: actual_date },
+      newData: { last_link_download: actual_date},
     });
-    API.resetCloudinaryIndex(id).then((res) => console.log(res));
+    //await API.resetCloudinaryIndex(id).then((res) => console.log(res));
   }
 
   useEffect(() => {
@@ -76,10 +77,7 @@ export function FolderCard({ name, id, last_link_download }) {
           </button>
         ) : (
           <>
-            <button onClick={() => {
-              window.location.replace(url)
-              updateLastDownloadDate()
-            }}>
+            <button onClick={() => window.location.replace(url)}>
               <ArrowDownTrayIcon  className="w-9 inline  text-green-600 hover:opacity-75" />
             </button>
           </>

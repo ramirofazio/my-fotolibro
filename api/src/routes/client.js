@@ -78,7 +78,6 @@ router.post("/", async (req, res) => {
         use_asset_folder_as_public_id_prefix: false,
       })
       .then((result) => {
-        console.log(result)
         return res.json({ upload_preset: result, clientId: newClient.id });
       });
   } catch (e) {
@@ -147,7 +146,6 @@ router.get("/imgs/:clientId", async (req, res) => {
       if (a.index  < b.index ) return -1
       return 0
     })
-    console.log(sortedPhotos)
     return res.json({
       photos: sortedPhotos,
     });
@@ -264,7 +262,6 @@ router.put("/index_images", async (req, res) => {
       }
       catch(e) {
         console.log(e)
-        console.log(img)
       }
     });
 
