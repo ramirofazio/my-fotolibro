@@ -72,7 +72,7 @@ export function SortImages() {
   }, [])
 
   return (
-    <div className="touch-none w-[85%] mx-auto">
+    <div className="touch-none w-[70%] mx-auto">
       <h2 className="w-fit text-white text-xl mx-auto my-2">
         Guarde el orden deseado para las fotos abajo del todo 👇
       </h2>
