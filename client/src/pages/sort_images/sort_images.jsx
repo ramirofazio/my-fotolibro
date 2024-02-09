@@ -7,9 +7,14 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import {
+  restrictToVerticalAxis,
+  restrictToWindowEdges,
+} from '@dnd-kit/modifiers'
+import {
   PaperAirplaneIcon,
   XMarkIcon,
   AdjustmentsHorizontalIcon,
+  ChevronUpDownIcon,
 } from '@heroicons/react/24/outline'
 import { useApp } from '../../contexts/AppContext'
 import { API } from '../../api_instance'
@@ -68,8 +73,14 @@ export function SortImages() {
 
   return (
     <div className="touch-none w-[85%] mx-auto">
-      <h2 className="w-fit text-white text-xl mx-auto my-2">Guarde el orden deseado para las fotos abajo del todo 👇</h2>
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <h2 className="w-fit text-white text-xl mx-auto my-2">
+        Guarde el orden deseado para las fotos abajo del todo 👇
+      </h2>
+      <DndContext
+        modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
         <SortableContext items={images} strategy={verticalListSortingStrategy}>
           <ul className="flex flex-col gap-3 py-2">
             {images.map((image, i) => (
@@ -144,9 +155,6 @@ function Item({ image, index, onDelete }) {
   return (
     <div
       ref={setNodeRef}
-      {...attributes}
-      {...listeners}
-      onClick={() => console.log('test')}
       style={style}
       className="w-[95%] flex bg-slate-300 rounded justify-between items-center"
     >
@@ -163,13 +171,22 @@ function Item({ image, index, onDelete }) {
           {originalName}
         </p>
       </div>
-      <button
-        onClick={() => onDelete(image)}
-        className="mx-2 border-2 ml-auto border-black group: hover:border-red-600 w-8 h-8 md:w-12 md:h-12  md:mx-2 hover:text-red-600 rounded-full hover:bg-gray-400/40"
-        title="Eliminar"
-      >
-        <XMarkIcon />
-      </button>
+      <div className="flex gap-6 items-center pr-2">
+        <button
+          onClick={() => onDelete(image)}
+          className="w-8 aspect-square md:w-10 text-gray-700 hover:text-red-600 rounded hover:bg-gray-400/40"
+          title="Eliminar"
+        >
+          <XMarkIcon />
+        </button>
+        <button
+          className="w-8 text-gray-700 hover:text-gray-800 hover:bg-gray-400/40 md:w-11 rounded h-12"
+          {...attributes}
+          {...listeners}
+        >
+          <ChevronUpDownIcon className=" w-full aspect-square" />
+        </button>
+      </div>
     </div>
   )
 }
