@@ -52,7 +52,6 @@ export function SortImages() {
       })
   }
 
-  console.log(images)
   useEffect(() => {
     updateInfoImages(previus?.photos)
     if (!previus?.photos?.length) {

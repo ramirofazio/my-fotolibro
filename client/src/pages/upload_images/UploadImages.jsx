@@ -46,6 +46,10 @@ export function UploadImages() {
     }
   }, [status])
 
+  useEffect(() => {
+    document.body.style.overflow = Loading ? 'hidden' : ''
+  }, [Loading])
+
   function handleImages({ target }) {
     const files = target.files
     if (!files) return
@@ -125,7 +129,9 @@ export function UploadImages() {
                   Loading ? 'animate-pulse' : ''
                 }`}
               >
-                {status.pending === 0 ? "Imagenes subidas, seleccione mas o pase a ordenar": "Subir imagenes"}
+                {status.pending === 0
+                  ? 'Imagenes subidas, seleccione mas o pase a ordenar'
+                  : 'Subir imagenes'}
                 <CloudArrowUpIcon className="w-8 aspect-square " />
               </span>
             </button>
