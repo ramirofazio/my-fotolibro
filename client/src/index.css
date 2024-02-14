@@ -31,7 +31,7 @@
   }
 
   ::-webkit-scrollbar {
-    @apply w-4;
+    @apply w-3;
   }
 
   ::-webkit-scrollbar-thumb {
