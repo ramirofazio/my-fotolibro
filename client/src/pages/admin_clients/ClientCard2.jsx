@@ -44,58 +44,78 @@ export function ClientCard2({
         {name}
       </h1>
       <section className="flex flex-col">
-        <button className="self-end w-28 rounded-lg border-2">Cambiar</button>
-        <span className="mr-auto my-2 flex justify-between">
-          {/* <span>
-            <p className="border-b-[1px]">Creado</p>
-            <p className=" font-bold">{created_at}</p>
-          </span> */}
-          <span className="flex flex-col">
-            {/* <span className="flex items-center gap-2">
-              <p
-                className={`w-3.5 h-3.5 rounded-full border-2 ${
-                  active_link
-                    ? "border-green-600 bg-green-500"
-                    : "border-yellow-500 bg-yellow-300"
-                }`}
-              ></p>
-              <p className=" font-bold">
-                {active_link ? "Activo" : "Desactivado"}
-              </p>
-            </span> */}
+        <button className="self-end w-28 my-4 rounded-lg border-2">
+          Cambiar
+        </button>
+        <article className="truncate mr-auto my-2 flex flex-col border-[2.5px] py-2 border-blue-700 px-1 w-full overflow-hidden rounded-lg justify-between">
+          <span className="flex items-center  gap-1.5 ">
+            <label
+              className="text-xl font-bold text-violet-500 "
+              htmlFor="email"
+            >
+              Email-
+            </label>
+            <p id="email" className="text-[16px] border-b-2 truncate">
+              {email}
+            </p>
           </span>
-          {/* <button
-            onClick={updateActiveClient}
-            className="w-[25%] border-2 rounded-md border-blue-600 bg-slate-400 hover:bg-white text-sm font-semibold uppercase text-violet-900"
+          <span className="flex items-center gap-1.5">
+            <label
+              className="text-xl font-bold text-violet-500 "
+              htmlFor="phone"
+            >
+              Numero-
+            </label>
+            <p id="phone" className="text-[16px]  border-b-2">
+              {phone}
+            </p>
+          </span>
+          <span className="flex items-center gap-1.5">
+            <label className="text-xl font-bold text-violet-500 " htmlFor="dni">
+              DNI-
+            </label>
+            <p id="dni" className="text-[16px] border-b-2">
+              {dni}
+            </p>
+          </span>
+        </article>
+
+        <span className="border-2 flex-col flex relative">
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={`https://myfotolibro.cloud/client/${id}/client_data`}
+            className="text-lg  truncate px-1 text-blue-500 border-2 border-dashed border-red-400"
           >
-            cambiar estado
-          </button> */}
+            {`https://myfotolibro.cloud/client/${id}/client_data`}
+          </a>
+
+          <picture className="w-fit border-2 absolute -bottom-10 -right-0.5 border-black  rounded-full p-1 bg-gray-200 hover:bg-gray-600 transition-all ">
+            <CopyToClipboard
+              text={
+                import.meta.env.VITE_ENV === "production"
+                  ? `http://myfotolibro.cloud/client/${id}/client_data`
+                  : `http://localhost:5173/client/${id}/client_data`
+              }
+            >
+              <PaperClipIcon
+                onClick={() => toast("URL copiado", { icon: "📎" })}
+                className="w-8 h-8 text-gray-600 hover:text-gray-400"
+              />
+            </CopyToClipboard>
+          </picture>
         </span>
-        {/* <picture className="flex items-center justify-end ml-auto gap-3 mb-2">
-          <CopyToClipboard
-            text={
-              import.meta.env.VITE_ENV === "production"
-                ? `http://myfotolibro.cloud/client/${id}/client_data`
-                : `http://localhost:5173/client/${id}/client_data`
-            }
-          >
-            <PaperClipIcon
-              onClick={() => toast("URL copiado", { icon: "📎" })}
-              className="w-9 h-9 text-gray-400 hover:text-white"
-            />
-          </CopyToClipboard>
-          <Link to={`update/${id}`}>
-            <PencilSquareIcon className="w-10 h-10 hover:text-blue-400 text-blue-600" />
-          </Link>
-          <XCircleIcon
+        <span className="flex flex-row items-center mt-14">
+          <button
             onClick={handleDelete}
-            className="w-10 h-10 hover:text-red-400 text-red-600"
-          />
-        </picture> */}
-      
-        <a target="_blank" rel="noreferrer" href={`https://myfotolibro.cloud/client/${id}/client_data`} className="text-lg truncate text-blue-500 border-2 border-dashed border-red-400">
-          {`https://myfotolibro.cloud/client/${id}/client_data`}
-        </a>
+            className="hover:text-red-400 border-[3px] w-[60%] border-red-500 p-1 rounded-lg my-2 bg-red-400  text-red-600"
+          >
+            <p className="text-lg">ELIMINAR</p>
+          </button>
+          <Link className="ml-auto" to={`update/${id}`}>
+            <PencilSquareIcon className="w-12 h-12 hover:text-blue-400 text-blue-600" />
+          </Link>
+        </span>
       </section>
     </div>
   );
