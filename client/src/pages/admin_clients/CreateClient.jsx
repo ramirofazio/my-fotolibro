@@ -22,7 +22,7 @@ export function CreateClient() {
   }
 
   return (
-    <div>
+    <div className="">
       <h1 className="text-2xl w-[75%] mx-auto my-4 text-violet-400 text-center">
         Complete los campos para crear un cliente con su codigo para cargar
         imagenes

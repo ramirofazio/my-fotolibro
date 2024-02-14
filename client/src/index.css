@@ -6,7 +6,7 @@
   *,
   *::after,
   *::before {
-    @apply box-border scroll-smooth;
+    @apply box-border /* scroll-smooth */;
   }
   html {
     @apply h-full;
@@ -31,7 +31,7 @@
   }
 
   ::-webkit-scrollbar {
-    @apply w-2;
+    @apply w-3;
   }
 
   ::-webkit-scrollbar-thumb {

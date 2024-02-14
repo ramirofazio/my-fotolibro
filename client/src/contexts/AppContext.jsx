@@ -75,6 +75,10 @@ export const AppProvider = ({ children }) => {
     return !!objWithKeys[nameImage]
   }
 
+  const removeImage = (id) => {
+    setImages((cur) => cur.filter((img) => img.id !== id))
+  }
+
   const updateInfoImages = (images) => {
     setImages(
       images.map((image) => ({
@@ -88,15 +92,6 @@ export const AppProvider = ({ children }) => {
     }))
   }
 
-  const arrayToObject = () => {
-    const objWithKeys = images.reduce((acc, obj) => {
-      acc[obj.originalName] = obj
-      return acc
-    }, {})
-
-    return objWithKeys
-  }
-
   return (
     <AppContext.Provider
       value={{
@@ -108,6 +103,7 @@ export const AppProvider = ({ children }) => {
         status,
         existImage,
         updateInfoImages,
+        removeImage,
       }}
     >
       <NavProvider>{children}</NavProvider>

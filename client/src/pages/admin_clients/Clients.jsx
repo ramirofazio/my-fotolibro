@@ -2,6 +2,7 @@
 import { ClientCard } from "./ClientCard";
 import { useLoaderData } from "react-router-dom";
 import { Outlet } from "react-router-dom";
+import { ClientCard2 } from "./ClientCard2";
 
 export function Clients() {
   const clients = useLoaderData()
@@ -12,7 +13,7 @@ export function Clients() {
         <h1 className="text-3xl text-violet-400 font-sans my-4 lg:col-span-2">Clientes activos</h1>
         {clients?.length ? (
           clients.map((c, i) => {
-            return <ClientCard created_at={c.created_at} active_link={c.active_link} dni={c.dni} email={c.email} phone={c.phone} id={c.id} key={i} name={c.name} />;
+            return <ClientCard2 created_at={c.created_at} active_link={c.active_link} dni={c.dni} email={c.email} phone={c.phone} id={c.id} key={i} name={c.name} />;
           })
         ) : (
           <div className="place-self-start">
