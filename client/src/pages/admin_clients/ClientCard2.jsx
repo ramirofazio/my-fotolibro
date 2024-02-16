@@ -1,5 +1,4 @@
 import {
-  XCircleIcon,
   PencilSquareIcon,
   PaperClipIcon,
 } from "@heroicons/react/24/outline";
@@ -44,9 +43,34 @@ export function ClientCard2({
         {name}
       </h1>
       <section className="flex flex-col">
-        <button className="self-end w-28 my-4 rounded-lg border-2">
-          Cambiar
-        </button>
+        <span className="flex border-t-2 items-center justify-between">
+          <span className="flex flex-col items-center gap-1">
+            
+            <p className="flex items-center gap-1">
+              <p
+                className={`w-3.5 h-3.5 rounded-full border-2 ${
+                  active_link
+                    ? "border-green-600 bg-green-500"
+                    : "border-yellow-500 bg-yellow-300"
+                }`}
+              ></p>
+              <p className=" font-bold">
+                {active_link ? "Activo" : "Desactivado"}
+              </p>
+            </p>
+
+            <p>
+              <p className="border-b-[1px] text-center">Creado</p>
+              <p className=" font-bold">{created_at}</p>
+            </p>
+          </span>
+          <button
+            onClick={updateActiveClient}
+            className=" rounded-md border-blue-600 bg-slate-400 hover:bg-white text-sm font-bold uppercase text-violet-900 !self-end p-2 my-4 border-2"
+          >
+            Cambiar estado
+          </button>
+        </span>
         <article className="truncate mr-auto my-2 flex flex-col border-[2.5px] py-2 border-blue-700 px-1 w-full overflow-hidden rounded-lg justify-between">
           <span className="flex items-center  gap-1.5 ">
             <label
@@ -80,12 +104,12 @@ export function ClientCard2({
           </span>
         </article>
 
-        <span className="border-2 flex-col flex relative">
+        <span className="flex-col flex relative">
           <a
             target="_blank"
             rel="noreferrer"
             href={`https://myfotolibro.cloud/client/${id}/client_data`}
-            className="text-lg  truncate px-1 text-blue-500 border-2 border-dashed border-red-400"
+            className="text-lg rounded-lg  truncate px-1 text-blue-500 border-2 border-dashed border-red-400"
           >
             {`https://myfotolibro.cloud/client/${id}/client_data`}
           </a>

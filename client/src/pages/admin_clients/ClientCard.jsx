@@ -49,7 +49,7 @@ export function ClientCard({
           </span>
           <span className="flex flex-col">
             <p className="border-b-[1px]">Estado</p>
-            <span className="flex items-center gap-2">
+            <span className="flex  items-center gap-2">
               <p
                 className={`w-3.5 h-3.5 rounded-full border-2 ${
                   active_link
