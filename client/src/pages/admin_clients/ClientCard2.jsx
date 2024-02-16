@@ -104,12 +104,12 @@ export function ClientCard2({
           </span>
         </article>
 
-        <span className="border-2 flex-col flex relative">
+        <span className="flex-col flex relative">
           <a
             target="_blank"
             rel="noreferrer"
             href={`https://myfotolibro.cloud/client/${id}/client_data`}
-            className="text-lg  truncate px-1 text-blue-500 border-2 border-dashed border-red-400"
+            className="text-lg rounded-lg  truncate px-1 text-blue-500 border-2 border-dashed border-red-400"
           >
             {`https://myfotolibro.cloud/client/${id}/client_data`}
           </a>
