@@ -1,5 +1,5 @@
 
-import { ClientCard } from "./ClientCard";
+//import { ClientCard } from "./ClientCard";
 import { useLoaderData } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { ClientCard2 } from "./ClientCard2";
