@@ -76,14 +76,14 @@ export function SortableItem({ image, index, onDelete }) {
             </button>
           </>
         ) : (
-          <Loader />
+          <CardLoader />
         )}
       </div>
     </div>
   )
 }
 
-function Loader() {
+export function CardLoader() {
   return (
     <>
       <div className="flex flex-row gap-2 px-2">
