@@ -1,4 +1,4 @@
-import { useLoaderData, useParams } from 'react-router-dom'
+import { useLoaderData, useNavigate, useParams } from 'react-router-dom'
 import { useApp } from '../../contexts/AppContext'
 import { CloudArrowUpIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { getSizeImage, uploadImagesCloudinary } from '../../utils'
@@ -11,6 +11,7 @@ import { useNavigation } from '../../contexts/NavigationContext'
 
 export function UploadImages() {
   const { setStepContinue } = useNavigation()
+  const navigate = useNavigate()
 
   const { clientId } = useParams()
   const {
@@ -94,6 +95,7 @@ export function UploadImages() {
       const upImage = await uploadImagesCloudinary(images, clientId)
       addImagesUploaded(upImage)
       setLoading(false)
+      navigate(0)
     } catch (error) {
       setLoading(false)
     }
