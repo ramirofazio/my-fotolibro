@@ -80,14 +80,12 @@ export function isValidClient({ name, email, dni, phone }) {
   return errs
 }
 
-export function getSizeImage(size) {
-  const DECIMALS = 3
-
-  let bytes = Number(size)
-
-  if (bytes < 1048576) {
-    return (bytes / 1024).toFixed(DECIMALS) + ' KB'
-  } else {
-    return (bytes / 1048576).toFixed(DECIMALS) + ' MB'
+export function getSizeImage(number) {
+  if (number < 1024) {
+    return `${number} bytes`
+  } else if (number >= 1024 && number < 1048576) {
+    return `${(number / 1024).toFixed(1)} KB`
+  } else if (number >= 1048576) {
+    return `${(number / 1048576).toFixed(1)} MB`
   }
 }

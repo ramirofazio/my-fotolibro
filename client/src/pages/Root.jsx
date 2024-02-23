@@ -5,6 +5,7 @@ import { useEffect } from 'react'
 import { API } from '../api_instance'
 import { PreviousNext } from '../components/PreviousNext'
 import { SuccessPage } from './SuccessPage'
+import { Loader } from '../components/Loader'
 
 export function Root() {
   const client = useLoaderData()
@@ -32,6 +33,7 @@ export function Root() {
           <Nav />
           <PreviousNext />
           <Outlet />
+          <Loader />
         </>
       )}
     </div>

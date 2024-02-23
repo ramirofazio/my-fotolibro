@@ -6,12 +6,21 @@ export const useApp = () => useContext(AppContext)
 
 export const AppProvider = ({ children }) => {
   const [images, setImages] = useState([])
+  const [localImages, setLocalImages] = useState([])
+  const [cloudImages, setCloudImages] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const [status, setStatus] = useState({
     uploaded: 0,
     pending: 0,
   })
 
+  const addLocalImages = (images) => {
+    setLocalImages((cur) => [images, ...cur])
+  }
+  const removeLocalImage = (ID) => {
+    setLocalImages((cur) => cur.filter(({ id }) => id !== ID))
+  }
   const addImages = (images) => {
     setImages((cur) => {
       if (Array.isArray(images)) {
@@ -64,15 +73,12 @@ export const AppProvider = ({ children }) => {
     setImages(images)
   }
 
-  const existImage = (nameImage) => {
-    if (images.length === 0) return null
+  const imageExist = (name) => {
+    const current = [...localImages, ...cloudImages]
+    const nameSet = new Set()
 
-    const objWithKeys = images.reduce((acc, obj) => {
-      acc[obj.originalName] = obj
-      return acc
-    }, {})
-
-    return !!objWithKeys[nameImage]
+    current.forEach(({ originalName }) => nameSet.add(originalName))
+    return nameSet.has(name)
   }
 
   const removeImage = (id) => {
@@ -95,13 +101,31 @@ export const AppProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
+        localImages: {
+          size: localImages.length,
+          values: localImages,
+          add: addLocalImages,
+          remove: removeLocalImage,
+          exist: imageExist,
+          clear: () => setLocalImages([]),
+        },
+        cloudImages: {
+          values: cloudImages,
+          size: cloudImages.length,
+          set: (images) => {
+            setCloudImages(images)
+          },
+        },
+        loading: {
+          value: isLoading,
+          set: (value) => setIsLoading(value),
+        },
         images,
         addImages,
         removeImages,
         reorderImages,
         addImagesUploaded,
         status,
-        existImage,
         updateInfoImages,
         removeImage,
       }}
