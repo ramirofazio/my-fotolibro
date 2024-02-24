@@ -24,6 +24,7 @@ export function Root() {
   if (!client.active_link) {
     return <SuccessPage />
   }
+  
   return (
     <div className="bg-main min-h-screen">
       {client?.online ? (

@@ -1,5 +1,4 @@
-const { DataTypes, UUIDV4 } = require('sequelize');
-
+const { DataTypes, UUIDV4 } = require('sequelize')
 
 module.exports = (sequelize) => {
   sequelize.define(
@@ -24,20 +23,24 @@ module.exports = (sequelize) => {
       },
       size: {
         type: DataTypes.BIGINT,
-        allowNull: true
+        allowNull: true,
       },
       publicId: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
       },
       cloudinaryIndex: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: "000-"
-      }
+        defaultValue: '000-',
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
     },
     {
       timestamps: false,
     }
-  );
-};
+  )
+}

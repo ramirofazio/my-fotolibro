@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { API } from '../../api_instance'
 import { ViewImage } from './ViewImage'
 import { useApp } from '../../contexts/AppContext'
+import toast from 'react-hot-toast'
 
 export function CloudListImages({ clientId }) {
   const { cloudImages, loading } = useApp()
@@ -27,6 +28,8 @@ export function CloudListImages({ clientId }) {
         publicId: publicId,
         id: id,
       })
+      toast.success(`Se elimino ${name}`)
+
       //llamar a la api
       const { data } = await API.getPreviusImgs(clientId)
       cloudImages.set(data.photos)
@@ -39,7 +42,7 @@ export function CloudListImages({ clientId }) {
 
   return (
     <>
-      <h2 className="text-white text-center col-span-2 text-xl p-3 sticky top-0 z-50 bg-main/70 backdrop-blur-sm">
+      <h2 className="text-white text-center md:col-span-4 col-span-2 text-xl p-3 sticky top-0 z-50 bg-main/70 backdrop-blur-sm">
         Imagenes Subidas
       </h2>
       {cloudImages.values.map(({ id, ...image }) => (

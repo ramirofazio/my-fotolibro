@@ -29,7 +29,7 @@ export function SelectImagesPage() {
       await uploadImagesCloudinary(localImages.values, clientId)
       const { data } = await API.getPreviusImgs(clientId)
       cloudImages.set(data.photos)
-      localImages.clear()
+      localImages.verify(data.photos)
       loading.set(false)
     } catch (error) {
       loading.set(false)
@@ -66,7 +66,7 @@ export function SelectImagesPage() {
         />
       </div>
       <ImageInput />
-      <div className="p-5 grid grid-cols-2 gap-2">
+      <div className="p-5 grid grid-cols-2 md:grid-cols-4 gap-2">
         <LocalListImages />
         <CloudListImages clientId={clientId} />
       </div>

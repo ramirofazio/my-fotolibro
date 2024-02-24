@@ -5,6 +5,7 @@ export function ViewImage({ URL, inCloud, size, onRemove }) {
   return (
     <div className="relative w-fit rounded overflow-hidden">
       <img
+        loading="lazy"
         src={URL}
         alt="a image"
         className="w-[500px] aspect-square object-cover"

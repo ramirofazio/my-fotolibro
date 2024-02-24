@@ -1,11 +1,8 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { ChevronUpDownIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { CSS } from '@dnd-kit/utilities'
-import toast from 'react-hot-toast'
-import { API } from '../../api_instance'
-import { useState } from 'react'
 
-export function SortableItem({ image, index, onDelete }) {
+export function SortableItem({ image, index, onDelete, isLoading }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: image.id,
@@ -16,28 +13,11 @@ export function SortableItem({ image, index, onDelete }) {
   }
   const { URL, originalName } = image
 
-  const [isLoading, setIsLoading] = useState(false)
-  async function handleDelete() {
-    try {
-      setIsLoading(true)
-      const { originalName, id, publicId } = image
-      const res = await API.deleteSingleImg({ publicId, id })
-      if (res.data) {
-        toast.success(`Se elimino ${originalName}`)
-        onDelete(id)
-        return
-      }
-    } catch (error) {
-      toast.error(error.message)
-      setIsLoading(false)
-    }
-  }
-
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="w-[92%]  flex bg-slate-300 rounded justify-between items-center"
+      className="w-[92%] mx-auto  flex bg-slate-300 rounded justify-between items-center"
     >
       <div className=" gap-2  p-2 flex items-center  ">
         <span className="text-xl font-bold  rounded-full mr-1.5 md:mr-4">
@@ -61,7 +41,7 @@ export function SortableItem({ image, index, onDelete }) {
         {!isLoading ? (
           <>
             <button
-              onClick={() => handleDelete()}
+              onClick={onDelete}
               className="w-8 aspect-square md:w-10 text-gray-700 hover:text-red-600 rounded hover:bg-gray-400/40"
               title="Eliminar"
             >
