@@ -10,7 +10,7 @@ export const AppProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const addLocalImages = (images) => {
-    setLocalImages((cur) => [images, ...cur])
+    setLocalImages((cur) => [...images, ...cur])
   }
   const removeLocalImage = (ID) => {
     setLocalImages((cur) => cur.filter(({ id }) => id !== ID))

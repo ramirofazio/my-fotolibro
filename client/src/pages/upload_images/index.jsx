@@ -29,7 +29,7 @@ export function SelectImagesPage() {
       await uploadImagesCloudinary(localImages.values, clientId)
       const { data } = await API.getPreviusImgs(clientId)
       cloudImages.set(data.photos)
-      localImages.verify(data.photos)
+      localImages.clear()
       loading.set(false)
     } catch (error) {
       loading.set(false)

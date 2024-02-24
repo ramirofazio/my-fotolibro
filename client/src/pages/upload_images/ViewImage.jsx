@@ -8,7 +8,7 @@ export function ViewImage({ URL, inCloud, size, onRemove }) {
         loading="lazy"
         src={URL}
         alt="a image"
-        className="w-[500px] aspect-square object-cover"
+        className="w-[500px] aspect-square object-cover bg-gray-400/40"
       />
       <div
         className={`absolute top-0 left-0 w-full p-1 flex justify-between items-center bg-gradient-to-b ${

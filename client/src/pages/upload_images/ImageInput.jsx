@@ -3,43 +3,51 @@ import toast from 'react-hot-toast'
 import { useApp } from '../../contexts/AppContext'
 
 export function ImageInput() {
-  const { localImages } = useApp()
+  const { localImages, loading } = useApp()
 
-  function handleImages({ target }) {
+  async function handleImages({ target }) {
     const files = target.files
-    console.log(files)
     if (!files) return
-
+    loading.set(true)
+    const promises = []
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
       if (!file) continue
 
       let aux = file.name.split('.')
       let aux2 = aux.slice(0, aux.length - 1).join('.')
-
       const exist = localImages.exist(aux2)
+
       if (exist) {
         toast.error('La imagen ' + aux2 + ' ya existe')
         continue
       }
 
-      new Compressor(file, {
-        quality: 1,
-        success: (compressed) => {
-          const reader = new FileReader()
-          reader.onload = () => {
-            localImages.add({
-              id: 'local-image-' + aux2 + (localImages.size + i + 1),
-              originalName: aux2,
-              URL: typeof reader.result === 'string' ? reader.result : '',
-              file: compressed,
-              size: compressed.size,
-            })
-          }
-          reader.readAsDataURL(compressed)
-        },
-      })
+      promises.push(
+        new Promise((resolve) => {
+          new Compressor(file, {
+            quality: 1,
+            success: (compressed) => {
+              const reader = new FileReader()
+              reader.onload = () => {
+                resolve({
+                  id: 'local-image-' + aux2 + (localImages.size + i + 1),
+                  originalName: aux2,
+                  URL: typeof reader.result === 'string' ? reader.result : '',
+                  file: compressed,
+                  size: compressed.size,
+                })
+              }
+              reader.readAsDataURL(compressed)
+            },
+          })
+        })
+      )
     }
+
+    const res = await Promise.all(promises)
+    localImages.add(res)
+    loading.set(false)
   }
   return (
     <div className="mx-5 text-white border-dashed border relative overflow-hidden flex flex-col justify-center items-center  p-4">
