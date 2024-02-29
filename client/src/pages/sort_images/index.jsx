@@ -16,24 +16,28 @@ export function SortImagesPage() {
   const orderRef = useRef()
   const { clientId } = useParams()
   const navigate = useNavigate()
-  const { loading, cloudImages } = useApp()
+  const { loading, cloudImages, refresh } = useApp()
 
   useEffect(() => {
-    loading.set(true)
-    API.getPreviusImgs(clientId)
-      .then(({ data }) => {
-        if (data.photos.length) {
-          cloudImages.set(data.photos)
-        } else {
-          toast.error('Uups, Imagenes no cargadas')
-          navigate(`/client/${clientId}/upload_images`)
-        }
-        loading.set(false)
-      })
-      .catch((err) => {
-        alert(err)
-        loading.set(false)
-      })
+    if (refresh.value) {
+      loading.set(true)
+      API.getPreviusImgs(clientId)
+        .then(({ data }) => {
+          if (data.photos.length) {
+            cloudImages.set(data.photos)
+          } else {
+            toast.error('Uups, Imagenes no cargadas')
+            navigate(`/client/${clientId}/upload_images`)
+          }
+          loading.set(false)
+        })
+        .catch((err) => {
+          alert(err)
+          loading.set(false)
+        })
+
+      refresh.off()
+    }
   }, [])
 
   useEffect(() => {

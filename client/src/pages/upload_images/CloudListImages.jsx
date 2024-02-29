@@ -5,19 +5,22 @@ import { useApp } from '../../contexts/AppContext'
 import toast from 'react-hot-toast'
 
 export function CloudListImages({ clientId }) {
-  const { cloudImages, loading } = useApp()
+  const { cloudImages, loading, refresh } = useApp()
 
   useEffect(() => {
-    loading.set(true)
-    API.getPreviusImgs(clientId)
-      .then(({ data }) => {
-        cloudImages.set(data.photos)
-        loading.set(false)
-      })
-      .catch((err) => {
-        alert(err)
-        loading.set(false)
-      })
+    if (refresh.value) {
+      loading.set(true)
+      API.getPreviusImgs(clientId)
+        .then(({ data }) => {
+          cloudImages.set(data.photos)
+          loading.set(false)
+        })
+        .catch((err) => {
+          alert(err)
+          loading.set(false)
+        })
+      refresh.off()
+    }
   }, [])
 
   async function onRemove(id, publicId, name) {

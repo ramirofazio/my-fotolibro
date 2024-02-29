@@ -25,6 +25,7 @@ export function SortableItem({ image, index, onDelete, isLoading }) {
         </span>
         <img
           src={URL}
+          loading="lazy"
           alt="image"
           className={`w-[60px] mr-auto aspect-square rounded-md object-cover`}
         />

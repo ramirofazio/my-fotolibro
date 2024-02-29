@@ -9,9 +9,16 @@ module.exports = (sequelize) => {
         defaultValue: UUIDV4,
         primaryKey: true,
       },
+      original_URL: {
+        type: DataTypes.STRING,
+      },
       URL: {
         type: DataTypes.STRING,
         allowNull: false,
+        set(value) {
+          this.setDataValue('original_URL', value)
+          this.setDataValue('URL', lowImageCloud(value))
+        },
       },
       index: {
         type: DataTypes.INTEGER,
@@ -43,4 +50,8 @@ module.exports = (sequelize) => {
       timestamps: false,
     }
   )
+}
+
+function lowImageCloud(img) {
+  return img.split('upload/').join('upload/q_10/')
 }
