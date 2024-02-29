@@ -89,7 +89,3 @@ export function getSizeImage(number) {
     return `${(number / 1048576).toFixed(1)} MB`
   }
 }
-
-export function lowImageCloud(img) {
-  return img.split('upload/').join('upload/q_auto:low/')
-}

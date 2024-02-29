@@ -1,7 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { ChevronUpDownIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { CSS } from '@dnd-kit/utilities'
-import { lowImageCloud } from '../../utils'
 
 export function SortableItem({ image, index, onDelete, isLoading }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -25,8 +24,8 @@ export function SortableItem({ image, index, onDelete, isLoading }) {
           {index + 1}
         </span>
         <img
-          src={lowImageCloud(URL)}
-          loading='lazy'
+          src={URL}
+          loading="lazy"
           alt="image"
           className={`w-[60px] mr-auto aspect-square rounded-md object-cover`}
         />
