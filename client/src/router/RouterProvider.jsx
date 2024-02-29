@@ -1,12 +1,13 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Root, AdminRoot } from '../pages/'
-import { ClientData, UploadImages, Clients, Folders } from '../pages'
+import { ClientData, Clients, Folders } from '../pages'
 import { RouterError } from '../components/RouterError'
 import { API } from '../api_instance'
 import { verifyClient, connectClient } from './loaders'
-import { SortImages } from '../pages/sort_images/sort_images'
 import { CreateClient } from '../pages/admin_clients/CreateClient'
 import { UpdateClient } from '../pages/admin_clients/UpdateClient'
+import { SelectImagesPage } from '../pages/upload_images'
+import { SortImagesPage } from '../pages/sort_images'
 
 export function Routes() {
   const routes = createBrowserRouter([
@@ -24,20 +25,11 @@ export function Routes() {
         },
         {
           path: '/client/:clientId/upload_images',
-          loader: async ({ params }) => {
-            const { photos } = (await API.getPreviusImgs(params.clientId)).data
-            return { photos }
-          },
-          element: <UploadImages />,
+          element: <SelectImagesPage />,
         },
         {
           path: '/client/:clientId/sort_images',
-          loader: async ({ params }) => {
-            const { photos } = (await API.getPreviusImgs(params.clientId)).data
-            const { canFinish } = (await API.canFinish(params.clientId)).data
-            return { photos, canFinish }
-          },
-          element: <SortImages />,
+          element: <SortImagesPage />,
         },
       ],
     },

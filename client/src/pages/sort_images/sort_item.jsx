@@ -1,11 +1,8 @@
 import { useSortable } from '@dnd-kit/sortable'
 import { ChevronUpDownIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { CSS } from '@dnd-kit/utilities'
-import toast from 'react-hot-toast'
-import { API } from '../../api_instance'
-import { useState } from 'react'
 
-export function SortableItem({ image, index, onDelete }) {
+export function SortableItem({ image, index, onDelete, isLoading }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: image.id,
@@ -16,28 +13,11 @@ export function SortableItem({ image, index, onDelete }) {
   }
   const { URL, originalName } = image
 
-  const [isLoading, setIsLoading] = useState(false)
-  async function handleDelete() {
-    try {
-      setIsLoading(true)
-      const { originalName, id, publicId } = image
-      const res = await API.deleteSingleImg({ publicId, id })
-      if (res.data) {
-        toast.success(`Se elimino ${originalName}`)
-        onDelete(id)
-        return
-      }
-    } catch (error) {
-      toast.error(error.message)
-      setIsLoading(false)
-    }
-  }
-
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className="w-[92%]  flex bg-slate-300 rounded justify-between items-center"
+      className="w-[92%] mx-auto  flex bg-slate-300 rounded justify-between items-center"
     >
       <div className=" gap-2  p-2 flex items-center  ">
         <span className="text-xl font-bold  rounded-full mr-1.5 md:mr-4">
@@ -48,12 +28,12 @@ export function SortableItem({ image, index, onDelete }) {
           alt="image"
           className={`w-[60px] mr-auto aspect-square rounded-md object-cover`}
         />
-        <p className="mr-auto md:hidden block   text-sm lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis max-w-[60%] w-[90%] ml-3">
+        <p className="mr-auto md:hidden block line-clamp-1  text-sm lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis max-w-[60%] w-[90%] ml-3">
           {originalName.length < 15
             ? originalName
             : `${originalName.slice(0, 15)} ...`}
         </p>
-        <p className=" hidden md:block text-sm lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis  w-[90%] ml-3">
+        <p className=" hidden md:block text-sm line-clamp-1 lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis  w-[90%] ml-3">
           {originalName}
         </p>
       </div>
@@ -61,18 +41,18 @@ export function SortableItem({ image, index, onDelete }) {
         {!isLoading ? (
           <>
             <button
-              onClick={() => handleDelete()}
-              className="w-8 aspect-square md:w-10 text-gray-700 hover:text-red-600 rounded hover:bg-gray-400/40"
+              onClick={onDelete}
+              className="w-10 aspect-square md:w-10 text-gray-700 hover:text-red-600 rounded hover:bg-gray-400/40"
               title="Eliminar"
             >
               <XMarkIcon />
             </button>
             <button
-              className="w-8 touch-none text-gray-700 hover:text-gray-800 hover:bg-gray-400/40 md:w-11 rounded h-12"
+              className="w-10 touch-none text-gray-700 hover:text-gray-800 hover:bg-gray-400/40 md:w-11 rounded h-12"
               {...attributes}
               {...listeners}
             >
-              <ChevronUpDownIcon className=" w-full aspect-square" />
+              <ChevronUpDownIcon className="w-full aspect-square" />
             </button>
           </>
         ) : (
