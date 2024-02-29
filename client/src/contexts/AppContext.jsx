@@ -8,6 +8,7 @@ export const AppProvider = ({ children }) => {
   const [localImages, setLocalImages] = useState([])
   const [cloudImages, setCloudImages] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [refresh, setRefresh] = useState(true)
 
   const addLocalImages = (images) => {
     setLocalImages((cur) => [...images, ...cur])
@@ -58,6 +59,15 @@ export const AppProvider = ({ children }) => {
         loading: {
           value: isLoading,
           set: (value) => setIsLoading(value),
+        },
+        refresh: {
+          value: refresh,
+          off: function () {
+            setRefresh(false)
+          },
+          on: function () {
+            setRefresh(true)
+          },
         },
       }}
     >
