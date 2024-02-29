@@ -28,12 +28,12 @@ export function SortableItem({ image, index, onDelete, isLoading }) {
           alt="image"
           className={`w-[60px] mr-auto aspect-square rounded-md object-cover`}
         />
-        <p className="mr-auto md:hidden block   text-sm lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis max-w-[60%] w-[90%] ml-3">
+        <p className="mr-auto md:hidden block line-clamp-1  text-sm lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis max-w-[60%] w-[90%] ml-3">
           {originalName.length < 15
             ? originalName
             : `${originalName.slice(0, 15)} ...`}
         </p>
-        <p className=" hidden md:block text-sm lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis  w-[90%] ml-3">
+        <p className=" hidden md:block text-sm line-clamp-1 lg:text-xl text-gray-800 overflow-hidden overflow-ellipsis  w-[90%] ml-3">
           {originalName}
         </p>
       </div>
@@ -42,17 +42,17 @@ export function SortableItem({ image, index, onDelete, isLoading }) {
           <>
             <button
               onClick={onDelete}
-              className="w-8 aspect-square md:w-10 text-gray-700 hover:text-red-600 rounded hover:bg-gray-400/40"
+              className="w-10 aspect-square md:w-10 text-gray-700 hover:text-red-600 rounded hover:bg-gray-400/40"
               title="Eliminar"
             >
               <XMarkIcon />
             </button>
             <button
-              className="w-8 touch-none text-gray-700 hover:text-gray-800 hover:bg-gray-400/40 md:w-11 rounded h-12"
+              className="w-10 touch-none text-gray-700 hover:text-gray-800 hover:bg-gray-400/40 md:w-11 rounded h-12"
               {...attributes}
               {...listeners}
             >
-              <ChevronUpDownIcon className=" w-full aspect-square" />
+              <ChevronUpDownIcon className="w-full aspect-square" />
             </button>
           </>
         ) : (

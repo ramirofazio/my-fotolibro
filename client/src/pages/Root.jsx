@@ -8,35 +8,29 @@ import { SuccessPage } from './SuccessPage'
 import { Loader } from '../components/Loader'
 
 export function Root() {
-  const client = useLoaderData()
+  const { id, active_link, online } = useLoaderData()
 
   useEffect(() => {
-    window.addEventListener('beforeunload', () =>
-      API.disconnectClient(client?.id)
-    )
+    window.addEventListener('beforeunload', () => API.disconnectClient(id))
     return () => {
-      window.removeEventListener('beforeunload', () =>
-        API.disconnectClient(client?.id)
-      )
+      window.removeEventListener('beforeunload', () => API.disconnectClient(id))
     }
   }, [])
 
-  if (!client.active_link) {
+  if (!active_link) {
     return <SuccessPage />
   }
-  
+
+  if (false) return <UrlInUse />
+
   return (
     <div className="bg-main min-h-screen">
-      {client?.online ? (
-        <UrlInUse />
-      ) : (
-        <>
-          <Nav />
-          <PreviousNext />
-          <Outlet />
-          <Loader />
-        </>
-      )}
+      <>
+        <Nav />
+        <PreviousNext />
+        <Outlet />
+        <Loader />
+      </>
     </div>
   )
 }

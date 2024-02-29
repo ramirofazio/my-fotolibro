@@ -9,45 +9,63 @@ export function ImageInput() {
     const files = target.files
     if (!files) return
     loading.set(true)
-    const promises = []
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i]
-      if (!file) continue
+    const promisesFiles = []
 
-      let aux = file.name.split('.')
-      let aux2 = aux.slice(0, aux.length - 1).join('.')
-      const exist = localImages.exist(aux2)
+    for (let i = 0; i < files.length; i++) {
+      const image = files[i]
+      if (!image) continue
+
+      const imageName = image.name.replace(/\.[^/.]+$/, '')
+      const exist = localImages.exist(imageName)
 
       if (exist) {
-        toast.error('La imagen ' + aux2 + ' ya existe')
+        toast.error('La imagen ' + imageName + ' ya existe')
         continue
       }
 
-      promises.push(
+      promisesFiles.push(
         new Promise((resolve) => {
-          new Compressor(file, {
-            quality: 1,
-            success: (compressed) => {
-              const reader = new FileReader()
-              reader.onload = () => {
-                resolve({
-                  id: 'local-image-' + aux2 + (localImages.size + i + 1),
-                  originalName: aux2,
-                  URL: typeof reader.result === 'string' ? reader.result : '',
-                  file: compressed,
-                  size: compressed.size,
-                })
-              }
-              reader.readAsDataURL(compressed)
-            },
-          })
+          const reader = new FileReader()
+          if (image.size >= 8000000) {
+            new Compressor(image, {
+              quality: 0.6,
+              success: (compressed) => {
+                reader.onload = () => {
+                  resolve({
+                    id: 'local-image-' + imageName + (localImages.size + i + 1),
+                    originalName: imageName,
+                    URL: typeof reader.result === 'string' ? reader.result : '',
+                    file: compressed,
+                    size: compressed.size,
+                  })
+                }
+                reader.readAsDataURL(compressed)
+              },
+            })
+          } else {
+            reader.onload = function () {
+              resolve({
+                id: 'local-image-' + imageName + (localImages.size + i + 1),
+                originalName: imageName,
+                URL: typeof reader.result === 'string' ? reader.result : '',
+                file: image,
+                size: image.size,
+              })
+            }
+            reader.readAsDataURL(image)
+          }
         })
       )
     }
 
-    const res = await Promise.all(promises)
-    localImages.add(res)
-    loading.set(false)
+    try {
+      const res = await Promise.all(promisesFiles)
+      localImages.add(res)
+      loading.set(false)
+    } catch (error) {
+      toast.error(`Algo salio mal - Intenta nuevamente`)
+      loading.set(false)
+    }
   }
   return (
     <div className="mx-5 text-white border-dashed border relative overflow-hidden flex flex-col justify-center items-center  p-4">
