@@ -73,45 +73,6 @@ router.get("/folders", async (req, res) => {
   }
 });
 
-router.post("/upload", async (req, res) => {
-  try {
-    const { files } = req.body; // pasarlo a una funcion, que cree una promesa por cada img y las resuelva
-
-    for (let [name, value] of files) {
-      console.log(`${name} = ${value}`);
-    }
-    let promises = [];
-    /* for (const imgName in files) {
-      console.log(imgName)
-      promises.push(cloudinary.uploader.upload(files[imgName], {
-        upload_preset: "testing",
-        public_id: userId,
-        api_key: CLOUDINARY_API_KEY,
-        api_secret: CLOUDINARY_API_SECRET,
-        cloud_name: CLOUDINARY_CLOUD_NAME,
-        overwrite: true,
-      }));
-    } */
-    /* const result = await cloudinary.uploader.upload(files[0], {
-      upload_preset: "test",
-      public_id: "el primer user",
-      api_key: CLOUDINARY_API_KEY,
-      api_secret: CLOUDINARY_API_SECRET,
-      cloud_name: CLOUDINARY_CLOUD_NAME,
-      overwrite: true,
-    });
-    console.log(result) */
-    res.json({
-      res: files,
-    });
-  } catch (err) {
-    console.log(err);
-    res.json({
-      err,
-    });
-  }
-});
-
 router.delete("/images/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
@@ -287,7 +248,7 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
       let newImgs = slice.map(async (p) => {
         try {
           const [folder, originalName] = p?.publicId.split("/");
-          console.log(originalName)
+          console.log(originalName);
           let index = `${p.index}`;
           let newIndex = "";
 
@@ -295,31 +256,30 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
           else if (index?.length === 1) newIndex = `00${index}_`;
           else if (index?.length === 2) newIndex = `0${index}_`;
           else if (index?.length === 3) newIndex = `${index}_`;
-          
+
           const oldIndex = originalName.slice(0, 4);
-          
-          console.log("Viejo index: ", oldIndex)
           //console.log(oldIndex, "||", newIndex);
 
           if (oldIndex !== newIndex) {
             let indexedName = originalName.replace(oldIndex, newIndex);
-            console.log("indexedName", indexedName)
+            console.log("indexedName", indexedName);
             const newImg = await cloudinary.v2.uploader.rename(
               p?.publicId,
               `${folder}/${indexedName}`,
               {}
             );
             const dbPhoto = await Photo.findByPk(p.id);
-            const dbUpdate = await dbPhoto.update({ publicId: newImg.public_id });
+            const dbUpdate = await dbPhoto.update({
+              publicId: newImg.public_id,
+            });
 
             return {
               IMG_CLOUDINARY: newImg,
               IMG_DB: dbUpdate,
             };
           }
-
         } catch (e) {
-          console.log(e)
+          console.log(e);
           const [folder, originalName] = p?.publicId.split("/");
           let index = `${p.index}`;
           let newIndex = "";
@@ -331,8 +291,8 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
           const oldIndex = originalName.slice(0, 4);
 
           console.log("ERR: " + originalName);
-          console.log("viejo: ", oldIndex)
-          console.log("nuevo: " + newIndex)
+          console.log("viejo: ", oldIndex);
+          console.log("nuevo: " + newIndex);
         }
       });
     }
