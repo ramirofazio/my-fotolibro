@@ -28,8 +28,8 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      size: {
-        type: DataTypes.BIGINT,
+      size: { // * Is in MegaBytes
+        type: DataTypes.DECIMAL,
         allowNull: true,
       },
       publicId: {

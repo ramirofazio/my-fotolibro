@@ -11,6 +11,7 @@ module.exports = (sequelize) => {
       },
       name: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
       publishDate: {
         type: DataTypes.DATE,
@@ -18,7 +19,12 @@ module.exports = (sequelize) => {
       },
       description: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
+      totalSize: {
+        type: DataTypes.DECIMAL,
+        defaultValue: 5
+      }
     },
     {
       timestamps: false,

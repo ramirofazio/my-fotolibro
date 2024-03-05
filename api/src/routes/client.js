@@ -9,11 +9,12 @@ const {
 } = process.env
 const { Router } = require('express')
 const router = Router()
-const { Client, Photo, Admin } = require('../db.js')
+const { Client, Photo, Admin, Book } = require('../db.js')
 const cloudinary = require('cloudinary')
 const transporter = require('../node_mailer')
 const { DateTime } = require('luxon')
 const { Op } = require('sequelize')
+
 
 router.get('/', async (req, res) => {
   try {
@@ -63,7 +64,10 @@ router.post('/', async (req, res) => {
       ...req.body,
       created_at: DateTime.now().setLocale('es').toFormat('dd/MM/yyyy'),
     })
-
+    const newBook = await Book.create({
+      name,
+    })
+    console.log(newBook)
     cloudinary.v2.api
       .create_upload_preset({
         cloud_name: CLOUDINARY_CLOUD_NAME,
@@ -160,10 +164,16 @@ router.post('/imgs', async (req, res) => {
       res.status(401).send('faltan parametros')
     }
 
+    let totalSize = 0
     const rawImgs = imgs.map((i) => {
+      totalSize += i.size
       return { ...i, clientId }
     })
     const bulk = await Photo.bulkCreate(rawImgs)
+    console.log(totalSize)
+    const book = await Book.findByPk()
+    //await book.update({size: totalSize})
+    //const newBook = await Book.update({size: totalSize}, where: {id: book.id})
     res.json({
       res: ' se subieron',
       imgs: bulk,

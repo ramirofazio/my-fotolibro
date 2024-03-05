@@ -53,6 +53,30 @@ router.get("/download/:clientId", async (req, res) => {
   }
 });
 
+router.get("/download_with_limit/:clientId", async (req, res) => {
+  try {
+    const { clientId } = req.params;
+    const client = await Client.findByPk(clientId);
+    const zipName = client?.name.trim().toLowerCase();
+    console.log(zipName);
+    const download_url = await cloudinary.v2.utils.download_folder(clientId, {
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+      prefixes: "/",
+      target_public_id: zipName,
+    });
+
+    return res.send(download_url);
+  } catch (e) {
+    console.log(e);
+    return res.json({
+      e,
+    });
+  }
+});
+
+
 router.get("/folders", async (req, res) => {
   try {
     const { clientId } = req.params;
