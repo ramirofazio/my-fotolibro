@@ -238,13 +238,13 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
       cloud_name: CLOUDINARY_CLOUD_NAME,
     });
 
-    const slices = Math.ceil(photos.length / 8);
+    const slices = Math.ceil(photos.length / 15);
     let sliceSize = photos.length / slices; // 5
     for (let i = 0; i < slices; i++) {
       let begin = i * sliceSize;
       let slice = photos.slice(begin, begin + sliceSize);
       // ---
-      await new Promise((resolve) => setTimeout(resolve, 320));
+      await new Promise((resolve) => setTimeout(resolve, 400));
       let newImgs = slice.map(async (p) => {
         try {
           const [folder, originalName] = p?.publicId.split("/");
