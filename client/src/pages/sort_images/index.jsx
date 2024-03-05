@@ -116,7 +116,7 @@ export function SortImagesPage() {
             })
             setTrySort(false)
           }}
-          className="w-full  text-white   cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center justify-center gap-2 "
+          className="w-full  text-white   cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center justify-center gap-2 disabled:opacity-40"
         >
           <AdjustmentsHorizontalIcon className="w-6 aspect-square stroke-2" />
           Ordenar y continuar mas tarde

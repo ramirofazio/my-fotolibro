@@ -27,8 +27,7 @@ export function FolderCard({ name, id, last_link_download }) {
   async function generateDownloadUrl() {
     try {
 
-      const res = await API.addDownloadImgsIndex(id);
-      console.log("INDEX_CLOUD", res.data);
+      await API.addDownloadImgsIndex(id);
       const url = await API.getDownloadUrl(id);
       await updateLastDownloadDate()
       console.log(url.data);

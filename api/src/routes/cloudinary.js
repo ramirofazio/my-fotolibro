@@ -237,9 +237,9 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
           const [folder, originalName] = p?.publicId.split("/");
           const oldIndex = originalName.slice(0, 4);
           console.log("old", oldIndex);
-          if (oldIndex === "000-") return;
+          if (oldIndex === "000_") return;
 
-          let resetedIndex = originalName.replace(oldIndex, "000-");
+          let resetedIndex = originalName.replace(oldIndex, "000_");
           const newImg = await cloudinary.v2.uploader.rename(
             p?.publicId,
             `${folder}/${resetedIndex}`,
@@ -287,21 +287,23 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
       let newImgs = slice.map(async (p) => {
         try {
           const [folder, originalName] = p?.publicId.split("/");
+          console.log(originalName)
           let index = `${p.index}`;
           let newIndex = "";
 
           if (p.index === 0) return;
-          else if (index?.length === 1) newIndex = `00${index}-`;
-          else if (index?.length === 2) newIndex = `0${index}-`;
-          else if (index?.length === 3) newIndex = `${index}-`;
+          else if (index?.length === 1) newIndex = `00${index}_`;
+          else if (index?.length === 2) newIndex = `0${index}_`;
+          else if (index?.length === 3) newIndex = `${index}_`;
           
           const oldIndex = originalName.slice(0, 4);
           
-          //console.log("Viejo index: ", oldIndex)
+          console.log("Viejo index: ", oldIndex)
           //console.log(oldIndex, "||", newIndex);
 
           if (oldIndex !== newIndex) {
             let indexedName = originalName.replace(oldIndex, newIndex);
+            console.log("indexedName", indexedName)
             const newImg = await cloudinary.v2.uploader.rename(
               p?.publicId,
               `${folder}/${indexedName}`,
@@ -322,9 +324,9 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
           let index = `${p.index}`;
           let newIndex = "";
           if (p.index === 0) return;
-          else if (index?.length === 1) newIndex = `00${index}-`;
-          else if (index?.length === 2) newIndex = `0${index}-`;
-          else if (index?.length === 3) newIndex = `${index}-`;
+          else if (index?.length === 1) newIndex = `00${index}_`;
+          else if (index?.length === 2) newIndex = `0${index}_`;
+          else if (index?.length === 3) newIndex = `${index}_`;
 
           const oldIndex = originalName.slice(0, 4);
 
