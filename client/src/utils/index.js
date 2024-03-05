@@ -14,10 +14,11 @@ export async function uploadImagesCloudinary(images = [], clientId = '') {
   images.forEach(({ file, originalName, upload }) => {
     if (!upload) {
       const formdata = new FormData()
+      const indexedName = `000_${originalName}`
       formdata.append('file', file)
       formdata.append('upload_preset', clientId)
-      formdata.append('filename_override', originalName)
-      formdata.append('public_id', `000_${originalName}`)
+      formdata.append('filename_override', originalName.trim())
+      formdata.append('public_id', indexedName.trim())
       promises.push(axios.post(URL, formdata))
     }
   })
