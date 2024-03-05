@@ -33,7 +33,7 @@ export async function uploadImagesCloudinary(images = [], clientId = "") {
             URL: data.secure_url,
             id: data.asset_id,
             originalName: data.original_filename + i,
-            size: bytesToMb(data.bytes),
+            size: data.bytes,
             publicId: data.public_id,
           };
         } else {
@@ -42,7 +42,7 @@ export async function uploadImagesCloudinary(images = [], clientId = "") {
             URL: data.secure_url,
             id: data.asset_id,
             originalName: data.original_filename || name[1],
-            size: bytesToMb(data.bytes),
+            size: data.bytes,
             publicId: data.public_id,
           };
         }

@@ -13,6 +13,10 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      clientId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       publishDate: {
         type: DataTypes.DATE,
         defaultValue: Date.now(),
@@ -24,6 +28,10 @@ module.exports = (sequelize) => {
       totalSize: {
         type: DataTypes.DECIMAL,
         defaultValue: 5
+      },
+      totalItems: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
       }
     },
     {
