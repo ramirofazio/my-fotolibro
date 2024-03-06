@@ -1,13 +1,14 @@
-const { DataTypes, UUIDV4 } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   sequelize.define(
     'client',
     { 
       id: {
-        type: DataTypes.UUID,
-        defaultValue: UUIDV4,
+        type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
       },
       name: {
         type: DataTypes.STRING,
@@ -45,6 +46,10 @@ module.exports = (sequelize) => {
       active_link: {
         type: DataTypes.BOOLEAN,
         defaultValue: true
+      },
+      upload_preset: {
+        type: DataTypes.STRING,
+        allowNull: true,
       }
     },
     {

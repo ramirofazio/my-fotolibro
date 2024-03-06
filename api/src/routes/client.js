@@ -64,25 +64,26 @@ router.post("/", async (req, res) => {
       ...req.body,
       created_at: DateTime.now().setLocale("es").toFormat("dd/MM/yyyy"),
     });
+
     const newBook = await Book.create({
       name,
       clientId: newClient.id,
     });
-    console.log(newBook);
-    cloudinary.v2.api
-      .create_upload_preset({
-        cloud_name: CLOUDINARY_CLOUD_NAME,
-        api_key: CLOUDINARY_API_KEY,
-        api_secret: CLOUDINARY_API_SECRET,
-        name: newClient.id,
-        folder: newClient.id,
-        unsigned: true,
-        disallow_public_id: false,
-        use_asset_folder_as_public_id_prefix: false,
-      })
-      .then((result) => {
-        return res.json({ upload_preset: result, clientId: newClient.id });
-      });
+
+    newClient.upload_preset = `${newClient.name}-${newClient.id}`;
+    await newClient.save();
+
+    const result = await cloudinary.v2.api.create_upload_preset({
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      name: `${newClient.name}-${newClient.id}`, //minimum 6 charcaters
+      folder: newClient.id,
+      unsigned: true,
+      disallow_public_id: false,
+      use_asset_folder_as_public_id_prefix: false,
+    });
+    return res.json({ upload_preset: result, clientId: newClient.id });
   } catch (e) {
     console.log(e);
     res.status(401).json({ e });
@@ -167,18 +168,16 @@ router.post("/imgs", async (req, res) => {
     if (!imgs || !clientId) {
       res.status(401).send("faltan parametros");
     }
-
+    console.log(clientId);
     let totalSize = 0;
+
     const rawImgs = imgs.map((i) => {
       totalSize = totalSize + i.size;
-      //console.log(typeof(totalSize))
       return { ...i, clientId };
     });
+
     const bulk = await Photo.bulkCreate(rawImgs);
     const book = await Book.findOne({ where: { clientId } });
-
-    console.log("Img:", totalSize);
-    console.log("Db:", parseInt(book.totalSize));
 
     const sizeSum = parseInt(book.totalSize) + parseInt(totalSize);
     const itemsSum = parseInt(book.totalItems) + parseInt(rawImgs.length);
@@ -266,9 +265,11 @@ router.get("/disconnect/:clientId", async (req, res) => {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
 
-    const connected = await client.update({ // undefined
+    const connected = await client.update({
+      // undefined
       online: false,
     });
+
     return res.status(202).json(connected);
   } catch (e) {
     console.log(e);

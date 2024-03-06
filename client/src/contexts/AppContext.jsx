@@ -1,41 +1,42 @@
-import { createContext, useContext, useState } from 'react'
-import { NavProvider } from './NavigationContext'
-const AppContext = createContext({ images: [] })
+import { createContext, useContext, useState } from "react";
+import { NavProvider } from "./NavigationContext";
+const AppContext = createContext({ images: [] });
 
-export const useApp = () => useContext(AppContext)
+export const useApp = () => useContext(AppContext);
 
 export const AppProvider = ({ children }) => {
-  const [localImages, setLocalImages] = useState([])
-  const [cloudImages, setCloudImages] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [refresh, setRefresh] = useState(true)
+  const [localImages, setLocalImages] = useState([]);
+  const [cloudImages, setCloudImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [refresh, setRefresh] = useState(true);
+  const [upload_preset, setUpload_preset] = useState("");
 
   const addLocalImages = (images) => {
-    setLocalImages((cur) => [...images, ...cur])
-  }
+    setLocalImages((cur) => [...images, ...cur]);
+  };
   const removeLocalImage = (ID) => {
-    setLocalImages((cur) => cur.filter(({ id }) => id !== ID))
-  }
+    setLocalImages((cur) => cur.filter(({ id }) => id !== ID));
+  };
   const imageExist = (name) => {
-    const current = [...localImages, ...cloudImages]
-    const nameSet = new Set()
+    const current = [...localImages, ...cloudImages];
+    const nameSet = new Set();
 
-    current.forEach(({ originalName }) => nameSet.add(originalName))
-    return nameSet.has(name)
-  }
+    current.forEach(({ originalName }) => nameSet.add(originalName));
+    return nameSet.has(name);
+  };
 
   const verifyUpload = (cloudImages) => {
-    const currentCloud = [...cloudImages]
-    const newLocal = []
-    const namesSet = new Set()
-    currentCloud.forEach(({ originalName }) => namesSet.add(originalName))
+    const currentCloud = [...cloudImages];
+    const newLocal = [];
+    const namesSet = new Set();
+    currentCloud.forEach(({ originalName }) => namesSet.add(originalName));
     localImages.forEach((img) => {
       if (!namesSet.has(img.originalName)) {
-        newLocal.push(img)
+        newLocal.push(img);
       }
-    })
-    setLocalImages([...newLocal])
-  }
+    });
+    setLocalImages([...newLocal]);
+  };
 
   return (
     <AppContext.Provider
@@ -53,7 +54,7 @@ export const AppProvider = ({ children }) => {
           values: cloudImages,
           size: cloudImages.length,
           set: (images) => {
-            setCloudImages(images)
+            setCloudImages(images);
           },
         },
         loading: {
@@ -63,15 +64,21 @@ export const AppProvider = ({ children }) => {
         refresh: {
           value: refresh,
           off: function () {
-            setRefresh(false)
+            setRefresh(false);
           },
           on: function () {
-            setRefresh(true)
+            setRefresh(true);
+          },
+        },
+        client: {
+          upload_preset: upload_preset,
+          set: function ({ upload_preset }) {
+            setUpload_preset(upload_preset);
           },
         },
       }}
     >
       <NavProvider>{children}</NavProvider>
     </AppContext.Provider>
-  )
-}
+  );
+};

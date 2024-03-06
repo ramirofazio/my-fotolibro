@@ -14,7 +14,7 @@ module.exports = (sequelize) => {
         allowNull: true,
       },
       clientId: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
       publishDate: {

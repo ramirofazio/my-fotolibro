@@ -1,8 +1,9 @@
 import axios from "axios";
 import { API } from "../api_instance";
 
-export async function uploadImagesCloudinary(images = [], clientId = "") {
+export async function uploadImagesCloudinary(images = [], clientId, upload_preset) {
   if (!clientId) return;
+  //const {upload_preset} = await API.getCLientById(clientId)
 
   const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 
@@ -16,7 +17,7 @@ export async function uploadImagesCloudinary(images = [], clientId = "") {
       const formdata = new FormData();
       const indexedName = `000_${originalName}`;
       formdata.append("file", file);
-      formdata.append("upload_preset", clientId);
+      formdata.append("upload_preset", upload_preset);
       formdata.append("filename_override", originalName.trim());
       formdata.append("public_id", indexedName.trim());
       promises.push(axios.post(URL, formdata));
@@ -48,7 +49,7 @@ export async function uploadImagesCloudinary(images = [], clientId = "") {
         }
       }
     });
-    //AQUI 120
+    console.log(clientId)
     await API.uploadImagesDB({
       clientId,
       imgs: Object.values(photos),
