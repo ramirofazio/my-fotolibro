@@ -44,61 +44,7 @@ router.get("/download/:clientId", async (req, res) => {
       where: { clientId: clientId },
     });
 
-    let ids = [];
-    let sliceOfIds = [];
-    let sizeCounter = 0;
-    let downloadUrls = [];
-    // const URL_LIMIT = 2164;
-    // const BASE_URL = 271;
-    const TOTAL_URL = 1893
-    const MB_LIMIT = 1e8;
-    let digitsCounter = 0
-
-    photos.map((img, index) => {
-      const imgSize = parseInt(img.size);
-      const { publicId } = img;
-      let base = 12;
-      console.log("digits", digitsCounter)
-      if (sizeCounter + imgSize < MB_LIMIT && publicId.length + base + digitsCounter < TOTAL_URL) {
-        sizeCounter = sizeCounter + imgSize;
-        digitsCounter = digitsCounter + base + publicId.length
-        sliceOfIds.push(publicId);
-        if (index === photos.length - 1) {
-          ids.push(sliceOfIds);
-        }
-      } else {
-        ids.push(sliceOfIds);
-        sliceOfIds = [];
-        sizeCounter = imgSize;
-        digitsCounter = publicId.length + base
-        sliceOfIds.push(publicId);
-      }
-      return publicId;
-    });
-
-    //console.log(ids[0].length)
-
-    ids.forEach((slice, i) => {
-      const url = cloudinary.v2.utils.download_zip_url({
-        public_ids: slice.slice(0, -115),
-        api_key: CLOUDINARY_API_KEY,
-        api_secret: CLOUDINARY_API_SECRET,
-        cloud_name: CLOUDINARY_CLOUD_NAME,
-        target_public_id: `${zipName}-part-${i + 1}`,
-      });
-      //console.log(url)
-      downloadUrls.push(url);
-    });
-    console.log(downloadUrls[0]);
-
-    res.json({
-      url: downloadUrls[0],
-      ids,
-      sliceOfIds,
-      downloadUrls,
-    });
-
-    /*  if(sizeMb < 100) {
+    if (sizeMb < 100) {
       const download_url = await cloudinary.v2.utils.download_folder(clientId, {
         api_key: CLOUDINARY_API_KEY,
         api_secret: CLOUDINARY_API_SECRET,
@@ -108,27 +54,72 @@ router.get("/download/:clientId", async (req, res) => {
       });
 
       return res.json({
-        download_url: [download_url]
+        download_url: [download_url],
       });
-    } else if(sizeMb >= 99) {
-      const photos = await Photo.findAll()
+    } else if (sizeMb >= 99) {
+      const photos = await Photo.findAll();
 
-      let publicIds = [[1], [2], [3]]
-      let totalSize = 0
-      
-      const ids = photos.map(p => p.publicId);
-      console.log(ids)
-      const url = cloudinary.v2.utils.download_zip_url({
-        public_ids: [ids]
-      })
-      
+      let ids = [];
+      let sliceOfIds = [];
+      let sizeCounter = 0;
+      let downloadUrls = [];
+      // const URL_LIMIT = 2164;
+      // const BASE_URL = 271;
+      const TOTAL_URL = 1893;
+      const MB_LIMIT = 1e8;
+      let digitsCounter = 0;
+
+      console.log(digitsCounter);
+      photos.map((img, index) => {
+        const imgSize = parseInt(img.size);
+        const { publicId } = img;
+        let base = 12;
+
+        if (
+          sizeCounter + imgSize < MB_LIMIT &&
+          publicId.length + base + digitsCounter < TOTAL_URL
+        ) {
+          sizeCounter = sizeCounter + imgSize;
+          digitsCounter = digitsCounter + base + publicId.length;
+          sliceOfIds.push(publicId);
+          console.log(sizeCounter);
+          if (index === photos.length - 1) {
+            ids.push(sliceOfIds);
+          }
+        } else {
+          ids.push(sliceOfIds);
+          sliceOfIds = [];
+          sizeCounter = imgSize;
+          digitsCounter = publicId.length + base;
+          sliceOfIds.push(publicId);
+        }
+        return publicId;
+      });
+
+      ids.forEach((slice, i) => {
+        const url = cloudinary.v2.utils.download_zip_url({
+          public_ids: slice,
+          api_key: CLOUDINARY_API_KEY,
+          api_secret: CLOUDINARY_API_SECRET,
+          cloud_name: CLOUDINARY_CLOUD_NAME,
+          target_public_id: `${zipName}-part-${i + 1}`,
+        });
+        //console.log(url)
+        downloadUrls.push(url);
+      });
+      //console.log(downloadUrls);
+
+      res.json({
+        url: downloadUrls,
+        ids,
+        sliceOfIds,
+        downloadUrls,
+      });
     }
- */
   } catch (e) {
     console.log(e);
     return res.json({
       e,
-      cacatua: 1,
     });
   }
 });

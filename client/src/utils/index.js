@@ -100,3 +100,20 @@ export function bytesToMb(bytes) {
   const megabytes = bytes / (1024 * 1024);
   return megabytes.toFixed(2); // Redondear a 2 decimales
 }
+
+export const storage = {
+  set: ({ name, object, deleted = false }) => {
+    if (deleted) {
+      localStorage.setItem(name, '')
+    } else {
+      localStorage.setItem(name, JSON.stringify(object))
+    }
+  },
+  get: ({ name }) => {
+    if (name?.length) {
+      let object = localStorage.getItem(name)
+      return object ? JSON.parse(object) : 'null'
+    }
+    return null
+  },
+}
