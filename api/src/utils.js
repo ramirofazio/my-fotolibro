@@ -1,5 +1,4 @@
 function bytesToMb(bytes) {
-  console.log("llego:", bytes)
   if (typeof bytes !== "number" || isNaN(bytes) || bytes < 0) {
     throw new Error("El valor debe ser un número positivo.");
   }
