@@ -117,6 +117,9 @@ router.delete("/:clientId", async (req, res) => {
         id: clientId,
       },
     });
+    await Book.destroy({
+      where: { clientId: clientId },
+    });
     cloudinary.v2.config({
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
@@ -174,9 +177,15 @@ router.post("/imgs", async (req, res) => {
     const bulk = await Photo.bulkCreate(rawImgs);
     const book = await Book.findOne({ where: { clientId } });
 
+    console.log("Img:", totalSize);
+    console.log("Db:", parseInt(book.totalSize));
+
+    const sizeSum = parseInt(book.totalSize) + parseInt(totalSize);
+    const itemsSum = parseInt(book.totalItems) + parseInt(rawImgs.length);
+    console.log("suma:", sizeSum);
+
     const newBook = await Book.update(
-      { totalSize: book.totalSize + totalSize, totalItems: rawImgs.length },
-      //{ totalSize: 13, totalItems: 24},
+      { totalSize: sizeSum, totalItems: itemsSum },
       { where: { clientId: clientId } }
     );
     console.log(newBook);

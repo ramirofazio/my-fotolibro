@@ -25,9 +25,9 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      totalSize: {
-        type: DataTypes.DECIMAL,
-        defaultValue: 5
+      totalSize: { // * In bytes for handling
+        type: DataTypes.BIGINT,
+        defaultValue: 0
       },
       totalItems: {
         type: DataTypes.INTEGER,
