@@ -14,7 +14,7 @@ const cloudinary = require("cloudinary");
 const transporter = require("../node_mailer");
 const { DateTime } = require("luxon");
 const { Op } = require("sequelize");
-const bytesToMb = require("../utils.js");
+const bytesToMb = require("../u_tils.js");
 
 router.get("/", async (req, res) => {
   try {

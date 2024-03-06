@@ -5,6 +5,7 @@ const {
   CLOUDINARY_CLOUD_NAME,
   DATABASE_URL,
   CLIENT_URL,
+  PORT
 } = process.env
 
 module.exports = {
@@ -16,6 +17,7 @@ module.exports = {
     },
     DATABASE_URL,
     CLIENT_URL,
+    PORT
   },
   check_env: function () {
     const errors = []
