@@ -5,6 +5,7 @@ const router = Router();
 const { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } =
   process.env;
 const { Client, Book, Photo } = require("../db.js");
+const bytesToMb = require("../utils.js");
 
 router.get("/signature", (req, res) => {
   try {
@@ -35,20 +36,80 @@ router.get("/download/:clientId", async (req, res) => {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
     const zipName = client?.name.trim().toLowerCase();
-    console.log(zipName);
-    const download_url = await cloudinary.v2.utils.download_folder(clientId, {
+
+    const book = await Book.findOne({ where: { clientId } });
+    const sizeMb = parseInt(bytesToMb(parseInt(book.totalSize)));
+
+
+    const photos = await Photo.findAll({
+      where: { clientId: clientId },
+    });
+
+
+    let publicIds = []
+    let sliceOfPublicIds = []
+    let sizeCounter = 0
+    let index = 0
+    const MB_LIMIT = 1e+8
+
+    photos.forEach((img, i) => {
+      const {size, publicId} = img;
+      if(sizeCounter + size < MB_LIMIT) {
+        sliceOfPublicIds.push(publicId)
+        sizeCounter += size;
+      }
+      else {
+        publicIds.push(sliceOfPublicIds)
+        sliceOfPublicIds = []
+        sliceOfPublicIds.push(publicId)
+        sizeCounter = 0
+      }
+    });
+    
+    console.log(sliceOfPublicIds)
+
+    const ids = photos.map((p) => p.publicId);
+    
+    const url = cloudinary.v2.utils.download_zip_url({
+      public_ids: ids,
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
       cloud_name: CLOUDINARY_CLOUD_NAME,
-      prefixes: "/",
       target_public_id: zipName,
     });
 
-    return res.send(download_url);
+
+    /*  if(sizeMb < 100) {
+      const download_url = await cloudinary.v2.utils.download_folder(clientId, {
+        api_key: CLOUDINARY_API_KEY,
+        api_secret: CLOUDINARY_API_SECRET,
+        cloud_name: CLOUDINARY_CLOUD_NAME,
+        prefixes: "/",
+        target_public_id: zipName,
+      });
+
+      return res.json({
+        download_url: [download_url]
+      });
+    } else if(sizeMb >= 99) {
+      const photos = await Photo.findAll()
+
+      let publicIds = [[1], [2], [3]]
+      let totalSize = 0
+      
+      const ids = photos.map(p => p.publicId);
+      console.log(ids)
+      const url = cloudinary.v2.utils.download_zip_url({
+        public_ids: [ids]
+      })
+      
+    }
+ */
   } catch (e) {
     console.log(e);
     return res.json({
       e,
+      cacatua: 1,
     });
   }
 });
@@ -75,7 +136,6 @@ router.get("/download_with_limit/:clientId", async (req, res) => {
     });
   }
 });
-
 
 router.get("/folders", async (req, res) => {
   try {

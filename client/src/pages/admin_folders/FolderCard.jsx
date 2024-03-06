@@ -27,10 +27,10 @@ export function FolderCard({ name, id, last_link_download }) {
   async function generateDownloadUrl() {
     try {
 
-      await API.addDownloadImgsIndex(id);
+      //await API.addDownloadImgsIndex(id);
       const url = await API.getDownloadUrl(id);
-      await updateLastDownloadDate()
-      console.log(url.data);
+      console.log("URL:", url.data);
+      //await updateLastDownloadDate()
       setUrl(url.data);
     } catch (err) {
       console.log(err);

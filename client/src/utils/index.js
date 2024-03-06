@@ -34,7 +34,7 @@ export async function uploadImagesCloudinary(images = [], clientId = "") {
             id: data.asset_id,
             originalName: data.original_filename + i,
             size: data.bytes,
-            publicId: data.public_id,
+            publicId: `${data.public_id}`,
           };
         } else {
           const name = data.public_id.split('"');
@@ -43,7 +43,7 @@ export async function uploadImagesCloudinary(images = [], clientId = "") {
             id: data.asset_id,
             originalName: data.original_filename || name[1],
             size: data.bytes,
-            publicId: data.public_id,
+            publicId: `${data.public_id}`,
           };
         }
       }
@@ -92,10 +92,11 @@ export function getSizeImage(number) {
 }
 
 export function bytesToMb(bytes) {
-  if (typeof bytes !== "number" || isNaN(bytes) || bytes < 0) {
+  console.log("llego:", bytes)
+  /* if (typeof bytes !== "number" || isNaN(bytes) || bytes < 0) {
     throw new Error("El valor debe ser un número positivo.");
   }
 
   const megabytes = bytes / (1024 * 1024);
-  return megabytes.toFixed(2); // Redondear a 2 decimales
+  return megabytes.toFixed(2); */ // Redondear a 2 decimales
 }

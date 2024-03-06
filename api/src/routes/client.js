@@ -266,7 +266,7 @@ router.get("/disconnect/:clientId", async (req, res) => {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
 
-    const connected = await client.update({
+    const connected = await client.update({ // undefined
       online: false,
     });
     return res.status(202).json(connected);

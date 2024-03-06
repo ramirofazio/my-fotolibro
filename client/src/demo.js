@@ -1,1 +1,1 @@
-console.log(0  + 0.49)
+console.log(1e+8)
