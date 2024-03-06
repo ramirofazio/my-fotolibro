@@ -28,7 +28,7 @@ module.exports = (sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      size: {
+      size: { // * Is in Bytes for handling
         type: DataTypes.BIGINT,
         allowNull: true,
       },
@@ -48,7 +48,7 @@ module.exports = (sequelize) => {
     },
     {
       timestamps: false,
-    }
+    } 
   )
 }
 

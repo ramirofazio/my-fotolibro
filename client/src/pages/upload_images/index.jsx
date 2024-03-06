@@ -11,8 +11,9 @@ import { API } from '../../api_instance'
 
 export function SelectImagesPage() {
   const { clientId } = useParams()
-  const { localImages, cloudImages, loading } = useApp()
+  const { localImages, cloudImages, loading, client } = useApp()
   const { setStepContinue } = useNavigation()
+
 
   useEffect(() => {
     if (localImages.size > 0)
@@ -26,7 +27,7 @@ export function SelectImagesPage() {
     if (!localImages.size) return
     loading.set(true)
     try {
-      await uploadImagesCloudinary(localImages.values, clientId)
+      await uploadImagesCloudinary(localImages.values, parseInt(clientId), client.upload_preset)
       const { data } = await API.getPreviusImgs(clientId)
       cloudImages.set(data.photos)
       localImages.clear()

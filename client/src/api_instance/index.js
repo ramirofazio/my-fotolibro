@@ -62,6 +62,23 @@ export const API = {
   resetCloudinaryIndex: (clientId) => {
     return api.post(`cloudinary/reset_cloudinary_index/${clientId}`);
   },
+  session: {
+    connect: function ({ clientId, deviceId = null }) {
+      return api.post('/session', {
+        clientId,
+        deviceId,
+      })
+    },
+    forceConnect: function ({ deviceId = null, clientId }) {
+      return api.post('/session/force', {
+        clientId,
+        deviceId,
+      })
+    },
+    disconnect: function ({ deviceId = null }) {
+      return api.post('/session/off', { deviceId })
+    },
+  },
   /* getBooks: () => {
     return api.get("cloudinary/book");
   },

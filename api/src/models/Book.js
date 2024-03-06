@@ -11,6 +11,11 @@ module.exports = (sequelize) => {
       },
       name: {
         type: DataTypes.STRING,
+        allowNull: true,
+      },
+      clientId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
       publishDate: {
         type: DataTypes.DATE,
@@ -18,7 +23,16 @@ module.exports = (sequelize) => {
       },
       description: {
         type: DataTypes.STRING,
+        allowNull: true,
       },
+      totalSize: { // * In bytes for handling
+        type: DataTypes.BIGINT,
+        defaultValue: 0
+      },
+      totalItems: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+      }
     },
     {
       timestamps: false,
