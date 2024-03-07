@@ -10,11 +10,11 @@ export function CreateClient() {
   const navigate = useNavigate();
   const [client, setClient] = useState({});
 
-  loading.set(true)
-  console.log(loading)
-
+  
   async function submitClient(e) {
     e.preventDefault();
+    loading.set(true)
+  
     const res = await API.createClient({
       ...client,
       name: client.name.toLowerCase().trim(),
@@ -22,10 +22,12 @@ export function CreateClient() {
 
     if (res?.data) {
       toast.success("Cliente creado");
+      loading.set(false)
     } else {
       toast.success("error del servidor", { style: { borderColor: "red" } });
+      loading.set(false)
     }
-    navigate(0);
+    //navigate(0);
     //navigate(`/admin/${params?.adminId}/clients/create`)
   }
 
