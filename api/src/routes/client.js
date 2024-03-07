@@ -65,7 +65,7 @@ router.post("/", async (req, res) => {
       created_at: DateTime.now().setLocale("es").toFormat("dd/MM/yyyy"),
     });
 
-    const newBook = await Book.create({
+    await Book.create({
       name,
       clientId: newClient.id,
     });
@@ -83,7 +83,9 @@ router.post("/", async (req, res) => {
       disallow_public_id: false,
       use_asset_folder_as_public_id_prefix: false,
     });
-    return res.json({ upload_preset: result, clientId: newClient.id });
+    return res
+      .status(200)
+      .json({ upload_preset: result, newClient});
   } catch (e) {
     console.log(e);
     res.status(401).json({ e });
@@ -134,11 +136,11 @@ router.delete("/:clientId", async (req, res) => {
       upload_preset: deleted_upload_preset,
       deleted: true,
     });
-  } catch (e) {
+  } catch (err) {
     console.log(err);
     res.status(409).json({
       err,
-      deleted: false
+      deleted: false,
     });
   }
 });

@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast";
 import { useApp } from "../../contexts/AppContext";
 
 export function CreateClient() {
-  const { loading, refresh } = useApp()
+  const { loading, refresh, adminClients } = useApp()
   const navigate = useNavigate();
   const [client, setClient] = useState({});
 
@@ -19,10 +19,11 @@ export function CreateClient() {
       ...client,
       name: client.name.toLowerCase().trim(),
     });
-
-    if (res?.data) {
+    console.log(res)
+    if (res.status === 200) {
       toast.success("Cliente creado");
       loading.set(false)
+      adminClients.add(res.data.newClient)
     } else {
       toast.success("error del servidor", { style: { borderColor: "red" } });
       loading.set(false)

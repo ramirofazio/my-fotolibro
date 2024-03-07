@@ -1,21 +1,28 @@
-import {
-  PencilSquareIcon,
-  PaperClipIcon,
-} from "@heroicons/react/24/outline";
+import { PencilSquareIcon, PaperClipIcon } from "@heroicons/react/24/outline";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { API } from "../../api_instance";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-hot-toast";
+import { useApp } from "../../contexts/AppContext";
+import { useEffect } from "react";
 
-export function ClientCard({
-  name,
-  email,
-  phone,
-  id,
-  dni,
-  created_at,
-  active_link = false,
-}) {
+export function ClientCard({ clientData }) {
+  const {adminClients} = useApp()
+  
+  useEffect(() => {
+    console.log(adminClients.value)
+  }, [adminClients.value])
+
+  const {
+    name,
+    email,
+    phone,
+    id,
+    dni,
+    created_at,
+    active_link = false,
+  } = clientData;
+
   const navigate = useNavigate();
   const params = useParams();
 
@@ -45,7 +52,6 @@ export function ClientCard({
       <section className="flex flex-col">
         <span className="flex border-t-2 items-center justify-between">
           <span className="flex flex-col items-center gap-1">
-            
             <h1 className="flex items-center gap-1">
               <p
                 className={`w-3.5 h-3.5 rounded-full border-2 ${

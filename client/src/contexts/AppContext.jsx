@@ -40,6 +40,10 @@ export const AppProvider = ({ children }) => {
   };
 
   
+  const adClients = (client) => {
+    setAdminClients((cur) => [...cur, client]);
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -81,9 +85,9 @@ export const AppProvider = ({ children }) => {
         adminClients: {
           value: adminClients,
           set: (clients) => setAdminClients(clients),
-          add: (client) => {
-            setAdminClients((prevClients) => [...prevClients, ...client]);
-          },
+          add: adClients/* (client) => {
+            setAdminClients((prevClients) => ["ccatuaaaaa"]);
+          } */,
           remove: (clientId) => {
             setAdminClients((prev) => prev.filter(({ id }) => id !== clientId));
           }
