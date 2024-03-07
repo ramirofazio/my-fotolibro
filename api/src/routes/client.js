@@ -113,30 +113,33 @@ router.put("/edit_client/:id", async (req, res) => {
 router.delete("/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
-    const deleted = await Client.destroy({
-      where: {
-        id: clientId,
-      },
-    });
+    const client = await Client.findByPk(clientId);
+    client.destroy();
+    await client.save();
+
     await Book.destroy({
       where: { clientId: clientId },
     });
+
     cloudinary.v2.config({
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
       cloud_name: CLOUDINARY_CLOUD_NAME,
     });
     const deleted_upload_preset = await cloudinary.v2.api.delete_upload_preset(
-      clientId
+      client.upload_preset
     );
-    res.json({
-      message: `cliente ${clientId} eliminado`,
+    res.status(200).json({
+      message: `cliente ${client.name} eliminado`,
       upload_preset: deleted_upload_preset,
-      deleted,
+      deleted: true,
     });
   } catch (e) {
-    console.log(e);
-    res.json({ e });
+    console.log(err);
+    res.status(409).json({
+      err,
+      deleted: false
+    });
   }
 });
 

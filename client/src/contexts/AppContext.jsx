@@ -10,6 +10,7 @@ export const AppProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [refresh, setRefresh] = useState(true);
   const [upload_preset, setUpload_preset] = useState("");
+  const [adminClients, setAdminClients] = useState([]);
 
   const addLocalImages = (images) => {
     setLocalImages((cur) => [...images, ...cur]);
@@ -38,6 +39,7 @@ export const AppProvider = ({ children }) => {
     setLocalImages([...newLocal]);
   };
 
+  
   return (
     <AppContext.Provider
       value={{
@@ -75,6 +77,16 @@ export const AppProvider = ({ children }) => {
           set: function ({ upload_preset }) {
             setUpload_preset(upload_preset);
           },
+        },
+        adminClients: {
+          value: adminClients,
+          set: (clients) => setAdminClients(clients),
+          add: (client) => {
+            setAdminClients((prevClients) => [...prevClients, ...client]);
+          },
+          remove: (clientId) => {
+            setAdminClients((prev) => prev.filter(({ id }) => id !== clientId));
+          }
         },
       }}
     >
