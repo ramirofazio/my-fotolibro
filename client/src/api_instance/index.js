@@ -1,5 +1,5 @@
 import { api } from "./base_api";
-console.log(api)
+console.log(api);
 export const API = {
   getClients: () => {
     return api.get("client");
@@ -20,7 +20,7 @@ export const API = {
     return api.delete(`cloudinary/images/${clientId}`);
   },
   uploadImagesDB: ({ imgs, clientId }) => {
-    console.log("manda: ", imgs.length )
+    console.log("manda: ", imgs.length);
     return api.post("client/imgs", { imgs, clientId });
   },
   getDownloadUrl: (clientId) => {
@@ -64,28 +64,26 @@ export const API = {
   },
   session: {
     connect: function ({ clientId, deviceId = null }) {
-      return api.post('/session', {
+      return api.post("/session", {
         clientId,
         deviceId,
-      })
+      });
     },
     forceConnect: function ({ deviceId = null, clientId }) {
-      return api.post('/session/force', {
+      return api.post("/session/force", {
         clientId,
         deviceId,
-      })
+      });
     },
     disconnect: function ({ deviceId = null }) {
-      return api.post('/session/off', { deviceId })
+      return api.post("/session/off", { deviceId });
     },
   },
-  /* getBooks: () => {
-    return api.get("cloudinary/book");
+  client: {
+    album: {
+      getAll: function ({ clientId }) {
+        api.get("/client/albums", { clientId });
+      },
+    },
   },
-  getBookImages: ({ clientId, bookId }) => {
-    return api.get(`cloudinary/book/${clientId}`);
-  },
-  deleteBook: ({ clientId, bookId }) => {
-    return api.delete("cloudinary/book/:id", { clientId, bookId });
-  }, */
 };

@@ -1,7 +1,11 @@
 import axios from "axios";
 import { API } from "../api_instance";
 
-export async function uploadImagesCloudinary(images = [], clientId, upload_preset) {
+export async function uploadImagesCloudinary(
+  images = [],
+  clientId,
+  upload_preset
+) {
   if (!clientId) return;
   //const {upload_preset} = await API.getCLientById(clientId)
 
@@ -49,7 +53,7 @@ export async function uploadImagesCloudinary(images = [], clientId, upload_prese
         }
       }
     });
-    console.log(clientId)
+    console.log(clientId);
     await API.uploadImagesDB({
       clientId,
       imgs: Object.values(photos),
@@ -104,16 +108,55 @@ export function bytesToMb(bytes) {
 export const storage = {
   set: ({ name, object, deleted = false }) => {
     if (deleted) {
-      localStorage.setItem(name, '')
+      localStorage.setItem(name, "");
     } else {
-      localStorage.setItem(name, JSON.stringify(object))
+      localStorage.setItem(name, JSON.stringify(object));
     }
   },
   get: ({ name }) => {
     if (name?.length) {
-      let object = localStorage.getItem(name)
-      return object ? JSON.parse(object) : 'null'
+      let object = localStorage.getItem(name);
+      return object ? JSON.parse(object) : "null";
     }
-    return null
+    return null;
   },
+};
+export const cloudinary = {
+  upload: async function ({ images = [], clientId }) {
+    if (!clientId) return;
+    const arrays = getArraysBySizeLimit(images);
+    console.log(arrays);
+
+    const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    const URL = `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`;
+  },
+};
+
+function getArraysBySizeLimit(images = []) {
+  const LIMIT_SIZE = 1e8;
+  const arrays = [];
+  let currentArray = [];
+  let curretSize = 0;
+
+  const totalSize = images.reduce((accum, current) => {
+    if (curretSize + current.size < LIMIT_SIZE) {
+      curretSize += current.size;
+      currentArray.push(current);
+    } else {
+      arrays.push({
+        totalSize: curretSize,
+        images: currentArray,
+      });
+
+      curretSize = 0;
+      currentArray = [];
+    }
+
+    return accum + current.size;
+  });
+
+  return {
+    totalSize,
+    arrays,
+  };
 }
