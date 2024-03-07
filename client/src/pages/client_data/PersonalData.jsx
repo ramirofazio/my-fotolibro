@@ -1,4 +1,4 @@
-import { isValidClient } from "../../utils";
+import { isValidClient, isValidClientForAdmin } from "../../utils";
 import { useEffect, useRef } from "react";
 
 export function PersonalData({
@@ -27,6 +27,12 @@ export function PersonalData({
     const { name, value, type } = e.target;
     if (admin) {
       setClient((prev) => {
+        setErrs(
+          isValidClientForAdmin({
+            ...prev,
+            [name]: value,
+          })
+        );
         if (type === "number") {
           return {
             ...prev,

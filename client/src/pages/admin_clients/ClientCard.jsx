@@ -3,16 +3,8 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { API } from "../../api_instance";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-hot-toast";
-import { useApp } from "../../contexts/AppContext";
-import { useEffect } from "react";
 
 export function ClientCard({ clientData }) {
-  const {adminClients} = useApp()
-  
-  useEffect(() => {
-    console.log(adminClients.value)
-  }, [adminClients.value])
-
   const {
     name,
     email,

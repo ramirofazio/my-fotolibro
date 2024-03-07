@@ -1,7 +1,6 @@
 import { PersonalData } from "../client_data";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { API } from "../../api_instance/index";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { useApp } from "../../contexts/AppContext";
 
@@ -10,6 +9,11 @@ export function CreateClient() {
 
   const [client, setClient] = useState({});
   const [resetInput, setResetInput] = useState(false);
+  const [errs, setErrs] = useState({})
+
+  useEffect(() => {
+    console.log(errs)
+  }, [errs])
 
   async function submitClient(e) {
     e.preventDefault();
@@ -41,12 +45,14 @@ export function CreateClient() {
         <PersonalData
           admin={true}
           setClient={setClient}
+          errs={errs}
+          setErrs={setErrs}
           resetInput={resetInput}
           setResetInput={setResetInput}
         />
         <div className="mx-auto w-fit">
           <button
-            disabled={!client?.name && true}
+            disabled={!client?.name || Object.values(errs).length && true}
             type="submit"
             className="disabled:opacity-40 rounded bg-white text-blue-500 hover:bg-opacity-70 hover:font-bold border-2 px-4 py-1 my-2 text-xl"
           >

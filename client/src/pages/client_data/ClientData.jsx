@@ -33,6 +33,7 @@ export function ClientData() {
       setStepContinue({ value: false, msg: 'Por favor Completa tus datos' })
     }
   }, [_client])
+
   return (
     <div className="h-full ">
       <h1 className="w-[75%] text-white mx-auto text-center mt-10">
