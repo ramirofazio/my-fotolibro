@@ -17,11 +17,12 @@ export function PersonalData({
   const phoneRef = useRef(null);
 
   useEffect(() => {
+    console.log(client);
     if (resetInput) {
       resetInputs();
       setResetInput(false);
     }
-  }, [resetInput]);
+  }, [resetInput, client]);
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
@@ -79,9 +80,9 @@ export function PersonalData({
         <h1 className="text-3xl my-3 w-fit  font-bold text-violet-400">
           Datos personales
         </h1>
-
+        
         <fieldset>
-          <p className="italic w-fit mx-auto ">Nombre (requerido)</p>
+          <p className="italic w-fit mx-auto ">Nombre (requerido)</p> {/* // ? Dejar modificar name? */}
           <input
             className={`w-full font-bold p-1 disabled:text-blue-950 disabled:opacity-50 ${
               errs?.name && "border-2 border-red-700"
@@ -89,13 +90,12 @@ export function PersonalData({
             onChange={handleChange}
             type="text"
             name="name"
-            value={_client?.name && _client?.name}
+            value={client?.name && client?.name}
             disabled={!admin && _client?.name ? true : false}
             ref={nameRef}
           />
           {errs?.name && <p className="text-red-500">{errs.name}</p>}
         </fieldset>
-
         <fieldset className="">
           <p className=" w-fit mx-auto">Email</p>
           <input
@@ -110,7 +110,6 @@ export function PersonalData({
           />
           {errs?.email && <p className="text-red-500">{errs.email}</p>}
         </fieldset>
-
         <fieldset className="">
           <p className=" w-fit mx-auto">DNI de la persona que pago </p>
           <input
@@ -126,7 +125,6 @@ export function PersonalData({
           />
           {errs?.dni && <p className="text-red-500">{errs.dni}</p>}
         </fieldset>
-
         <fieldset>
           <p className=" w-fit mx-auto">Celular </p>
           <input

@@ -1,15 +1,17 @@
 import { PersonalData } from "../client_data";
-import { useState} from "react";
+import { useState } from "react";
 import { API } from "../../api_instance/index";
 import { useNavigate, useLoaderData, Link, useParams } from "react-router-dom";
-import {toast} from "react-hot-toast"
+import { toast } from "react-hot-toast";
 
 export function UpdateClient() {
   const navigate = useNavigate();
   const params = useParams();
   const _client = useLoaderData();
+
   const [client, setClient] = useState(_client);
-  
+  const [errs, setErrs] = useState({});
+
   async function submitClient(e) {
     e.preventDefault();
     const { email, name, dni, phone } = client;
@@ -19,9 +21,9 @@ export function UpdateClient() {
       dni,
       phone,
     };
-    await API.updateClient({ newData, clientId: _client?.id })
-    toast.success("Cliente actualizado")
-    navigate(0)
+    await API.updateClient({ newData, clientId: _client?.id });
+    toast.success("Cliente actualizado");
+    navigate(0);
   }
 
   return (
@@ -37,11 +39,19 @@ export function UpdateClient() {
         </Link>
       </div>
       <form onSubmit={submitClient}>
-        <PersonalData admin={false} _client={_client} setClient={setClient} />
+        <PersonalData
+          admin={true}
+          errs={errs}
+          setErrs={setErrs}
+          client={client}
+          _client={_client}
+          setClient={setClient}
+        />
         <div className="mx-auto w-fit">
           <button
             type="submit"
-            className="rounded bg-white text-blue-500 hover:bg-opacity-70 hover:font-bold border-2 px-4 py-1 my-2 text-xl"
+            className="disabled:opacity-40 rounded bg-white text-blue-500 hover:bg-opacity-70 hover:font-bold border-2 px-4 py-1 my-2 text-xl"
+            disabled={!client?.name || (Object.values(errs).length && true) || client == _client} /* que haya realizado cambios */
           >
             Editar cliente
           </button>

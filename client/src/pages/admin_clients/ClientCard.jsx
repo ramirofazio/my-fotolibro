@@ -15,7 +15,7 @@ export function ClientCard({ clientData, onRemove } ) {
     active_link = false,
     
   } = clientData;
-  console.log(id)
+  
   const navigate = useNavigate();
   const params = useParams();
 

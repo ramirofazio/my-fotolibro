@@ -401,6 +401,7 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
   }
 });
 
+//modularizar en controller book
 router.put("/book/:id", async (req, res) => {
   const { id } = req.params;
   try {

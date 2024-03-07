@@ -14,28 +14,20 @@ export function Clients() {
     adminClients.set(clients);
   }, []);
 
-  // async function handleDelete() {
-  //   await API.deleteClient(id);
-  //   await API.deleteFolder(id);
-  //   toast.success(`Se elimino "${name}"`);
-  //   navigate(0);
-  //   navigate(`/admin/${params?.adminId}/clients/create`);
-  // }
-
   async function onRemove(name, clientId) {
     const res = confirm(`¿Quieres eliminar al cliente ${name}?`);
     if (res) {
       try {
         loading.set(true);
-        const cres = await API.deleteClient(clientId);
-        const fres = await API.deleteFolder(clientId);
-        console.log(cres.data, fres.data)
+        await API.deleteClient(clientId);
+        await API.deleteFolder(clientId);
+
         loading.set(false);
         toast.success(`Se elimino ${name}`);
         adminClients.remove(clientId);
-      } catch(err) {
+      } catch (err) {
         loading.set(false);
-        toast.error(`Err: ${err.message}`)
+        toast.error(`Err: ${err.message}`);
       }
     }
     loading.set(false);
