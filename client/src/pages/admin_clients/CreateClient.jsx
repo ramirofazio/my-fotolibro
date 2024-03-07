@@ -6,30 +6,29 @@ import { toast } from "react-hot-toast";
 import { useApp } from "../../contexts/AppContext";
 
 export function CreateClient() {
-  const { loading, refresh, adminClients } = useApp()
-  const navigate = useNavigate();
-  const [client, setClient] = useState({});
+  const { loading, adminClients } = useApp();
 
-  
+  const [client, setClient] = useState({});
+  const [resetInput, setResetInput] = useState(false);
+
   async function submitClient(e) {
     e.preventDefault();
-    loading.set(true)
-  
+    loading.set(true);
+
     const res = await API.createClient({
       ...client,
       name: client.name.toLowerCase().trim(),
     });
-    console.log(res)
+    console.log(res);
     if (res.status === 200) {
       toast.success("Cliente creado");
-      loading.set(false)
-      adminClients.add(res.data.newClient)
+      loading.set(false);
+      adminClients.add(res.data.newClient);
+      setResetInput(true)
     } else {
       toast.success("error del servidor", { style: { borderColor: "red" } });
-      loading.set(false)
+      loading.set(false);
     }
-    //navigate(0);
-    //navigate(`/admin/${params?.adminId}/clients/create`)
   }
 
   return (
@@ -39,7 +38,12 @@ export function CreateClient() {
         imagenes
       </h1>
       <form onSubmit={submitClient} className="">
-        <PersonalData admin={true} setClient={setClient} />
+        <PersonalData
+          admin={true}
+          setClient={setClient}
+          resetInput={resetInput}
+          setResetInput={setResetInput}
+        />
         <div className="mx-auto w-fit">
           <button
             disabled={!client?.name && true}
