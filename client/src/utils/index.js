@@ -29,7 +29,7 @@ export async function uploadImagesCloudinary(
 
   try {
     const responses = await Promise.all(promises);
-    // AQUI LLEGAN 130 RESPONSES
+
     responses.forEach(({ data }, i) => {
       if (data.secure_url) {
         if (photos[data.original_filename]) {
@@ -52,7 +52,7 @@ export async function uploadImagesCloudinary(
         }
       }
     });
-    console.log(clientId);
+  
     await API.uploadImagesDB({
       clientId,
       imgs: Object.values(photos),
@@ -86,7 +86,7 @@ export function isValidClient({ name, email, dni, phone }) {
   return errs;
 }
 
-export function isValidClientForAdmin({ name, email, dni, phone }) {
+export function isValidClientForAdmin({ name/* , email, dni, phone */ }) {
   const errs = {};
   if (!name) errs.name = "ingrese un nombre";
   if(name.length < 4) errs.name = "minimo 4 caracteres"
@@ -152,6 +152,7 @@ export const cloudinary = {
 
     const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
     const URL = `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`;
+    console.log(URL)
   },
 };
 

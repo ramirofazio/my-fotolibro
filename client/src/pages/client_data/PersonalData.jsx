@@ -76,7 +76,7 @@ export function PersonalData({
   return (
     <section className="my-5   w-[70%] mx-auto border-2 bg-slate-700">
       <div className="flex flex-col gap-4 my-10 w-full px-3  items-center">
-        <h1 className="text-3xl my-3 w-fit  font-bold text-violet-500">
+        <h1 className="text-3xl my-3 w-fit  font-bold text-violet-400">
           Datos personales
         </h1>
 

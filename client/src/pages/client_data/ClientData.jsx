@@ -1,38 +1,38 @@
-import { PersonalData } from './'
-import { useEffect, useState } from 'react'
-import { useLoaderData, useNavigate } from 'react-router-dom'
-import { API } from '../../api_instance'
-import { toast } from 'react-hot-toast'
-import { useNavigation } from '../../contexts/NavigationContext'
+import { PersonalData } from "./";
+import { useEffect, useState } from "react";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { API } from "../../api_instance";
+import { toast } from "react-hot-toast";
+import { useNavigation } from "../../contexts/NavigationContext";
 
 export function ClientData() {
-  const { setStepContinue } = useNavigation()
-  const navigate = useNavigate()
-  const _client = useLoaderData()
-  const [client, setClient] = useState(_client)
-  const [errs, setErrs] = useState({})
+  const { setStepContinue } = useNavigation();
+  const navigate = useNavigate();
+  const _client = useLoaderData();
+  const [client, setClient] = useState(_client);
+  const [errs, setErrs] = useState({});
 
   async function handleSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
     API.updateClient({ clientId: _client.id, newData: client })
       .then((res) => {
         if (res.data) {
-          toast.success('Se cargaron sus datos correctamente')
-          navigate(`/client/${_client.id}/upload_images`)
+          toast.success("Se cargaron sus datos correctamente");
+          navigate(`/client/${_client.id}/upload_images`);
         }
       })
-      .catch((e) => {
-        toast.error('Error al cargar sus datos')
-      })
+      .catch((err) => {
+        toast.error(`Error: ${err?.message}`);
+      });
   }
 
   useEffect(() => {
     if (_client.email && _client.dni && _client.phone && _client.id) {
-      setStepContinue({ value: true })
+      setStepContinue({ value: true });
     } else {
-      setStepContinue({ value: false, msg: 'Por favor Completa tus datos' })
+      setStepContinue({ value: false, msg: "Por favor Completa tus datos" });
     }
-  }, [_client])
+  }, [_client]);
 
   return (
     <div className="h-full ">
@@ -66,5 +66,5 @@ export function ClientData() {
         </button>
       </form>
     </div>
-  )
+  );
 }

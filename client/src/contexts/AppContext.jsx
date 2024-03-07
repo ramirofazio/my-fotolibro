@@ -40,7 +40,7 @@ export const AppProvider = ({ children }) => {
   };
 
   
-  const adClients = (client) => {
+  const addClients = (client) => {
     setAdminClients((cur) => [...cur, client]);
   }
 
@@ -85,9 +85,7 @@ export const AppProvider = ({ children }) => {
         adminClients: {
           value: adminClients,
           set: (clients) => setAdminClients(clients),
-          add: adClients/* (client) => {
-            setAdminClients((prevClients) => ["ccatuaaaaa"]);
-          } */,
+          add: addClients,
           remove: (clientId) => {
             setAdminClients((prev) => prev.filter(({ id }) => id !== clientId));
           }

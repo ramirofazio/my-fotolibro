@@ -82,7 +82,7 @@ export function SortImagesPage() {
         id: id,
       })
       toast.success(`Se elimino ${name}`)
-      //llamar a la api
+    
       const { data } = await API.getPreviusImgs(clientId)
       cloudImages.set(data.photos)
     }

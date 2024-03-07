@@ -3,14 +3,41 @@ import { Outlet } from "react-router-dom";
 import { ClientCard } from "./ClientCard";
 import { useApp } from "../../contexts/AppContext";
 import { useEffect } from "react";
+import { API } from "../../api_instance";
+import { toast } from "react-hot-toast";
 
 export function Clients() {
-  const { adminClients } = useApp();
+  const { adminClients, loading } = useApp();
   const clients = useLoaderData();
 
   useEffect(() => {
     adminClients.set(clients);
   }, []);
+
+  // async function handleDelete() {
+  //   await API.deleteClient(id);
+  //   await API.deleteFolder(id);
+  //   toast.success(`Se elimino "${name}"`);
+  //   navigate(0);
+  //   navigate(`/admin/${params?.adminId}/clients/create`);
+  // }
+
+  async function onRemove(name, clientId) {
+    const res = confirm(`¿Quieres eliminar al cliente ${name}?`);
+    if (res) {
+      try {
+        loading.set(true);
+        await API.deleteClient(clientId);
+        await API.deleteFolder(clientId);
+        toast.success(`Se elimino ${name}`);
+        adminClients.remove(clientId);
+      } catch(err) {
+        toast.error(`Err: ${err.message}`)
+      }
+    }
+
+    loading.set(false);
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 my-auto">
@@ -20,7 +47,7 @@ export function Clients() {
         </h1>
         {adminClients.value?.length ? (
           adminClients.value.map((c, i) => (
-            <ClientCard clientData={c} key={i} />
+            <ClientCard onRemove={onRemove} clientData={c} key={i} />
           ))
         ) : (
           <div className="place-self-start">

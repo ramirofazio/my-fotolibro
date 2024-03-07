@@ -13,18 +13,11 @@ export function ClientCard({ clientData }) {
     dni,
     created_at,
     active_link = false,
+    onRemove
   } = clientData;
 
   const navigate = useNavigate();
   const params = useParams();
-
-  async function handleDelete() {
-    await API.deleteClient(id);
-    await API.deleteFolder(id);
-    toast.success(`Se elimino "${name}"`);
-    navigate(0);
-    navigate(`/admin/${params?.adminId}/clients/create`);
-  }
 
   async function updateActiveClient() {
     await API.updateActiveClient(id);
@@ -129,7 +122,7 @@ export function ClientCard({ clientData }) {
         </span>
         <span className="flex flex-row items-center mt-14">
           <button
-            onClick={handleDelete}
+            onClick={onRemove}
             className="hover:text-red-400 border-[3px] w-[60%] border-red-500 p-1 rounded-lg my-2 bg-red-400  text-red-600"
           >
             <p className="text-lg">ELIMINAR</p>
