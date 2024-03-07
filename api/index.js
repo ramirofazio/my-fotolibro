@@ -12,4 +12,4 @@ function main(force) {
   });
 }
 
-main(true);
+main(false);

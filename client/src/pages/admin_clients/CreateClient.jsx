@@ -2,22 +2,30 @@ import { PersonalData } from "../client_data";
 import { useState } from "react";
 import { API } from "../../api_instance/index";
 import { useNavigate } from "react-router-dom";
-import {toast} from "react-hot-toast"
+import { toast } from "react-hot-toast";
+import { useApp } from "../../contexts/AppContext";
 
 export function CreateClient() {
+  const { loading, refresh } = useApp()
   const navigate = useNavigate();
   const [client, setClient] = useState({});
 
+  loading.set(true)
+  console.log(loading)
+
   async function submitClient(e) {
     e.preventDefault();
-    const res = await API.createClient({...client, name: client.name.toLowerCase().trim()});
+    const res = await API.createClient({
+      ...client,
+      name: client.name.toLowerCase().trim(),
+    });
 
-    if(res?.data) {
-      toast.success("Cliente creado")
+    if (res?.data) {
+      toast.success("Cliente creado");
     } else {
-      toast.success("error del servidor", {style: {borderColor: "red"}})
+      toast.success("error del servidor", { style: { borderColor: "red" } });
     }
-    navigate(0)
+    navigate(0);
     //navigate(`/admin/${params?.adminId}/clients/create`)
   }
 
