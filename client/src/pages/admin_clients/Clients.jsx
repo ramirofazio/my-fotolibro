@@ -27,15 +27,17 @@ export function Clients() {
     if (res) {
       try {
         loading.set(true);
-        await API.deleteClient(clientId);
-        await API.deleteFolder(clientId);
+        const cres = await API.deleteClient(clientId);
+        const fres = await API.deleteFolder(clientId);
+        console.log(cres.data, fres.data)
+        loading.set(false);
         toast.success(`Se elimino ${name}`);
         adminClients.remove(clientId);
       } catch(err) {
+        loading.set(false);
         toast.error(`Err: ${err.message}`)
       }
     }
-
     loading.set(false);
   }
 

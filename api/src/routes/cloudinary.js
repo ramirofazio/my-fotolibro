@@ -181,40 +181,38 @@ router.delete("/images/:clientId", async (req, res) => {
       prefix: clientId,
       max_results: 400,
     });
-    if (!folder.resources.length) return;
-    const public_ids = folder.resources.map((asset) => asset.public_id);
-    console.log(public_ids.length);
 
-    const subArrNum = Math.ceil(public_ids.length / 100);
-    console.log(subArrNum);
-    let deleted_assets = [];
-    for (let i = 0; i < subArrNum; i++) {
-      try {
-        let begin = i * 100;
-        let slice = public_ids.slice(begin, begin + 100);
-        const res = await cloudinary.v2.api.delete_resources(slice, {
-          all: true,
-        });
-        deleted_assets.push(res.data);
-      } catch (e) {
-        console.log(e);
+    if (folder.resources.length) {
+      const public_ids = folder.resources.map((asset) => asset.public_id);
+
+      const subArrNum = Math.ceil(public_ids.length / 100);
+
+      let deleted_assets = [];
+      for (let i = 0; i < subArrNum; i++) {
+        try {
+          let begin = i * 100;
+          let slice = public_ids.slice(begin, begin + 100);
+          const res = await cloudinary.v2.api.delete_resources(slice, {
+            all: true,
+          });
+          deleted_assets.push(res.data);
+        } catch (err) {
+          console.log(err);
+        }
       }
+      const deleted_folder = await cloudinary.v2.api.delete_folder(clientId);
+      res.status(201).json({
+        deleted_assets,
+        deleted_folder,
+      });
+    } else {
+      res.status(204).json({
+        res: `the folder ${clientId} dosen't exist`,
+      });
     }
-
-    const deleted_folder = await cloudinary.v2.api.delete_folder(clientId);
-    /* const delete_upload_preset = await cloudinary.v2.api.delete_upload_preset(
-      clientId
-    );
- */
-    res.json({
-      res: public_ids,
-      deleted_assets,
-      deleted_folder,
-      // delete_upload_preset,
-    });
   } catch (error) {
     console.log(error);
-    res.json({
+    res.status(409).json({
       message: "cannot delete folder",
       err: error,
     });

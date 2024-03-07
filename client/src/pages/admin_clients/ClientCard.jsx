@@ -4,7 +4,7 @@ import { API } from "../../api_instance";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-hot-toast";
 
-export function ClientCard({ clientData }) {
+export function ClientCard({ clientData, onRemove } ) {
   const {
     name,
     email,
@@ -13,9 +13,9 @@ export function ClientCard({ clientData }) {
     dni,
     created_at,
     active_link = false,
-    onRemove
+    
   } = clientData;
-
+  console.log(id)
   const navigate = useNavigate();
   const params = useParams();
 
@@ -122,7 +122,7 @@ export function ClientCard({ clientData }) {
         </span>
         <span className="flex flex-row items-center mt-14">
           <button
-            onClick={onRemove}
+            onClick={() => onRemove(name, id)}
             className="hover:text-red-400 border-[3px] w-[60%] border-red-500 p-1 rounded-lg my-2 bg-red-400  text-red-600"
           >
             <p className="text-lg">ELIMINAR</p>
