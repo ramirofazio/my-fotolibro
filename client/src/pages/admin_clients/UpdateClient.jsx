@@ -1,29 +1,46 @@
 import { PersonalData } from "../client_data";
 import { useState } from "react";
 import { API } from "../../api_instance/index";
-import { useNavigate, useLoaderData, Link, useParams } from "react-router-dom";
+import { useLoaderData, Link, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { useApp } from "../../contexts/AppContext";
 
 export function UpdateClient() {
-  const navigate = useNavigate();
+  const { loading, adminClients } = useApp();
   const params = useParams();
   const _client = useLoaderData();
 
   const [client, setClient] = useState(_client);
   const [errs, setErrs] = useState({});
 
-  async function submitClient(e) {
-    e.preventDefault();
-    const { email, name, dni, phone } = client;
-    const newData = {
-      email,
-      name,
-      dni,
-      phone,
-    };
-    await API.updateClient({ newData, clientId: _client?.id });
-    toast.success("Cliente actualizado");
-    navigate(0);
+  async function updateClient(e) {
+    try {
+      e.preventDefault();
+      const { email, name, dni, phone, active_link, created_at, id } = client;
+      console.log(client)
+      const newClient = {
+        email,
+        name,
+        dni,
+        phone,
+      };
+      const res = await API.updateClient({ newClient, clientId: _client?.id });
+      console.log(res.data, newClient)
+      if (res.status === 201) {
+        loading.set(false);
+        toast.success("Cliente actualizado");
+        _client.name = name
+        adminClients.update({...newClient, active_link, created_at, id}, _client?.id)
+      } else {
+        loading.set(false);
+        toast.error(
+          `No actualizado ${res.data.message ? res.data.message : res.status}`
+        );
+      }
+    } catch (err) {
+      loading.set(false);
+      toast.error(err.message);
+    }
   }
 
   return (
@@ -38,7 +55,7 @@ export function UpdateClient() {
           </button>
         </Link>
       </div>
-      <form onSubmit={submitClient}>
+      <form onSubmit={updateClient}>
         <PersonalData
           admin={true}
           errs={errs}
@@ -51,7 +68,11 @@ export function UpdateClient() {
           <button
             type="submit"
             className="disabled:opacity-40 rounded bg-white text-blue-500 hover:bg-opacity-70 hover:font-bold border-2 px-4 py-1 my-2 text-xl"
-            disabled={!client?.name || (Object.values(errs).length && true) || client == _client} /* que haya realizado cambios */
+            disabled={
+              !client?.name ||
+              (Object.values(errs).length && true) ||
+              client == _client
+            } /* que haya realizado cambios */
           >
             Editar cliente
           </button>

@@ -102,13 +102,13 @@ router.put("/edit_client/:id", async (req, res) => {
       },
       { where: { id } }
     );
-    res.json({
+    res.status(201).json({
       esa: `cliente ${id} actualizado`,
       updated,
     });
   } catch (e) {
     console.log(e);
-    res.json({ e });
+    res.status(409).json({ e });
   }
 });
 

@@ -4,6 +4,7 @@ import { API } from "../../api_instance";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-hot-toast";
 
+
 export function ClientCard({ clientData, onRemove } ) {
   const {
     name,
@@ -20,6 +21,7 @@ export function ClientCard({ clientData, onRemove } ) {
   const params = useParams();
 
   async function updateActiveClient() {
+    // cambiar
     await API.updateActiveClient(id);
     toast.success(`Se actualizo el estado`);
     navigate(0);
@@ -28,7 +30,7 @@ export function ClientCard({ clientData, onRemove } ) {
   return (
     <div
       className={`border-2 rounded p-2 w-full  bg-slate-700 border-base-[10%] ${
-        params?.clientId === id && "border-4 border-red-500"
+        parseInt(params?.clientId) === id && "border-4 border-red-500"
       } `}
     >
       <h1 className="truncate font-bold text-lg lg:text-xl font-serif uppercase text-white ">
@@ -46,7 +48,7 @@ export function ClientCard({ clientData, onRemove } ) {
                 }`}
               ></p>
               <p className=" font-bold">
-                {active_link ? "Activo" : "Desactivado"}
+                {active_link ? "activo" : "pausado"}
               </p>
             </h1>
 

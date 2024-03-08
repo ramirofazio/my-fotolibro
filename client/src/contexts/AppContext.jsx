@@ -39,10 +39,9 @@ export const AppProvider = ({ children }) => {
     setLocalImages([...newLocal]);
   };
 
-  
   const addClients = (client) => {
     setAdminClients((cur) => [...cur, client]);
-  }
+  };
 
   return (
     <AppContext.Provider
@@ -88,7 +87,15 @@ export const AppProvider = ({ children }) => {
           add: addClients,
           remove: (clientId) => {
             setAdminClients((prev) => prev.filter(({ id }) => id !== clientId));
-          }
+          },
+          update: (newClient, clientId) => {
+            setAdminClients((prev) =>
+              prev.map((c) => {
+                if (c.id === clientId) return newClient;
+                else return c;
+              })
+            );
+          },
         },
       }}
     >

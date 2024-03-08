@@ -14,6 +14,7 @@ export function Clients() {
     adminClients.set(clients);
   }, []);
 
+
   async function onRemove(name, clientId) {
     const res = confirm(`¿Quieres eliminar al cliente ${name}?`);
     if (res) {

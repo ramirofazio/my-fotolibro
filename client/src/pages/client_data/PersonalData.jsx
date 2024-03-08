@@ -17,7 +17,6 @@ export function PersonalData({
   const phoneRef = useRef(null);
 
   useEffect(() => {
-    console.log(client);
     if (resetInput) {
       resetInputs();
       setResetInput(false);
