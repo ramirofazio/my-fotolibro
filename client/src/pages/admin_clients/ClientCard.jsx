@@ -1,11 +1,11 @@
 import { PencilSquareIcon, PaperClipIcon } from "@heroicons/react/24/outline";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { API } from "../../api_instance";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-hot-toast";
+import { useApp } from "../../contexts/AppContext";
 
-
-export function ClientCard({ clientData, onRemove } ) {
+export function ClientCard({ clientData, onRemove }) {
   const {
     name,
     email,
@@ -14,19 +14,37 @@ export function ClientCard({ clientData, onRemove } ) {
     dni,
     created_at,
     active_link = false,
-    
   } = clientData;
-  
-  const navigate = useNavigate();
+
+  const { loading, adminClients } = useApp();
   const params = useParams();
 
   async function updateActiveClient() {
-    // cambiar
-    await API.updateActiveClient(id);
-    toast.success(`Se actualizo el estado`);
-    navigate(0);
-  }
+    try {
+      loading.set(true);
+      const res = await API.updateActiveClient(id);
 
+      if (res.status === 200) {
+        loading.set(false);
+        toast.success("Estado actualizado");
+
+        adminClients.update(
+          { ...clientData, active_link: active_link === true ? false : true },
+          id
+        );
+      } else {
+        loading.set(false);
+        toast.error(
+          `No actualizado ${res.data.message ? res.data.message : res.status}`
+        );
+      }
+    } catch (err) {
+      loading.set(false);
+      toast.error(`Err: ${err.message}`);
+    }
+
+    loading.set(false);
+  }
   return (
     <div
       className={`border-2 rounded p-2 w-full  bg-slate-700 border-base-[10%] ${
@@ -47,9 +65,7 @@ export function ClientCard({ clientData, onRemove } ) {
                     : "border-yellow-500 bg-yellow-300"
                 }`}
               ></p>
-              <p className=" font-bold">
-                {active_link ? "activo" : "pausado"}
-              </p>
+              <p className=" font-bold">{active_link ? "activo" : "pausado"}</p>
             </h1>
 
             <h1>

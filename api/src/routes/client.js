@@ -102,7 +102,7 @@ router.put("/edit_client/:id", async (req, res) => {
       },
       { where: { id } }
     );
-    res.status(201).json({
+    res.status(200).json({
       esa: `cliente ${id} actualizado`,
       updated,
     });
@@ -328,10 +328,10 @@ router.put("/activeClient/:clientId", async (req, res) => {
     const paused = await client.update({
       active_link: client.active_link === true ? false : true,
     });
-    res.json(paused);
-  } catch (e) {
-    res.status(404).json({
-      e,
+    res.status(200).json(paused);
+  } catch (err) {
+    res.status(409).json({
+      err,
     });
   }
 });
