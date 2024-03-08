@@ -15,6 +15,13 @@ const transporter = require("../node_mailer");
 const { DateTime } = require("luxon");
 const { Op } = require("sequelize");
 const bytesToMb = require("../u_tils.js");
+const {
+  getAlbums,
+  createAlbum,
+  updateAlbum,
+  createPhoto,
+  getPhotos,
+} = require("../controllers");
 
 router.get("/", async (req, res) => {
   try {
@@ -265,7 +272,7 @@ router.get("/disconnect/:clientId", async (req, res) => {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
 
-    const connected = await client.update({
+    const connected = await Client.update({
       // undefined
       online: false,
     });
@@ -330,5 +337,12 @@ router.put("/activeClient/:clientId", async (req, res) => {
     });
   }
 });
+
+router.get("/albums/:clientId", getAlbums);
+router.post("/albums/:clientId", createAlbum);
+router.put("/albums/:id", updateAlbum);
+
+router.get("/photos/:clientId", getPhotos);
+router.post("/photos/:clientId", createPhoto);
 
 module.exports = router;

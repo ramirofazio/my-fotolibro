@@ -82,7 +82,21 @@ export const API = {
   client: {
     album: {
       getAll: function ({ clientId }) {
-        api.get("/client/albums", { clientId });
+        return api.get("/client/albums/" + clientId);
+      },
+      create: function ({ clientId }) {
+        return api.post("/client/albums/" + clientId);
+      },
+      update: function ({ id, size, available }) {
+        return api.put("/client/albums/" + id, { size, available });
+      },
+    },
+    photo: {
+      create: function ({ clientId, photos }) {
+        return api.post("client/photos/" + clientId, { photos });
+      },
+      getAll: function ({ clientId }) {
+        return api.get("/client/photos/" + clientId);
       },
     },
   },

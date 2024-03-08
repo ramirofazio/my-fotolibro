@@ -42,6 +42,9 @@ Session.belongsTo(Client);
 Client.hasMany(Album, { onDelete: "CASCADE" });
 Album.belongsTo(Client);
 
+Album.hasMany(Photo, { onDelete: "CASCADE" });
+Photo.belongsTo(Album);
+
 module.exports = {
   ...sequelize.models,
   conn: sequelize,
