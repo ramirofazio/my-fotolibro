@@ -21,6 +21,7 @@ const {
   updateAlbum,
   createPhoto,
   getPhotos,
+  deletePhoto,
 } = require("../controllers");
 
 router.get("/", async (req, res) => {
@@ -344,5 +345,6 @@ router.put("/albums/:id", updateAlbum);
 
 router.get("/photos/:clientId", getPhotos);
 router.post("/photos/:clientId", createPhoto);
+router.delete("/photo/:id", deletePhoto);
 
 module.exports = router;

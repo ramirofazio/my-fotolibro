@@ -98,6 +98,9 @@ export const API = {
       getAll: function ({ clientId }) {
         return api.get("/client/photos/" + clientId);
       },
+      delete: function ({ id }) {
+        return api.delete("/client/photo/" + id);
+      },
     },
   },
 };

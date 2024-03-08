@@ -15,6 +15,11 @@ const cloudinary = {
     );
     return response;
   },
+  deleteFile: async function ({ public_id }) {
+    const response = await _cloudinary.api.delete_resources([public_id], {});
+
+    return response;
+  },
 };
 
 module.exports = cloudinary;
