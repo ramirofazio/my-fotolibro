@@ -69,8 +69,8 @@ export function Routes() {
         {
           path: '/admin/:adminId/folders',
           loader: async () => {
-            const books = await API.getClients()
-            return books.data
+            const folders = await API.getClients()
+            return folders.data
           },
           element: <Folders />,
         },

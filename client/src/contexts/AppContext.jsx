@@ -11,6 +11,7 @@ export const AppProvider = ({ children }) => {
   const [refresh, setRefresh] = useState(true);
   const [upload_preset, setUpload_preset] = useState("");
   const [adminClients, setAdminClients] = useState([]);
+  const [adminFolders, setAdminFolders] = useState([])
 
   const addLocalImages = (images) => {
     setLocalImages((cur) => [...images, ...cur]);
@@ -90,6 +91,24 @@ export const AppProvider = ({ children }) => {
           },
           update: (newClient, clientId) => {
             setAdminClients((prev) =>
+              prev.map((c) => {
+                if (c.id === clientId) return newClient;
+                else return c;
+              })
+            );
+          },
+        },
+        adminFolders: {
+          value: adminFolders,
+          set: (folders) => setAdminFolders(folders),
+          add: (folder) => {
+            setAdminFolders((cur) => [...cur, folder]);
+          },
+          remove: (clientId) => {
+            setAdminFolders((prev) => prev.filter(({ id }) => id !== clientId));
+          },
+          update: (newClient, clientId) => {
+            setAdminFolders((prev) =>
               prev.map((c) => {
                 if (c.id === clientId) return newClient;
                 else return c;
