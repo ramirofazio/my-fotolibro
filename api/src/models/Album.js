@@ -16,6 +16,10 @@ module.exports = (sequelize) => {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
+      photos_length: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
       available: {
         type: DataTypes.INTEGER,
         defaultValue: 100000000

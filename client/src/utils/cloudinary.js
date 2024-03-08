@@ -35,7 +35,7 @@ export async function getPromisesUpload({
     promises[id].push(axios.post(URL, formdata));
   }
 
-  await API.client.album.update({ id, size, available });
+  await API.client.album.update({ id, size, available, photos_length: images.length });
 
   return await getPromisesUpload({
     clientId,
