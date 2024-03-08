@@ -1,27 +1,58 @@
-
-//import { ClientCard } from "./ClientCard";
 import { useLoaderData } from "react-router-dom";
 import { Outlet } from "react-router-dom";
-import { ClientCard2 } from "./ClientCard2";
+import { ClientCard } from "./ClientCard";
+import { useApp } from "../../contexts/AppContext";
+import { useEffect } from "react";
+import { API } from "../../api_instance";
+import { toast } from "react-hot-toast";
 
 export function Clients() {
-  const clients = useLoaderData()
+  const { adminClients, loading } = useApp();
+  const clients = useLoaderData();
+
+  useEffect(() => {
+    adminClients.set(clients);
+  }, []);
+
+
+  async function onRemove(name, clientId) {
+    const res = confirm(`¿Quieres eliminar al cliente ${name}?`);
+    if (res) {
+      try {
+        loading.set(true);
+        await API.deleteClient(clientId);
+        await API.deleteFolder(clientId);
+
+        loading.set(false);
+        toast.success(`Se elimino ${name}`);
+        adminClients.remove(clientId);
+      } catch (err) {
+        loading.set(false);
+        toast.error(`Err: ${err.message}`);
+      }
+    }
+    loading.set(false);
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 my-auto">
       <div className="mb-auto p-4 grid grid-cols-1 lg:grid-cols-2 place-items-center gap-2 lg:gap-5 border-r-2">
-        <h1 className="text-3xl text-violet-400 font-sans my-4 lg:col-span-2">Clientes activos</h1>
-        {clients?.length ? (
-          clients.map((c, i) => {
-            return <ClientCard2 created_at={c.created_at} active_link={c.active_link} dni={c.dni} email={c.email} phone={c.phone} id={c.id} key={i} name={c.name} />;
-          })
+        <h1 className="text-3xl text-violet-400 font-sans my-4 lg:col-span-2">
+          Clientes activos
+        </h1>
+        {adminClients.value?.length ? (
+          adminClients.value.map((c, i) => (
+            <ClientCard onRemove={onRemove} clientData={c} key={i} />
+          ))
         ) : (
           <div className="place-self-start">
-            <h1 className="text-3xl text-white">No se encontraron clientes activos</h1>
+            <h1 className="text-3xl text-white">
+              No se encontraron clientes activos
+            </h1>
           </div>
         )}
       </div>
-      <Outlet/>
+      <Outlet />
     </div>
   );
 }

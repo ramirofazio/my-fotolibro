@@ -8,7 +8,6 @@ export async function uploadImagesCloudinary(
   upload_preset
 ) {
   if (!clientId) return;
-  //const {upload_preset} = await API.getCLientById(clientId)
 
   const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 
@@ -31,7 +30,7 @@ export async function uploadImagesCloudinary(
 
   try {
     const responses = await Promise.all(promises);
-    // AQUI LLEGAN 130 RESPONSES
+
     responses.forEach(({ data }, i) => {
       if (data.secure_url) {
         if (photos[data.original_filename]) {
@@ -54,7 +53,7 @@ export async function uploadImagesCloudinary(
         }
       }
     });
-    console.log(clientId);
+  
     await API.uploadImagesDB({
       clientId,
       imgs: Object.values(photos),
@@ -69,6 +68,7 @@ export async function uploadImagesCloudinary(
 export function isValidClient({ name, email, dni, phone }) {
   const errs = {};
   if (!name) errs.name = "ingrese un nombre";
+  if(name.length < 4) errs.name
 
   if (!email) errs.email = "ingrese un email";
   if (
@@ -78,7 +78,7 @@ export function isValidClient({ name, email, dni, phone }) {
 
   if (!dni) errs.dni = "ingrese DNI";
   if (dni?.length < 7) errs.dni = "ingrese un DNI valido";
-  if (dni?.length > 15) errs.dni = "ingrese un DNI Ccatua";
+  if (dni?.length > 15) errs.dni = "DNI muy largo";
 
   if (!phone) errs.phone = "ingrese un numero";
   if (phone?.length < 7) errs.phone = "ingrese un numero valido";
@@ -86,6 +86,29 @@ export function isValidClient({ name, email, dni, phone }) {
 
   return errs;
 }
+
+export function isValidClientForAdmin({ name/* , email, dni, phone */ }) {
+  const errs = {};
+  if (!name) errs.name = "ingrese un nombre";
+  if(name.length < 4) errs.name = "minimo 4 caracteres"
+
+  // if (!email) errs.email = "ingrese un email";
+  // if (
+  //   !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|gob|com\.ar|gob\.ar)$/.test(email)
+  // )
+  //   errs.email = "ingrese un email valido";
+
+  // if (!dni) errs.dni = "ingrese DNI";
+  // if (dni?.length < 7) errs.dni = "ingrese un DNI valido";
+  // if (dni?.length > 15) errs.dni = "DNI muy largo";
+
+  // if (!phone) errs.phone = "ingrese un numero";
+  // if (phone?.length < 7) errs.phone = "ingrese un numero valido";
+  // if (phone?.length > 18) errs.phone = "ingrese un numero valido";
+
+  return errs;
+}
+
 
 export function getSizeImage(number) {
   if (number < 1024) {

@@ -10,8 +10,8 @@ export const API = {
   createClient: (newClient) => {
     return api.post("client", newClient);
   },
-  updateClient: ({ clientId, newData }) => {
-    return api.put(`client/edit_client/${clientId}`, newData);
+  updateClient: ({ clientId, newClient }) => {
+    return api.put(`client/edit_client/${clientId}`, newClient);
   },
   deleteClient: (clientId) => {
     return api.delete(`client/${clientId}`);

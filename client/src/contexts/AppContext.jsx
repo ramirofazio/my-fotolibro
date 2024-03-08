@@ -10,6 +10,8 @@ export const AppProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [refresh, setRefresh] = useState(true);
   const [upload_preset, setUpload_preset] = useState("");
+  const [adminClients, setAdminClients] = useState([]);
+  const [adminFolders, setAdminFolders] = useState([])
 
   const addLocalImages = (images) => {
     setLocalImages((cur) => [...images, ...cur]);
@@ -36,6 +38,10 @@ export const AppProvider = ({ children }) => {
       }
     });
     setLocalImages([...newLocal]);
+  };
+
+  const addClients = (client) => {
+    setAdminClients((cur) => [...cur, client]);
   };
 
   return (
@@ -74,6 +80,40 @@ export const AppProvider = ({ children }) => {
           upload_preset: upload_preset,
           set: function ({ upload_preset }) {
             setUpload_preset(upload_preset);
+          },
+        },
+        adminClients: {
+          value: adminClients,
+          set: (clients) => setAdminClients(clients),
+          add: addClients,
+          remove: (clientId) => {
+            setAdminClients((prev) => prev.filter(({ id }) => id !== clientId));
+          },
+          update: (newClient, clientId) => {
+            setAdminClients((prev) =>
+              prev.map((c) => {
+                if (c.id === clientId) return newClient;
+                else return c;
+              })
+            );
+          },
+        },
+        adminFolders: {
+          value: adminFolders,
+          set: (folders) => setAdminFolders(folders),
+          add: (folder) => {
+            setAdminFolders((cur) => [...cur, folder]);
+          },
+          remove: (clientId) => {
+            setAdminFolders((prev) => prev.filter(({ id }) => id !== clientId));
+          },
+          update: (newClient, clientId) => {
+            setAdminFolders((prev) =>
+              prev.map((c) => {
+                if (c.id === clientId) return newClient;
+                else return c;
+              })
+            );
           },
         },
       }}

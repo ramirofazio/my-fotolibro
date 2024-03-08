@@ -5,28 +5,18 @@ import {
   LinkIcon,
 } from "@heroicons/react/24/outline";
 import { API } from "../../api_instance";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { DateTime } from "luxon";
+import { useApp } from "../../contexts/AppContext";
+import { toast } from "react-hot-toast";
 
-export function FolderCard({ name, id, last_link_download }) {
-  const navigate = useNavigate();
+export function FolderCard({ clientData, onRemove }) {
+  const { name, id, last_link_download } = clientData;
   const [url, setUrl] = useState(false);
-
-  function handleDelete() {
-    setUrl(false);
-    API.deleteFolder(id).then((res) => {
-      if (res.data) {
-        API.deleteClient(id).then(() => {
-          navigate(0);
-        });
-      }
-    });
-  }
+  const { adminClients } = useApp();
 
   async function generateDownloadUrl() {
     try {
-
       //await API.addDownloadImgsIndex(id);
       const url = await API.getDownloadUrl(id);
       console.log("URL:", url.data);
@@ -38,19 +28,30 @@ export function FolderCard({ name, id, last_link_download }) {
     }
   }
 
-  //asincrono y esperar + notificacion
   async function updateLastDownloadDate() {
-    const actual_date = DateTime.now().setLocale("es").toFormat("dd/MM/yyyy");
-    await API.updateClient({
-      clientId: id,
-      newData: { last_link_download: actual_date},
-    });
+    try {
+      const actual_date = DateTime.now().setLocale("es").toFormat("dd/MM/yyyy");
+
+      const res = await API.updateClient({
+        clientId: id,
+        newClient: { last_link_download: actual_date },
+      });
+      if (res.status === 200) {
+        toast.success("Estado actualizado");
+        adminClients.update({ ...clientData, last_link_download: actual_date }, id);
+      } else {
+        toast.error(
+          `Err ${res.data.message ? res.data.message : res.status}`
+        );
+      }
+    } catch (err) {
+      toast.error(`Err: ${err.message}`);
+    }
+
+    // ? Es necesario resetear??
     //await API.resetCloudinaryIndex(id).then((res) => console.log(res));
   }
 
-  useEffect(() => {
-    console.log("el efecto", url);
-  }, [url]);
   return (
     <div className="border-2  w-fit rounded-md px-1">
       <div className="ml-auto my-1 flex gap-2 items-center justify-end ">
@@ -76,12 +77,12 @@ export function FolderCard({ name, id, last_link_download }) {
         ) : (
           <>
             <button onClick={() => window.location.replace(url)}>
-              <ArrowDownTrayIcon  className="w-9 inline  text-green-600 hover:opacity-75" />
+              <ArrowDownTrayIcon className="w-9 inline  text-green-600 hover:opacity-75" />
             </button>
           </>
         )}
         <XCircleIcon
-          onClick={handleDelete}
+          onClick={() => onRemove(name, id)}
           className=" w-9 inline mx-1 text-red-500 hover:opacity-60"
         />
       </div>

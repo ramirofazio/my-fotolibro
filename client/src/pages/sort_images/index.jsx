@@ -77,9 +77,10 @@ export function SortImagesPage() {
     const res = confirm(`¿Quieres eliminar la imagen ${name}?`)
     if (res) {
       loading.set(true)
+
       const res = await API.client.photo.delete({ id });
       toast.success(res.data);
-      //llamar a la api
+
       const { data } = await API.getPreviusImgs(clientId)
       cloudImages.set(data.photos)
     }

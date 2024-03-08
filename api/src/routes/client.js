@@ -73,7 +73,7 @@ router.post("/", async (req, res) => {
       created_at: DateTime.now().setLocale("es").toFormat("dd/MM/yyyy"),
     });
 
-    const newBook = await Book.create({
+    await Book.create({
       name,
       clientId: newClient.id,
     });
@@ -91,7 +91,9 @@ router.post("/", async (req, res) => {
       disallow_public_id: false,
       use_asset_folder_as_public_id_prefix: false,
     });
-    return res.json({ upload_preset: result, clientId: newClient.id });
+    return res
+      .status(200)
+      .json({ upload_preset: result, newClient});
   } catch (e) {
     console.log(e);
     res.status(401).json({ e });
@@ -108,43 +110,46 @@ router.put("/edit_client/:id", async (req, res) => {
       },
       { where: { id } }
     );
-    res.json({
+    res.status(200).json({
       esa: `cliente ${id} actualizado`,
       updated,
     });
   } catch (e) {
     console.log(e);
-    res.json({ e });
+    res.status(409).json({ e });
   }
 });
 
 router.delete("/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
-    const deleted = await Client.destroy({
-      where: {
-        id: clientId,
-      },
-    });
+    const client = await Client.findByPk(clientId);
+    client.destroy();
+    await client.save();
+
     await Book.destroy({
       where: { clientId: clientId },
     });
+
     cloudinary.v2.config({
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
       cloud_name: CLOUDINARY_CLOUD_NAME,
     });
     const deleted_upload_preset = await cloudinary.v2.api.delete_upload_preset(
-      clientId
+      client.upload_preset
     );
-    res.json({
-      message: `cliente ${clientId} eliminado`,
+    res.status(200).json({
+      message: `cliente ${client.name} eliminado`,
       upload_preset: deleted_upload_preset,
-      deleted,
+      deleted: true,
     });
-  } catch (e) {
-    console.log(e);
-    res.json({ e });
+  } catch (err) {
+    console.log(err);
+    res.status(409).json({
+      err,
+      deleted: false,
+    });
   }
 });
 
@@ -331,10 +336,10 @@ router.put("/activeClient/:clientId", async (req, res) => {
     const paused = await client.update({
       active_link: client.active_link === true ? false : true,
     });
-    res.json(paused);
-  } catch (e) {
-    res.status(404).json({
-      e,
+    res.status(200).json(paused);
+  } catch (err) {
+    res.status(409).json({
+      err,
     });
   }
 });
