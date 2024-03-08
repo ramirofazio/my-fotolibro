@@ -38,7 +38,7 @@ export async function getPromisesUpload({
   }
   
   console.log(photos_length, "ya supidte")
-  await API.client.album.update({ id, size, available });
+  await API.client.album.update({ id, size, available, photos_length });
 
   return await getPromisesUpload({
     clientId,

@@ -62,7 +62,7 @@ module.exports = {
 
       album.size = size;
       album.available = available;
-      album.photos_length = photos_length;
+      album.photos_length = album.photos_length + photos_length;
 
       await album.save();
 

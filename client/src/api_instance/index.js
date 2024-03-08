@@ -87,8 +87,8 @@ export const API = {
       create: function ({ clientId }) {
         return api.post("/client/albums/" + clientId);
       },
-      update: function ({ id, size, available }) {
-        return api.put("/client/albums/" + id, { size, available });
+      update: function ({ id, size, available, photos_length, }) {
+        return api.put("/client/albums/" + id, { size, available, photos_length, });
       },
     },
     photo: {
