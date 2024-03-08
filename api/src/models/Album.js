@@ -11,16 +11,14 @@ module.exports = (sequelize) => {
       },
       name: {
         type: DataTypes.STRING,
-        defaultValue: "unknown",
       },
       size: {
-        type: DataTypes.BIGINT,
+        type: DataTypes.INTEGER,
         defaultValue: 0,
       },
       available: {
-        type: DataTypes.BIGINT,
-        allowNull: false,
-        defaultValue: 1e8,
+        type: DataTypes.INTEGER,
+        defaultValue: 100000000
       },
     },
     {

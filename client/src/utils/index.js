@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API } from "../api_instance";
+import { getPromisesUpload } from "./cloudinary";
 
 export async function uploadImagesCloudinary(
   images = [],
@@ -145,42 +146,43 @@ export const storage = {
   },
 };
 export const cloudinary = {
-  upload: async function ({ images = [], clientId }) {
+  upload: async function ({ images = [], clientId, upload_preset }) {
     if (!clientId) return;
-    const arrays = getArraysBySizeLimit(images);
-    console.log(arrays);
+    const { data } = await API.client.album.getAll({ clientId });
 
-    const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-    const URL = `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`;
-    console.log(URL)
-  },
-};
+    const promises = await getPromisesUpload({
+      albums: data,
+      clientId,
+      upload_preset,
+      images: [...images],
+    });
 
-function getArraysBySizeLimit(images = []) {
-  const LIMIT_SIZE = 1e8;
-  const arrays = [];
-  let currentArray = [];
-  let curretSize = 0;
+    const photos = [];
+    for (const key in promises) {
+      const responses = await Promise.all(promises[key]);
 
-  const totalSize = images.reduce((accum, current) => {
-    if (curretSize + current.size < LIMIT_SIZE) {
-      curretSize += current.size;
-      currentArray.push(current);
-    } else {
-      arrays.push({
-        totalSize: curretSize,
-        images: currentArray,
+      responses.forEach(({ data }) => {
+        if (data.secure_url) {
+          const photo = {
+            URL: data.secure_url,
+            id: data.asset_id,
+            originalName: data?.original_filename,
+            size: data.bytes,
+            publicId: `${data.public_id}`,
+            albumId: parseInt(key),
+            clientId: parseInt(clientId),
+          };
+
+          if (!data.original_filename) {
+            const name = data.public_id.split('"');
+            photo.originalName = name[0];
+          }
+
+          photos.push(photo);
+        }
       });
-
-      curretSize = 0;
-      currentArray = [];
     }
 
-    return accum + current.size;
-  });
-
-  return {
-    totalSize,
-    arrays,
-  };
-}
+    return (await API.client.photo.create({ clientId, photos })).data;
+  },
+};

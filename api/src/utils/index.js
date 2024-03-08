@@ -1,3 +1,4 @@
 module.exports = {
-    ...require('./env')
-}
+  ...require("./env"),
+  cloudinary: require("./cloudinary"),
+};
