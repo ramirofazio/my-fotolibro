@@ -50,7 +50,11 @@ module.exports = (sequelize) => {
       upload_preset: {
         type: DataTypes.STRING,
         allowNull: true,
-      }
+      },
+      can_download: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
     },
     {
       timestamps: false,

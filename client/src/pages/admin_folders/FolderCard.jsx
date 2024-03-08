@@ -3,6 +3,8 @@ import {
   ArrowDownTrayIcon,
   XCircleIcon,
   LinkIcon,
+  CheckCircleIcon,
+  ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
 import { API } from "../../api_instance";
 import { useState } from "react";
@@ -11,7 +13,7 @@ import { useApp } from "../../contexts/AppContext";
 import { toast } from "react-hot-toast";
 
 export function FolderCard({ clientData, onRemove }) {
-  const { name, id, last_link_download } = clientData;
+  const { name, id, last_link_download, can_download } = clientData;
   const [url, setUrl] = useState(false);
   const { adminClients } = useApp();
 
@@ -27,7 +29,8 @@ export function FolderCard({ clientData, onRemove }) {
       setUrl(false);
     }
   }
-
+  console.log(can_download);
+  
   async function updateLastDownloadDate() {
     try {
       const actual_date = DateTime.now().setLocale("es").toFormat("dd/MM/yyyy");
@@ -38,11 +41,12 @@ export function FolderCard({ clientData, onRemove }) {
       });
       if (res.status === 200) {
         toast.success("Estado actualizado");
-        adminClients.update({ ...clientData, last_link_download: actual_date }, id);
-      } else {
-        toast.error(
-          `Err ${res.data.message ? res.data.message : res.status}`
+        adminClients.update(
+          { ...clientData, last_link_download: actual_date },
+          id
         );
+      } else {
+        toast.error(`Err ${res.data.message ? res.data.message : res.status}`);
       }
     } catch (err) {
       toast.error(`Err: ${err.message}`);
@@ -53,7 +57,7 @@ export function FolderCard({ clientData, onRemove }) {
   }
 
   return (
-    <div className="border-2  w-fit rounded-md px-1">
+    <div className="border-2  rounded-md px-1">
       <div className="ml-auto my-1 flex gap-2 items-center justify-end ">
         <span className="ml-2  mr-auto">
           <p>Ultima descarga: </p>
@@ -67,10 +71,11 @@ export function FolderCard({ clientData, onRemove }) {
         </span>
         {!url ? (
           <button
-            className="text-white text-xl !justify-self-end"
+            className="text-white text-xl !justify-self-end disabled:opacity-40"
             role="status"
             title="Click para generar desarga"
             onClick={generateDownloadUrl}
+            disabled={can_download ? false : true}
           >
             <LinkIcon className="w-9 h-9" />
           </button>
@@ -87,12 +92,25 @@ export function FolderCard({ clientData, onRemove }) {
         />
       </div>
       <div className="flex items-center border-t-2 gap-2">
-        <FolderIcon className="h-20 w-20 text-blue-700" />
+        <FolderIcon className={`h-20 w-20 ${can_download ? "text-green-700" : "text-blue-700"} `} />
         <div>
           <h1 className="text-white text-2xl">{name}</h1>
           <h2 className="text-white">{id}</h2>
         </div>
       </div>
+      <span className="text-xl font-bold border-t-2 flex items-center justify-center gap-2 py-2">
+        {can_download ? (
+          <>
+            <CheckCircleIcon className="w-7 text-green-700" />
+            <h1 className="text-green-600">Listo para descargar</h1>
+          </>
+        ) : (
+          <>
+            <ExclamationCircleIcon className="w-7 text-blue-700" />
+            <h1 className="text-blue-700">En proceso</h1>
+          </>
+        )}
+      </span>
     </div>
   );
 }

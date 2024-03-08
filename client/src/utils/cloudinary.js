@@ -19,7 +19,9 @@ export async function getPromisesUpload({
 
   let { size, available, id } = albums[0];
   promises[id] = [];
-
+  const photos_length = images.length
+  console.log(photos_length )
+  //await API.client.album.update({ id, size, available, photos_length });
   while (available > AVAILABLE_SIZE && images.length) {
     const img = images.shift();
     size += img.size;
@@ -34,8 +36,9 @@ export async function getPromisesUpload({
 
     promises[id].push(axios.post(URL, formdata));
   }
-
-  await API.client.album.update({ id, size, available, photos_length: images.length });
+  
+  console.log(photos_length, "ya supidte")
+  await API.client.album.update({ id, size, available });
 
   return await getPromisesUpload({
     clientId,

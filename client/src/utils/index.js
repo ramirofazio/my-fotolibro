@@ -182,7 +182,6 @@ export const cloudinary = {
         }
       });
     }
-
     return (await API.client.photo.create({ clientId, photos })).data;
   },
 };
