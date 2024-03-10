@@ -18,6 +18,7 @@
     "@heroicons/react": "^2.0.18",
     "axios": "^1.6.0",
     "compressorjs": "^1.2.1",
+    "jszip": "^3.10.1",
     "localforage": "^1.10.0",
     "luxon": "^3.4.4",
     "match-sorter": "^6.3.1",
