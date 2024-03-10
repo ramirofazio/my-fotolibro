@@ -22,6 +22,8 @@ const {
   createPhoto,
   getPhotos,
   deletePhoto,
+  updateIndexPhotos,
+  sendPhotos,
 } = require("../controllers");
 
 router.get("/", async (req, res) => {
@@ -91,9 +93,7 @@ router.post("/", async (req, res) => {
       disallow_public_id: false,
       use_asset_folder_as_public_id_prefix: false,
     });
-    return res
-      .status(200)
-      .json({ upload_preset: result, newClient});
+    return res.status(200).json({ upload_preset: result, newClient });
   } catch (e) {
     console.log(e);
     res.status(401).json({ e });
@@ -349,7 +349,9 @@ router.post("/albums/:clientId", createAlbum);
 router.put("/albums/:id", updateAlbum);
 
 router.get("/photos/:clientId", getPhotos);
+router.post("/photos/send/:clientId", sendPhotos);
 router.post("/photos/:clientId", createPhoto);
+router.put("/photos/update_index", updateIndexPhotos);
 router.delete("/photo/:id", deletePhoto);
 
 module.exports = router;

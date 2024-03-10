@@ -49,7 +49,7 @@ export function Root() {
     }).catch(({response, ...err})=>{
       if(response){
         toast.error(response.data.msg)
-        if(response.status === 409) return
+        if(response.status === 409) return setRender(true)
       }else{
         toast.error(err.message)
       }

@@ -1,5 +1,5 @@
-const { Photo, Album } = require("../db");
-const { cloudinary } = require("../utils");
+const { Photo, Album, Client } = require("../db");
+const { cloudinary, sendConfirmationMail } = require("../utils");
 
 module.exports = {
   createPhoto: async function (req, res) {
@@ -25,18 +25,17 @@ module.exports = {
     const { clientId } = req.params;
     try {
       const photos = await Photo.findAll({
-        order: [["createdAt", "DESC"]],
+        order: [
+          ["index", "DESC"],
+          ["createdAt", "DESC"],
+        ],
         where: {
           clientId,
         },
       });
-      const sortedPhotos = photos.sort((a, b) => {
-        if (a.index > b.index) return 1;
-        if (a.index < b.index) return -1;
-        return 0;
-      });
+
       return res.json({
-        photos: sortedPhotos,
+        photos: photos,
       });
     } catch (error) {
       res.status(500).send({
@@ -64,6 +63,42 @@ module.exports = {
       res
         .status(200)
         .send(`Imagen ...${photo?.originalName?.slice(-12)} Eliminada`);
+    } catch (error) {
+      res.status(500).send({
+        msg: error.message,
+      });
+    }
+  },
+  //
+  sendPhotos: async function (req, res) {
+    const { clientId } = req.params;
+    try {
+      const client = await Client.findByPk(clientId);
+      client.active_link = false;
+      client.save();
+
+      /* const mail_response = await sendConfirmationMail({
+        name: client.name,
+        id: clientId,
+        photos_length: 12,
+      }); */
+      res.send("mail_response");
+    } catch (error) {
+      res.status(500).send({
+        msg: error.message,
+      });
+    }
+  },
+  //
+  updateIndexPhotos: async function (req, res) {
+    const { photos } = req.body;
+    try {
+      const promisesUpdate = photos.map(({ id }, i) =>
+        Photo.update({ index: i + 1 }, { where: { id } })
+      );
+
+      const responses = await Promise.all(promisesUpdate);
+      return res.send("ok");
     } catch (error) {
       res.status(500).send({
         msg: error.message,

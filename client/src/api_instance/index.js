@@ -98,6 +98,12 @@ export const API = {
       getAll: function ({ clientId }) {
         return api.get("/client/photos/" + clientId);
       },
+      update_indexes: function ({ photos }) {
+        return api.put("/client/photos/update_index", { photos });
+      },
+      send: function ({ clientId }) {
+        return api.post("/client/photos/send/" + clientId);
+      },
       delete: function ({ id }) {
         return api.delete("/client/photo/" + id);
       },

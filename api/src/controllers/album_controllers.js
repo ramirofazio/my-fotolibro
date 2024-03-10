@@ -1,8 +1,37 @@
 const { Op } = require("sequelize");
-const { Album } = require("../db");
-const { cloudinary } = require("../utils");
+const { Album, Photo } = require("../db");
+const { consts } = require("../utils");
 
-const MIN_AVAILABLE_SIZE = 10000000;
+function reduceAlbums({ albums }) {
+  if (!albums.length) return true;
+  let _from = albums.pop();
+  let _to = albums.shift();
+
+  if (_to.available > _from.available) {
+    const aux = _from;
+    _from = _to;
+    _to = aux;
+  }
+
+
+}
+
+async function movePhotosbetweenAlbums({ PhotoIds, albumId }) {
+  try {
+    await Photo.update(
+      { albumId },
+      {
+        where: {
+          [Op.in]: PhotoIds,
+        },
+      }
+    );
+
+    return "ok";
+  } catch (error) {
+    throw error.message;
+  }
+}
 
 module.exports = {
   getAlbums: async function (req, res) {
@@ -12,7 +41,7 @@ module.exports = {
         where: {
           clientId,
           available: {
-            [Op.gte]: MIN_AVAILABLE_SIZE,
+            [Op.gte]: consts.MIN_SIZE_AVAILABLE,
           },
         },
       });
@@ -32,12 +61,12 @@ module.exports = {
         where: {
           clientId,
           available: {
-            [Op.gte]: MIN_AVAILABLE_SIZE,
+            [Op.gte]: consts.MIN_SIZE_AVAILABLE,
           },
         },
         defaults: {
           clientId,
-          available: 100000000,
+          available: consts.MAX_SIZE_AVAILABLE,
         },
       });
 
