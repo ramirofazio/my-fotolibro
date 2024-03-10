@@ -22,14 +22,20 @@ export function FolderCard({ clientData, onRemove }) {
       //await API.addDownloadImgsIndex(id);
       const url = await API.getDownloadUrl(id);
       console.log("URL:", url.data.download_url[0]);
-      //await updateLastDownloadDate()
       setUrl(url.data);
+      //await updateLastDownloadDate()
     } catch (err) {
       console.log(err);
       setUrl(false);
     }
   }
-  console.log(can_download);
+  async function readZip(url) {
+    console.log("entrando")
+    const res = await fetch(url);
+    console.log(res)
+    const data = await res.blob();
+    console.log(data)
+  }
   
   async function updateLastDownloadDate() {
     try {
@@ -81,7 +87,7 @@ export function FolderCard({ clientData, onRemove }) {
           </button>
         ) : (
           <>
-            <button onClick={() => window.location.replace(url)}>
+            <button onClick={() => readZip(url)/* window.location.replace(url) */}>
               <ArrowDownTrayIcon className="w-9 inline  text-green-600 hover:opacity-75" />
             </button>
           </>
