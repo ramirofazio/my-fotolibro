@@ -124,28 +124,28 @@ router.get("/download/:clientId", async (req, res) => {
   }
 });
 
-router.get("/download_with_limit/:clientId", async (req, res) => {
-  try {
-    const { clientId } = req.params;
-    const client = await Client.findByPk(clientId);
-    const zipName = client?.name.trim().toLowerCase();
-    console.log(zipName);
-    const download_url = await cloudinary.v2.utils.download_folder(clientId, {
-      api_key: CLOUDINARY_API_KEY,
-      api_secret: CLOUDINARY_API_SECRET,
-      cloud_name: CLOUDINARY_CLOUD_NAME,
-      prefixes: "/",
-      target_public_id: zipName,
-    });
+// router.get("/download_with_limit/:clientId", async (req, res) => {
+//   try {
+//     const { clientId } = req.params;
+//     const client = await Client.findByPk(clientId);
+//     const zipName = client?.name.trim().toLowerCase();
+//     console.log(zipName);
+//     const download_url = await cloudinary.v2.utils.download_folder(clientId, {
+//       api_key: CLOUDINARY_API_KEY,
+//       api_secret: CLOUDINARY_API_SECRET,
+//       cloud_name: CLOUDINARY_CLOUD_NAME,
+//       prefixes: "/",
+//       target_public_id: zipName,
+//     });
 
-    return res.send(download_url);
-  } catch (e) {
-    console.log(e);
-    return res.json({
-      e,
-    });
-  }
-});
+//     return res.send(download_url);
+//   } catch (e) {
+//     console.log(e);
+//     return res.json({
+//       e,
+//     });
+//   }
+// });
 
 router.get("/folders", async (req, res) => {
   try {
@@ -251,17 +251,6 @@ router.post("/delete/single_img", async (req, res) => {
   }
 });
 
-router.get("/book/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    cloudinary.utils();
-  } catch (err) {
-    console.log(err);
-    res.json({
-      err,
-    });
-  }
-});
 
 router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
   try {
@@ -316,7 +305,7 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
   }
 });
 
-router.post("/sort_download_imgs/:clientId", async (req, res) => {
+router.post("/add_cloud_imgs_index/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
 
@@ -339,8 +328,8 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
       await new Promise((resolve) => setTimeout(resolve, 400));
       let newImgs = slice.map(async (p) => {
         try {
-          const [folder, originalName] = p?.publicId.split("/");
-          console.log(originalName);
+          const [folder, album, originalName] = p?.publicId.split("/");
+          console.log(folder, album, originalName)
           let index = `${p.index}`;
           let newIndex = "";
 
@@ -350,14 +339,15 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
           else if (index?.length === 3) newIndex = `${index}_`;
 
           const oldIndex = originalName.slice(0, 4);
-          //console.log(oldIndex, "||", newIndex);
 
           if (oldIndex !== newIndex) {
+            console.log("old: ", oldIndex)
+            console.log("new: ", newIndex)
             let indexedName = originalName.replace(oldIndex, newIndex);
             console.log("indexedName", indexedName);
             const newImg = await cloudinary.v2.uploader.rename(
               p?.publicId,
-              `${folder}/${indexedName}`,
+              `${folder}/${album}/${indexedName}`,
               {}
             );
             const dbPhoto = await Photo.findByPk(p.id);
@@ -370,21 +360,8 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
               IMG_DB: dbUpdate,
             };
           }
-        } catch (e) {
+        } catch (err) {
           console.log(e);
-          const [folder, originalName] = p?.publicId.split("/");
-          let index = `${p.index}`;
-          let newIndex = "";
-          if (p.index === 0) return;
-          else if (index?.length === 1) newIndex = `00${index}_`;
-          else if (index?.length === 2) newIndex = `0${index}_`;
-          else if (index?.length === 3) newIndex = `${index}_`;
-
-          const oldIndex = originalName.slice(0, 4);
-
-          console.log("ERR: " + originalName);
-          console.log("viejo: ", oldIndex);
-          console.log("nuevo: " + newIndex);
         }
       });
     }
@@ -401,34 +378,5 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
   }
 });
 
-//modularizar en controller book
-router.put("/book/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    await Book.update(
-      { ...req.body },
-      {
-        where: { id },
-      }
-    );
-  } catch (err) {
-    console.log(err);
-    res.json({
-      err,
-    });
-  }
-});
-
-router.delete("/book/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    cloudinary.utils();
-  } catch (err) {
-    console.log(err);
-    res.json({
-      err,
-    });
-  }
-});
 
 module.exports = router;

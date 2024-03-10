@@ -33,7 +33,7 @@ export function ImageInput() {
                 reader.onload = () => {
                   resolve({
                     id: 'local-image-' + imageName + (localImages.size + i + 1),
-                    originalName: imageName,
+                    originalName: imageName.replace(/ /g, ""),
                     URL: typeof reader.result === 'string' ? reader.result : '',
                     file: compressed,
                     size: compressed.size,
@@ -46,7 +46,7 @@ export function ImageInput() {
             reader.onload = function () {
               resolve({
                 id: 'local-image-' + imageName + (localImages.size + i + 1),
-                originalName: imageName,
+                originalName: imageName.replace(/ /g, ""),
                 URL: typeof reader.result === 'string' ? reader.result : '',
                 file: image,
                 size: image.size,

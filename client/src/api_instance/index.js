@@ -41,8 +41,8 @@ export const API = {
   addImgsIndex: (imgs) => {
     return api.put(`client/index_images`, { imgs });
   },
-  addDownloadImgsIndex: (clientId) => {
-    return api.post(`cloudinary/sort_download_imgs/${clientId}`);
+  addCloudImgsIndex: (clientId) => {
+    return api.post(`cloudinary/add_cloud_imgs_index/${clientId}`);
   },
   deleteSingleImg: ({ publicId, id }) => {
     return api.post(`cloudinary/delete/single_img/`, { publicId, id });
