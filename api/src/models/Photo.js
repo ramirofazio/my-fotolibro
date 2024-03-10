@@ -39,7 +39,7 @@ module.exports = (sequelize) => {
       cloudinaryIndex: {
         type: DataTypes.STRING,
         allowNull: true,
-        defaultValue: '000-',
+        defaultValue: '000_',
       },
       createdAt: {
         type: DataTypes.DATE,

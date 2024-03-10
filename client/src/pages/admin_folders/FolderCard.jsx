@@ -21,7 +21,7 @@ export function FolderCard({ clientData, onRemove }) {
     try {
       //await API.addDownloadImgsIndex(id);
       const url = await API.getDownloadUrl(id);
-      console.log("URL:", url.data);
+      console.log("URL:", url.data.download_url[0]);
       //await updateLastDownloadDate()
       setUrl(url.data);
     } catch (err) {

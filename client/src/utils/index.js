@@ -165,7 +165,6 @@ export const cloudinary = {
         if (data.secure_url) {
           const photo = {
             URL: data.secure_url,
-            id: data.asset_id,
             originalName: data?.original_filename,
             size: data.bytes,
             publicId: `${data.public_id}`,

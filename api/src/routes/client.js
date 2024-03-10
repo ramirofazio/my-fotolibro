@@ -267,8 +267,9 @@ router.get("/connect/:clientId", async (req, res) => {
     const client = await Client.findByPk(clientId);
 
     const connected = await client.update({
-      online: true,
+      online: false,
     });
+
     return res.status(202).json(connected);
   } catch (e) {
     console.log(e);
