@@ -1,4 +1,4 @@
-import { isValidClient, isValidClientForAdmin } from "../../utils";
+import { isValidClient, isValidClientForAdmin } from "../../utils/client";
 import { useEffect, useRef } from "react";
 
 export function PersonalData({

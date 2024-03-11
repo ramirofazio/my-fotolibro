@@ -53,6 +53,7 @@ export function SortImagesPage() {
 
     observer.observe(orderRef.current);
 
+
     return () => observer.disconnect();
   }, []);
 
@@ -79,6 +80,7 @@ export function SortImagesPage() {
       toast.error(error.message);
       throw error;
     }
+
   }
 
   async function onRemove(id, publicId, name) {
@@ -114,7 +116,9 @@ export function SortImagesPage() {
         <button
           disabled={!trySort}
           ref={orderRef}
+
           onClick={sortImages}
+
           className="w-full  text-white   cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center justify-center gap-2 disabled:opacity-40"
         >
           <AdjustmentsHorizontalIcon className="w-6 aspect-square stroke-2" />
@@ -124,7 +128,10 @@ export function SortImagesPage() {
           id="finish"
           onClick={() => {
             const res = confirm(
-              `¿Quieres enviar las imagenes? \n Una vez enviadas no podras agregar más.`
+
+              `¿Quieres enviar las imagenes? \n Una vez enviadas no podras agregar ni ordenar más!`
+
+ 
             );
             if (res)
               toast.promise(submitBook(), {
@@ -144,7 +151,9 @@ export function SortImagesPage() {
       </p>
       {trySort && visibleOrder && (
         <button
+
           onClick={sortImages}
+
           className="w-fit text-white fixed bottom-6 right-6 cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center justify-center gap-2 "
           disabled={!trySort}
         >

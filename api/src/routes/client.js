@@ -235,6 +235,9 @@ router.post("/finish_upload", async (req, res) => {
   const { clientId, photos_length } = req.body;
   try {
     const client = await Client.findByPk(clientId);
+    client.can_download = true;
+    await client.save()
+
     const info = await transporter.sendMail({
       from: `"myfotolibro 📷" <${EMAIL_USER}>`,
       to: ADMIN_EMAIL,
@@ -264,8 +267,9 @@ router.get("/connect/:clientId", async (req, res) => {
     const client = await Client.findByPk(clientId);
 
     const connected = await client.update({
-      online: true,
+      online: false,
     });
+
     return res.status(202).json(connected);
   } catch (e) {
     console.log(e);

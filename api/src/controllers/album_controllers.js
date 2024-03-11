@@ -96,12 +96,13 @@ module.exports = {
   //
   updateAlbum: async function (req, res) {
     const { id } = req.params;
-    const { size, available } = req.body;
+    const { size, available, photos_length } = req.body;
     try {
       const album = await Album.findByPk(id);
 
       album.size = size;
       album.available = available;
+      album.photos_length = album.photos_length + photos_length;
 
       await album.save();
 

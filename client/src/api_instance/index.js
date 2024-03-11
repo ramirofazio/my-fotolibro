@@ -41,8 +41,8 @@ export const API = {
   addImgsIndex: (imgs) => {
     return api.put(`client/index_images`, { imgs });
   },
-  addDownloadImgsIndex: (clientId) => {
-    return api.post(`cloudinary/sort_download_imgs/${clientId}`);
+  addCloudImgsIndex: (clientId) => {
+    return api.post(`cloudinary/add_cloud_imgs_index/${clientId}`);
   },
   deleteSingleImg: ({ publicId, id }) => {
     return api.post(`cloudinary/delete/single_img/`, { publicId, id });
@@ -87,8 +87,8 @@ export const API = {
       create: function ({ clientId }) {
         return api.post("/client/albums/" + clientId);
       },
-      update: function ({ id, size, available }) {
-        return api.put("/client/albums/" + id, { size, available });
+      update: function ({ id, size, available, photos_length, }) {
+        return api.put("/client/albums/" + id, { size, available, photos_length, });
       },
     },
     photo: {

@@ -40,8 +40,8 @@ export function Folders() {
             return <FolderCard onRemove={onRemove} clientData={f} key={i} />;
           })
         ) : (
-          <div className="w-fit">
-            <h1 className="text-3xl text-white">
+          <div className="w-fit mx-auto">
+            <h1 className="text-3xl w-fit  text-white">
               No se encontraron carpetas con fotos
             </h1>
           </div>

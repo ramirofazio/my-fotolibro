@@ -124,28 +124,28 @@ router.get("/download/:clientId", async (req, res) => {
   }
 });
 
-router.get("/download_with_limit/:clientId", async (req, res) => {
-  try {
-    const { clientId } = req.params;
-    const client = await Client.findByPk(clientId);
-    const zipName = client?.name.trim().toLowerCase();
-    console.log(zipName);
-    const download_url = await cloudinary.v2.utils.download_folder(clientId, {
-      api_key: CLOUDINARY_API_KEY,
-      api_secret: CLOUDINARY_API_SECRET,
-      cloud_name: CLOUDINARY_CLOUD_NAME,
-      prefixes: "/",
-      target_public_id: zipName,
-    });
+// router.get("/download_with_limit/:clientId", async (req, res) => {
+//   try {
+//     const { clientId } = req.params;
+//     const client = await Client.findByPk(clientId);
+//     const zipName = client?.name.trim().toLowerCase();
+//     console.log(zipName);
+//     const download_url = await cloudinary.v2.utils.download_folder(clientId, {
+//       api_key: CLOUDINARY_API_KEY,
+//       api_secret: CLOUDINARY_API_SECRET,
+//       cloud_name: CLOUDINARY_CLOUD_NAME,
+//       prefixes: "/",
+//       target_public_id: zipName,
+//     });
 
-    return res.send(download_url);
-  } catch (e) {
-    console.log(e);
-    return res.json({
-      e,
-    });
-  }
-});
+//     return res.send(download_url);
+//   } catch (e) {
+//     console.log(e);
+//     return res.json({
+//       e,
+//     });
+//   }
+// });
 
 router.get("/folders", async (req, res) => {
   try {
@@ -251,18 +251,6 @@ router.post("/delete/single_img", async (req, res) => {
   }
 });
 
-router.get("/book/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    cloudinary.utils();
-  } catch (err) {
-    console.log(err);
-    res.json({
-      err,
-    });
-  }
-});
-
 router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
@@ -316,7 +304,7 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
   }
 });
 
-router.post("/sort_download_imgs/:clientId", async (req, res) => {
+router.post("/add_cloud_imgs_index/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
 
@@ -330,64 +318,74 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
       cloud_name: CLOUDINARY_CLOUD_NAME,
     });
 
-    const slices = Math.ceil(photos.length / 15);
-    let sliceSize = photos.length / slices; // 5
-    for (let i = 0; i < slices; i++) {
-      let begin = i * sliceSize;
-      let slice = photos.slice(begin, begin + sliceSize);
-      // ---
-      await new Promise((resolve) => setTimeout(resolve, 400));
-      let newImgs = slice.map(async (p) => {
-        try {
-          const [folder, originalName] = p?.publicId.split("/");
-          console.log(originalName);
-          let index = `${p.index}`;
-          let newIndex = "";
+    async function changeIndex(photos) {
+      const failUpload = [];
 
-          if (p.index === 0) return;
-          else if (index?.length === 1) newIndex = `00${index}_`;
-          else if (index?.length === 2) newIndex = `0${index}_`;
-          else if (index?.length === 3) newIndex = `${index}_`;
+      const slices = Math.ceil(photos.length / 15);
+      let sliceSize = photos.length / slices; // 5
 
-          const oldIndex = originalName.slice(0, 4);
-          //console.log(oldIndex, "||", newIndex);
+      for (let i = 0; i < slices; i++) {
+        let begin = i * sliceSize;
+        let slice = photos.slice(begin, begin + sliceSize);
+        // ---
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        slice.map(async (p) => {
+          try {
+            const [folder, album, originalName] = p?.publicId.split("/");
+            
+            let index = `${p.index}`;
+            let newIndex = "";
 
-          if (oldIndex !== newIndex) {
-            let indexedName = originalName.replace(oldIndex, newIndex);
-            console.log("indexedName", indexedName);
-            const newImg = await cloudinary.v2.uploader.rename(
-              p?.publicId,
-              `${folder}/${indexedName}`,
-              {}
-            );
-            const dbPhoto = await Photo.findByPk(p.id);
-            const dbUpdate = await dbPhoto.update({
-              publicId: newImg.public_id,
-            });
+            if (p.index === 0) return;
+            else if (index?.length === 1) newIndex = `00${index}_`;
+            else if (index?.length === 2) newIndex = `0${index}_`;
+            else if (index?.length === 3) newIndex = `${index}_`;
 
-            return {
-              IMG_CLOUDINARY: newImg,
-              IMG_DB: dbUpdate,
-            };
+            const oldIndex = originalName.slice(0, 4);
+
+            if (oldIndex !== newIndex) {
+              let indexedName = originalName.replace(oldIndex, newIndex);
+              console.log("indexedName", indexedName);
+              const newImg = await cloudinary.v2.uploader.rename(
+                p?.publicId,
+                `${folder}/${album}/${indexedName}`,
+                {}
+              );
+              const dbPhoto = await Photo.findByPk(p.id);
+              const dbUpdate = await dbPhoto.update({
+                publicId: newImg.public_id,
+              });
+
+              return {
+                IMG_CLOUDINARY: newImg,
+                IMG_DB: dbUpdate,
+              };
+            }
+          } catch (err) {
+            if (err?.http_code === 420) { // ? 420 es la respuesta de "to many concurrent api request"
+              failUpload.push(p);
+            }
+            console.log(err);
           }
-        } catch (e) {
-          console.log(e);
-          const [folder, originalName] = p?.publicId.split("/");
-          let index = `${p.index}`;
-          let newIndex = "";
-          if (p.index === 0) return;
-          else if (index?.length === 1) newIndex = `00${index}_`;
-          else if (index?.length === 2) newIndex = `0${index}_`;
-          else if (index?.length === 3) newIndex = `${index}_`;
+        });
+      }
 
-          const oldIndex = originalName.slice(0, 4);
-
-          console.log("ERR: " + originalName);
-          console.log("viejo: ", oldIndex);
-          console.log("nuevo: " + newIndex);
-        }
-      });
+      if (failUpload?.length) {
+        console.log("errs", failUpload)
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        return await changeIndex(failUpload);
+      }
     }
+    let large = photos.length
+    if(large > 150) { // encontrar una forma de no generar tantas solicitudes concurrentes
+      const part1 = photos.slice(0, large / 2)
+      const part2 = photos.slice(large / 2, large)
+      await changeIndex(part1);
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      await changeIndex(part2);
+      
+    }
+
     return res.json({
       photos,
     });
@@ -397,36 +395,6 @@ router.post("/sort_download_imgs/:clientId", async (req, res) => {
     return res.status(401).json({
       e,
       clientId,
-    });
-  }
-});
-
-//modularizar en controller book
-router.put("/book/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    await Book.update(
-      { ...req.body },
-      {
-        where: { id },
-      }
-    );
-  } catch (err) {
-    console.log(err);
-    res.json({
-      err,
-    });
-  }
-});
-
-router.delete("/book/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    cloudinary.utils();
-  } catch (err) {
-    console.log(err);
-    res.json({
-      err,
     });
   }
 });
