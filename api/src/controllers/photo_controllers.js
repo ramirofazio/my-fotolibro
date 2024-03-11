@@ -1,5 +1,5 @@
-const { Photo, Album } = require("../db");
-const { cloudinary } = require("../utils");
+const { Photo, Album, Client } = require("../db");
+const { cloudinary, sendConfirmationMail, consts } = require("../utils");
 
 module.exports = {
   createPhoto: async function (req, res) {
@@ -25,18 +25,17 @@ module.exports = {
     const { clientId } = req.params;
     try {
       const photos = await Photo.findAll({
-        order: [["createdAt", "DESC"]],
+        order: [
+          ["index", "DESC"],
+          ["createdAt", "DESC"],
+        ],
         where: {
           clientId,
         },
       });
-      const sortedPhotos = photos.sort((a, b) => {
-        if (a.index > b.index) return 1;
-        if (a.index < b.index) return -1;
-        return 0;
-      });
+
       return res.json({
-        photos: sortedPhotos,
+        photos: photos,
       });
     } catch (error) {
       res.status(500).send({
@@ -70,4 +69,99 @@ module.exports = {
       });
     }
   },
+  //
+  sendPhotos: async function (req, res) {
+    const { clientId } = req.params;
+    try {
+      const client = await Client.findByPk(clientId);
+      client.active_link = true;
+      client.save();
+
+      const albums = await Album.findAll({
+        where: { clientId },
+        include: Photo,
+      });
+
+      await cloudinary.renameFile({
+        public_id: "1/albm-12/000_72aee5df68edb6fbde7c253e4785af26",
+        albumId: 10,
+        index: 2,
+      });
+
+      if (albums.length !== 1)
+        //await reduceAlbums({ albums });
+
+        /* const mail_response = await sendConfirmationMail({
+        name: client.name,
+        id: clientId,
+        photos_length: 12,
+      }); */
+
+        res.send("mail_response");
+    } catch (error) {
+      console.log(error);
+      res.status(500).send({
+        msg: error.message,
+      });
+    }
+  },
+  //
+  updateIndexPhotos: async function (req, res) {
+    const { photos } = req.body;
+    try {
+      const promisesUpdate = photos.map(({ id }, i) =>
+        Photo.update({ index: i + 1 }, { where: { id } })
+      );
+
+      const responses = await Promise.all(promisesUpdate);
+      return res.send("ok");
+    } catch (error) {
+      res.status(500).send({
+        msg: error.message,
+      });
+    }
+  },
 };
+
+//000_sdjañlkdcn = index
+//
+
+async function reduceAlbums({ albums }) {
+  if (!albums.length || albums.length === 1) return true;
+
+  let album_from = albums.pop();
+  let album_to = albums.shift();
+  let photos = [];
+
+  if (album_to.available > album_from.available) {
+    const album_aux = album_from;
+    album_from = album_to;
+    album_to = album_aux;
+  }
+  photos = album_from.photos;
+
+  while (album_to.available > consts.MIN_SIZE_AVAILABLE && photos.length) {
+    const photo = photos.shift();
+
+    album_from.available += parseInt(photo.size);
+    album_from.size -= parseInt(photo.size);
+
+    album_to.available -= parseInt(photo.size);
+    album_to.size += parseInt(photo.size);
+
+    photo.albumId = album_to.id;
+    await photo.save();
+  }
+
+  if (album_to.available > consts.MIN_SIZE_AVAILABLE) albums.unshift(album_to);
+  if (album_from.length) {
+    album_from.photos = photos;
+    albums.push(album_from);
+  } else {
+    await album_from.save();
+    await album_from.destroy();
+  }
+
+  await album_to.save();
+  return await reduceAlbums({ albums });
+}

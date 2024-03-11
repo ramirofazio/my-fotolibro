@@ -35,6 +35,7 @@ export function Root() {
 
 
   useEffect(()=> {
+    if (!active_link) return
     const device = storage.get({name: 'device'})
 
     API.session.connect({
@@ -49,7 +50,7 @@ export function Root() {
     }).catch(({response, ...err})=>{
       if(response){
         toast.error(response.data.msg)
-        if(response.status === 409) return
+        if(response.status === 409) return setRender(true)
       }else{
         toast.error(err.message)
       }

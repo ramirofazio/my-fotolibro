@@ -53,29 +53,34 @@ export function SortImagesPage() {
 
     observer.observe(orderRef.current);
 
+
     return () => observer.disconnect();
   }, []);
 
-  function submitBook() {
-    return API.addImgsIndex(cloudImages.values)
-      .then(() => API.addCloudImgsIndex(clientId))
-      /* .then((res) => {
-        console.log(res.data)
-        API.updateActiveClient(clientId)
-      }) */
-      .then(() =>
-        API.finishUpload({
-          clientId,
-          photos_length: cloudImages.size,
-        })
-      )
-      .then((result) => {
-        setTimeout(() => console.log("finish") /* navigate(0) */, 3000);
-        return result;
-      })
-      .catch((error) => {
-        throw error;
-      });
+  function sortImages() {
+    toast.promise(
+      API.client.photo.update_indexes({ photos: cloudImages.values }),
+      {
+        loading: "Ordenando fotos.",
+        success: "Las imagenes fueron ordenadas",
+        error: "Algo salio mal, Intenta de nuevo",
+      }
+    );
+    setTrySort(false);
+  }
+
+  async function submitBook() {
+    try {
+      await API.client.photo.update_indexes({ photos: cloudImages.values });
+      const res = await API.client.photo.send({ clientId });
+      console.log(res);
+
+      setTimeout(() => navigate(0), 3000);
+    } catch (error) {
+      toast.error(error.message);
+      throw error;
+    }
+
   }
 
   async function onRemove(id, publicId, name) {
@@ -111,14 +116,9 @@ export function SortImagesPage() {
         <button
           disabled={!trySort}
           ref={orderRef}
-          onClick={() => {
-            toast.promise(API.addImgsIndex(cloudImages.values), {
-              loading: "Ordenando fotos.",
-              success: "Las imagenes fueron ordenadas",
-              error: "Algo salio mal, Intenta de nuevo",
-            });
-            setTrySort(false);
-          }}
+
+          onClick={sortImages}
+
           className="w-full  text-white   cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center justify-center gap-2 disabled:opacity-40"
         >
           <AdjustmentsHorizontalIcon className="w-6 aspect-square stroke-2" />
@@ -128,7 +128,10 @@ export function SortImagesPage() {
           id="finish"
           onClick={() => {
             const res = confirm(
+
               `¿Quieres enviar las imagenes? \n Una vez enviadas no podras agregar ni ordenar más!`
+
+ 
             );
             if (res)
               toast.promise(submitBook(), {
@@ -148,14 +151,9 @@ export function SortImagesPage() {
       </p>
       {trySort && visibleOrder && (
         <button
-          onClick={() => {
-            toast.promise(API.addImgsIndex(cloudImages.values), {
-              loading: "Ordenando fotos.",
-              success: "Las imagenes fueron ordenadas",
-              error: "Algo salio mal, Intenta de nuevo",
-            });
-            setTrySort(false);
-          }}
+
+          onClick={sortImages}
+
           className="w-fit text-white fixed bottom-6 right-6 cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium flex items-center justify-center gap-2 "
           disabled={!trySort}
         >
