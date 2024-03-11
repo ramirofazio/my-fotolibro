@@ -20,6 +20,22 @@ const cloudinary = {
 
     return response;
   },
+  renameFile: async function ({ public_id, albumId, index }) {
+    let newPublicId = public_id.split("/");
+    newPublicId[2] = newPublicId[2].split("_");
+    newPublicId[2] = getStringWithZeros(index, 4) + "_" + newPublicId[2][1];
+    newPublicId[1] = "albm-" + albumId;
+    newPublicId = newPublicId.join("/");
+    console.log(public_id, newPublicId);
+
+    const res = await _cloudinary.uploader.rename(public_id, newPublicId);
+    console.log(res);
+  },
 };
 
+function getStringWithZeros(num, size) {
+  let numString = num.toString();
+  const zeros = size - numString.length;
+  return "0".repeat(zeros) + numString;
+}
 module.exports = cloudinary;

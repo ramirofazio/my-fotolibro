@@ -35,6 +35,7 @@ export function Root() {
 
 
   useEffect(()=> {
+    if (!active_link) return
     const device = storage.get({name: 'device'})
 
     API.session.connect({
