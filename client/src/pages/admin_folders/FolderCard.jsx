@@ -11,7 +11,7 @@ import { useState } from "react";
 import { DateTime } from "luxon";
 import { useApp } from "../../contexts/AppContext";
 import { toast } from "react-hot-toast";
-import { hanldeZip, readRemoteZip } from "../../utils/zip";
+import { hanldeZip } from "../../utils/zip";
 
 
 export function FolderCard({ clientData, onRemove }) {
