@@ -22,9 +22,16 @@ export const AppProvider = ({ children }) => {
   const imageExist = (name) => {
     const current = [...localImages, ...cloudImages];
     const nameSet = new Set();
-
-    current.forEach(({ originalName }) => nameSet.add(originalName));
-    return nameSet.has(name);
+    current.forEach(({ originalName }) => nameSet.add(originalName.toLowerCase()));
+    const hasImage = nameSet.has(name.toLowerCase());
+    if(hasImage) {
+      return {
+        name, // JEaAnn
+        lower: name // jeann
+      }
+    } else {
+      return false
+    }
   };
 
   const verifyUpload = (cloudImages) => {

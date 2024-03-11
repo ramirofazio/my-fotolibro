@@ -1,70 +1,74 @@
-import Compressor from 'compressorjs'
-import toast from 'react-hot-toast'
-import { useApp } from '../../contexts/AppContext'
+import Compressor from "compressorjs";
+import toast from "react-hot-toast";
+import { useApp } from "../../contexts/AppContext";
 
 export function ImageInput() {
-  const { localImages, loading } = useApp()
+  const { localImages, loading } = useApp();
 
   async function handleImages({ target }) {
-    const files = target.files
-    if (!files) return
-    loading.set(true)
-    const promisesFiles = []
+    const files = target.files;
+    if (!files) return;
+    loading.set(true);
+    const promisesFiles = [];
+    const nameSet = new Set();
+
+    
 
     for (let i = 0; i < files.length; i++) {
-      const image = files[i]
-      if (!image) continue
+      const image = files[i];
+      if (!image) continue;
 
-      const imageName = image.name.replace(/\.[^/.]+$/, '')
-      const exist = localImages.exist(imageName)
+      let imageName = image.name.replace(/\.[^/.]+$/, "");
+      const exist = localImages.exist(imageName); // string | false
 
       if (exist) {
-        toast.error('La imagen ' + imageName + ' ya existe')
-        continue
+        toast.error("La imagen " + imageName + " ya existe");
+
+        continue;
       }
 
       promisesFiles.push(
         new Promise((resolve) => {
-          const reader = new FileReader()
+          const reader = new FileReader();
           if (image.size >= 8000000) {
             new Compressor(image, {
               quality: 0.6,
               success: (compressed) => {
                 reader.onload = () => {
                   resolve({
-                    id: 'local-image-' + imageName + (localImages.size + i + 1),
+                    id: "local-image-" + imageName + (localImages.size + i + 1),
                     originalName: imageName.replace(/ /g, ""),
-                    URL: typeof reader.result === 'string' ? reader.result : '',
+                    URL: typeof reader.result === "string" ? reader.result : "",
                     file: compressed,
                     size: compressed.size,
-                  })
-                }
-                reader.readAsDataURL(compressed)
+                  });
+                };
+                reader.readAsDataURL(compressed);
               },
-            })
+            });
           } else {
             reader.onload = function () {
               resolve({
-                id: 'local-image-' + imageName + (localImages.size + i + 1),
+                id: "local-image-" + imageName + (localImages.size + i + 1),
                 originalName: imageName.replace(/ /g, ""),
-                URL: typeof reader.result === 'string' ? reader.result : '',
+                URL: typeof reader.result === "string" ? reader.result : "",
                 file: image,
                 size: image.size,
-              })
-            }
-            reader.readAsDataURL(image)
+              });
+            };
+            reader.readAsDataURL(image);
           }
         })
-      )
+      );
     }
 
     try {
-      const res = await Promise.all(promisesFiles)
-      localImages.add(res)
-      loading.set(false)
+      const res = await Promise.all(promisesFiles);
+      localImages.add(res);
+      loading.set(false);
     } catch (error) {
-      toast.error(`Algo salio mal - Intenta nuevamente`)
-      loading.set(false)
+      toast.error(`Algo salio mal - Intenta nuevamente`);
+      loading.set(false);
     }
   }
   return (
@@ -87,5 +91,5 @@ export function ImageInput() {
         onChange={handleImages}
       />
     </div>
-  )
+  );
 }

@@ -26,10 +26,11 @@ const cloudinary = {
     newPublicId[2] = getStringWithZeros(index, 4) + "_" + newPublicId[2][1];
     newPublicId[1] = "albm-" + albumId;
     newPublicId = newPublicId.join("/");
-    console.log(public_id, newPublicId);
-
-    const res = await _cloudinary.uploader.rename(public_id, newPublicId);
-    console.log(res);
+    
+    await _cloudinary.uploader.rename(public_id, newPublicId);
+    
+    return newPublicId 
+  
   },
 };
 
@@ -38,4 +39,5 @@ function getStringWithZeros(num, size) {
   const zeros = size - numString.length;
   return "0".repeat(zeros) + numString;
 }
+
 module.exports = cloudinary;

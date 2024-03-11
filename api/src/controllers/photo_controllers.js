@@ -77,6 +77,10 @@ module.exports = {
       client.active_link = true;
       client.save();
 
+      const photos = await Photo.findAll({ where: { clientId } });
+      await addCloudIndex({ photos });
+
+      /*
       const albums = await Album.findAll({
         where: { clientId },
         include: Photo,
@@ -89,15 +93,15 @@ module.exports = {
       });
 
       if (albums.length !== 1)
-        //await reduceAlbums({ albums });
+        await reduceAlbums({ albums });
 
-        /* const mail_response = await sendConfirmationMail({
+         const mail_response = await sendConfirmationMail({
         name: client.name,
         id: clientId,
         photos_length: 12,
       }); */
 
-        res.send("mail_response");
+      res.send("ok");
     } catch (error) {
       console.log(error);
       res.status(500).send({
@@ -123,8 +127,31 @@ module.exports = {
   },
 };
 
-//000_sdjañlkdcn = index
-//
+async function addCloudIndex({ photos, errors = [] }) {
+  if (!photos.length) return errors;
+  const photo = photos.shift();
+  const { publicId, index, albumId } = photo;
+
+  try {
+    const newPublicId = await cloudinary.renameFile({
+      public_id: publicId,
+      index,
+      albumId,
+    });
+
+    photo.publicId = newPublicId;
+    console.log(photo.publicId);
+    await photo.save();
+  } catch (err) {
+    if (err.status === 420)
+      errors.push({
+        error: err,
+        photo,
+      });
+  }
+
+  return addCloudIndex({ photos, errors });
+}
 
 async function reduceAlbums({ albums }) {
   if (!albums.length || albums.length === 1) return true;

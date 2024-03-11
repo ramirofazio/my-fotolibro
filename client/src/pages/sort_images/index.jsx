@@ -75,7 +75,7 @@ export function SortImagesPage() {
       const res = await API.client.photo.send({ clientId });
       console.log(res);
 
-      setTimeout(() => navigate(0), 3000);
+      //setTimeout(() => navigate(0), 3000);
     } catch (error) {
       toast.error(error.message);
       throw error;
