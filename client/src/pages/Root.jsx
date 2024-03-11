@@ -7,7 +7,7 @@ import { PreviousNext } from "../components/PreviousNext";
 import { SuccessPage } from "./SuccessPage";
 import { Loader } from "../components/Loader";
 import { useApp } from "../contexts/AppContext";
-import { storage } from "../utils"
+import { storage } from "../utils/storage"
 import { toast } from 'react-hot-toast'
 import {ChevronRightIcon } from '@heroicons/react/24/outline'
 

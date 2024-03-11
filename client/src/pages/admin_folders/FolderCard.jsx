@@ -11,6 +11,8 @@ import { useState } from "react";
 import { DateTime } from "luxon";
 import { useApp } from "../../contexts/AppContext";
 import { toast } from "react-hot-toast";
+import { hanldeZip, readRemoteZip } from "../../utils/zip";
+
 
 export function FolderCard({ clientData, onRemove }) {
   const { name, id, last_link_download, can_download } = clientData;
@@ -30,13 +32,9 @@ export function FolderCard({ clientData, onRemove }) {
     }
   }
   async function readZip(url) {
-    console.log("entrando")
-    const res = await fetch(url);
-    console.log(res)
-    const data = await res.blob();
-    console.log(data)
+    hanldeZip(url.download_url[0])
   }
-  
+
   async function updateLastDownloadDate() {
     try {
       const actual_date = DateTime.now().setLocale("es").toFormat("dd/MM/yyyy");
@@ -87,7 +85,9 @@ export function FolderCard({ clientData, onRemove }) {
           </button>
         ) : (
           <>
-            <button onClick={() => readZip(url)/* window.location.replace(url) */}>
+            <button
+              onClick={() => readZip(url) /* window.location.replace(url) */}
+            >
               <ArrowDownTrayIcon className="w-9 inline  text-green-600 hover:opacity-75" />
             </button>
           </>
@@ -98,7 +98,11 @@ export function FolderCard({ clientData, onRemove }) {
         />
       </div>
       <div className="flex items-center border-t-2 gap-2">
-        <FolderIcon className={`h-20 w-20 ${can_download ? "text-green-700" : "text-blue-700"} `} />
+        <FolderIcon
+          className={`h-20 w-20 ${
+            can_download ? "text-green-700" : "text-blue-700"
+          } `}
+        />
         <div>
           <h1 className="text-white text-2xl">{name}</h1>
           <h2 className="text-white">{id}</h2>

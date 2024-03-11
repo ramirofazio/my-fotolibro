@@ -1,3 +1,5 @@
+
+
 export function getSizeImage(number) {
   if (number < 1024) {
     return `${number} bytes`;

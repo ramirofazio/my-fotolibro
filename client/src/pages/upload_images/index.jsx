@@ -5,7 +5,7 @@ import { LocalListImages } from "./LocalListImages";
 import { useApp } from "../../contexts/AppContext";
 import { useEffect } from "react";
 import { useNavigation } from "../../contexts/NavigationContext";
-import { cloudinary } from "../../utils";
+import { cloudinary } from "../../utils/cloudinary";
 import { CloudArrowUpIcon } from "@heroicons/react/24/outline";
 import { API } from "../../api_instance";
 

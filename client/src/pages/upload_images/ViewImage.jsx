@@ -1,5 +1,5 @@
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { getSizeImage } from '../../utils'
+import { getSizeImage } from '../../utils/imgs'
 
 export function ViewImage({ URL, inCloud, size, onRemove }) {
   return (
