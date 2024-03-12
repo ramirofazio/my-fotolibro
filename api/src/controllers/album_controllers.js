@@ -2,48 +2,6 @@ const { Op } = require("sequelize");
 const { Album, Photo } = require("../db");
 const { consts } = require("../utils");
 
-async function reduceAlbums({ albums }) {
-  let moved = {};
-  if (!albums.length) return moved;
-  let _from = albums.pop();
-  let _to = albums.shift();
-  let photos = [];
-
-  if (_to.available > _from.available) {
-    const aux = _from;
-    _from = _to;
-    _to = aux;
-    photos = _from.photos;
-  }
-
-  moved[_to.id] = [];
-  while (_to.available > consts.MIN_SIZE_AVAILABLE && photos.length) {
-    const photo = photos.shift();
-    _to.available += photo.size;
-    _to.size -= photo.size;
-
-    moved[_to.id] = photo.id;
-  }
-
-}
-
-async function movePhotosbetweenAlbums({ PhotoIds, albumId }) {
-  try {
-    await Photo.update(
-      { albumId },
-      {
-        where: {
-          [Op.in]: PhotoIds,
-        },
-      }
-    );
-
-    return "ok";
-  } catch (error) {
-    throw error.message;
-  }
-}
-
 module.exports = {
   getAlbums: async function (req, res) {
     const { clientId } = req.params;
