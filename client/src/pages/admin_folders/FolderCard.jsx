@@ -8,56 +8,29 @@ import {
 } from "@heroicons/react/24/outline";
 import { API } from "../../api_instance";
 import { useState } from "react";
-import { DateTime } from "luxon";
 import { useApp } from "../../contexts/AppContext";
-import { toast } from "react-hot-toast";
-import { hanldeZip } from "../../utils/zip";
-
+import { parseDate } from "../../utils/client";
 
 export function FolderCard({ clientData, onRemove }) {
   const { name, id, last_link_download, can_download } = clientData;
   const [url, setUrl] = useState(false);
   const { adminClients } = useApp();
 
+
   async function generateDownloadUrl() {
     try {
-      //await API.addDownloadImgsIndex(id);
       const url = await API.getDownloadUrl(id);
       console.log("URL:", url.data.download_url[0]);
       setUrl(url.data.download_url[0]);
-      //await updateLastDownloadDate()
     } catch (err) {
       console.log(err);
       setUrl(false);
     }
   }
-  async function readZip(url) {
-    hanldeZip(url.download_url[0])
-  }
 
-  async function updateLastDownloadDate() {
-    try {
-      const actual_date = DateTime.now().setLocale("es").toFormat("dd/MM/yyyy");
-
-      const res = await API.updateClient({
-        clientId: id,
-        newClient: { last_link_download: actual_date },
-      });
-      if (res.status === 200) {
-        toast.success("Estado actualizado");
-        adminClients.update(
-          { ...clientData, last_link_download: actual_date },
-          id
-        );
-      } else {
-        toast.error(`Err ${res.data.message ? res.data.message : res.status}`);
-      }
-    } catch (err) {
-      toast.error(`Err: ${err.message}`);
-    }
-
-    // ? Es necesario resetear??
-    //await API.resetCloudinaryIndex(id).then((res) => console.log(res));
+  async function handleDownload() {
+    await API.updateLastDownload();
+    window.location.replace(url);
   }
 
   return (
@@ -67,7 +40,7 @@ export function FolderCard({ clientData, onRemove }) {
           <p>Ultima descarga: </p>
           {last_link_download ? (
             <p className=" ml-2 italic text-green-400 mr-auto text-xl">
-              {last_link_download}
+              {parseDate(last_link_download)}
             </p>
           ) : (
             <p className=" ml-2 italic text-cyan-200 mr-auto ">Sin descargar</p>
@@ -85,9 +58,7 @@ export function FolderCard({ clientData, onRemove }) {
           </button>
         ) : (
           <>
-            <button
-              onClick={() =>  window.location.replace(url)}
-            >
+            <button onClick={handleDownload}>
               <ArrowDownTrayIcon className="w-9 inline  text-green-600 hover:opacity-75" />
             </button>
           </>

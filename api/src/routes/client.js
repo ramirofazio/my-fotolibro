@@ -27,7 +27,7 @@ const {
 
 router.get("/", async (req, res) => {
   try {
-    const clients = await Client.findAll();
+    const clients = await Client.findAll({order : [["last_link_download", 'DESC']]});
     res.json(clients);
   } catch (e) {
     console.log(e);

@@ -83,7 +83,7 @@ export function ImageInput() {
       </p>
       <label
         htmlFor="upload-images"
-        className="w-fit cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium"
+        className="w-fit text-center cursor-pointer bg-blue-700 px-5 py-3 rounded hover:font-medium"
       >
         Seleccionar Imagenes
       </label>

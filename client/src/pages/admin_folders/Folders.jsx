@@ -33,8 +33,8 @@ export function Folders() {
   }
 
   return (
-    <div className="border-2 my-auto h-screen px-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10">
+    <div className="border-2 my-auto h-full px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 my-10">
         {adminClients.value?.length ? (
           adminClients.value.map((f, i) => {
             return <FolderCard onRemove={onRemove} clientData={f} key={i} />;

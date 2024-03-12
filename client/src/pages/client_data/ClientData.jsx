@@ -59,7 +59,7 @@ export function ClientData() {
               ? true
               : false
           }
-          className="disabled:opacity-40 text-primary bg-white text-3xl p-2 rounded-lg hover:bg-gray-400  border-gray-400"
+          className="mb-10 disabled:opacity-40 text-primary bg-white text-3xl p-2 rounded-lg hover:bg-gray-300  border-gray-300 hover:text-cyan-800"
           type="submit"
         >
           Guardar
