@@ -5,7 +5,6 @@ const router = Router();
 const { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } =
   process.env;
 const { Client, Photo } = require("../db.js");
-const { bytesToMb } = require("../utils/cloudinary");
 
 router.get("/signature", (req, res) => {
   try {

@@ -27,3 +27,10 @@ export function isValidClientForAdmin({ name }) {
 
   return errs;
 }
+
+export function parseDate(_date) {
+  let [date, time] = _date.split("T")
+  let [year, month, day] = date.split("-")
+  let hour = time.slice(0,5)
+  return `${day}/${month}/${year.slice(-2)} - ${hour}`
+}

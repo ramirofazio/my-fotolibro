@@ -59,6 +59,9 @@ export const API = {
       photos_length,
     });
   },
+  updateLastDownload: function () {
+    return api.put("/client/timestamp/:clientId");
+  },
   resetCloudinaryIndex: (clientId) => {
     return api.post(`cloudinary/reset_cloudinary_index/${clientId}`);
   },
@@ -87,8 +90,12 @@ export const API = {
       create: function ({ clientId }) {
         return api.post("/client/albums/" + clientId);
       },
-      update: function ({ id, size, available, photos_length, }) {
-        return api.put("/client/albums/" + id, { size, available, photos_length, });
+      update: function ({ id, size, available, photos_length }) {
+        return api.put("/client/albums/" + id, {
+          size,
+          available,
+          photos_length,
+        });
       },
     },
     photo: {
@@ -101,6 +108,7 @@ export const API = {
       update_indexes: function ({ photos }) {
         return api.put("/client/photos/update_index", { photos });
       },
+
       send: function ({ clientId }) {
         return api.post("/client/photos/send/" + clientId);
       },
