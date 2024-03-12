@@ -11,8 +11,7 @@ export const AppProvider = ({ children }) => {
   const [refresh, setRefresh] = useState(true);
   const [upload_preset, setUpload_preset] = useState("");
   const [adminClients, setAdminClients] = useState([]);
-  const [adminFolders, setAdminFolders] = useState([])
-
+  const [adminFolders, setAdminFolders] = useState([]);
   const addLocalImages = (images) => {
     setLocalImages((cur) => [...images, ...cur]);
   };
@@ -20,18 +19,23 @@ export const AppProvider = ({ children }) => {
     setLocalImages((cur) => cur.filter(({ id }) => id !== ID));
   };
   const imageExist = (name) => {
+    let lowname = name.toLowerCase();
     const current = [...localImages, ...cloudImages];
+    const namesfiles = {};
     const nameSet = new Set();
-    current.forEach(({ originalName }) => nameSet.add(originalName.toLowerCase()));
-    const hasImage = nameSet.has(name.toLowerCase());
-    if(hasImage) {
-      return {
-        name, // JEaAnn
-        lower: name // jeann
-      }
-    } else {
-      return false
+
+    current.forEach(({ originalName }) => {
+      originalName = originalName.split("(x)")[0];
+      namesfiles[originalName.toLowerCase()] = originalName;
+      nameSet.add(originalName);
+    });
+    const hasImage = nameSet.has(name);
+    if (hasImage) {
+      return "exist";
     }
+
+    if (namesfiles[lowname]) return namesfiles[lowname];
+    return false;
   };
 
   const verifyUpload = (cloudImages) => {
