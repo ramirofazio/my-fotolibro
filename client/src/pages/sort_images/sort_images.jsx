@@ -20,7 +20,7 @@ export function SortImages({ cloudImages, updateIndex, onRemove }) {
   }
 
   return (
-    <div className="my-5 px-6 min-h-[500px] overflow-hidden">
+    <div className="my-5 px-0 sm:px-5 min-h-[500px] overflow-hidden">
       <DndContext
         modifiers={[restrictToVerticalAxis, restrictToWindowEdges]}
         collisionDetection={closestCenter}

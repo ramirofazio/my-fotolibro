@@ -100,7 +100,7 @@ export function Root() {
     )
 
   return (
-    <div className="bg-main min-h-screen">
+    <div className="bg-main min-h-screen min-w-[320px]">
       <>
         <Nav />
         <PreviousNext />
