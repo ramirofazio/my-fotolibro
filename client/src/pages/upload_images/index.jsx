@@ -83,18 +83,20 @@ function UploadButton({ total, pending, onUpload }) {
 
   return (
     <button
-      className={`w-[25%] mr-7 cursor-pointer text-xl  text-white ${
+      className={`w-fit md:w-[25%] mr-7 cursor-pointer text-xl  text-white ${
         pending === 0 ? "bg-green-600" : "bg-blue-700"
-      } px-5 py-3 rounded hover:font-medium self-center md:self-end `}
+      } px-2 py-3 rounded hover:font-medium self-center md:self-end `}
       onClick={() => onUpload()}
     >
-      <span className={`flex gap-2 items-center justify-center ${"animate-pulse"}`}>
+      <span
+        className={`flex gap-2 items-center justify-center ${"animate-pulse"}`}
+      >
         {pending === 0
           ? "Imagenes subidas! seleccione mas o pase a ordenar"
           : "Subir imagenes"}
-        <CloudArrowUpIcon className={`w-8 aspect-square ${pending === 0
-          ? "hidden"
-          : "inline"}`} />
+        <CloudArrowUpIcon
+          className={`w-8 aspect-square ${pending === 0 ? "hidden" : "inline"}`}
+        />
       </span>
     </button>
   );
