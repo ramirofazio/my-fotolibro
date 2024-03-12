@@ -12,7 +12,7 @@ const { Client, Photo } = require("../db.js");
 const cloudinary = require("cloudinary");
 const transporter = require("../node_mailer");
 const { DateTime } = require("luxon");
-const { Op } = require("sequelize");
+const { Op, NOW } = require("sequelize");
 
 const {
   getAlbums,
@@ -213,7 +213,6 @@ router.get("/canFinish/:clientId", async (req, res) => {
   }
 });
 
-
 // TODO refactorizar con el arhcivo mail.js
 router.post("/finish_upload", async (req, res) => {
   const { clientId, photos_length } = req.body;
@@ -307,12 +306,12 @@ router.put("/timestamp/:clientId", async (req, res) => {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
 
-    const newDate = await client.update({
-      last_link_download: Date.now(),
-    });
-    res.json(newDate);
+    const date = new Date()
+    client.last_link_download = date;
+    await client.save();
+
+    res.json({ date });
   } catch (e) {
-    console.log(e);
     res.json({ e });
   }
 });
