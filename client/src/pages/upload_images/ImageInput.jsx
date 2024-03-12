@@ -10,21 +10,27 @@ export function ImageInput() {
     if (!files) return;
     loading.set(true);
     const promisesFiles = [];
-    const nameSet = new Set();
-
+    const nameFiles = {};
 
     for (let i = 0; i < files.length; i++) {
       const image = files[i];
       if (!image) continue;
 
-      let imageName = image.name.replace(/\.[^/.]+$/, "");
-      const exist = localImages.exist(imageName); // string | false
+      let imageName = image.name.replace(/\.[^/.]+$/, "").replace(/ /g, "");
+
+      const exist =
+        nameFiles[imageName.toLowerCase()] || localImages.exist(imageName); // string | false
 
       if (exist) {
-        toast.error("La imagen " + imageName + " ya existe");
-
-        continue;
+        if (exist === "exist" || imageName === exist) {
+          toast.error("La imagen " + imageName + " ya existe");
+          continue;
+        } else {
+          const date = new Date();
+          imageName = imageName + "(x)" + date.getMilliseconds();
+        }
       }
+      nameFiles[imageName.toLowerCase()] = imageName;
 
       promisesFiles.push(
         new Promise((resolve) => {
