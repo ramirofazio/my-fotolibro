@@ -26,11 +26,18 @@ const cloudinary = {
     newPublicId[2] = getStringWithZeros(index, 4) + "_" + newPublicId[2][1];
     newPublicId[1] = "albm-" + albumId;
     newPublicId = newPublicId.join("/");
-    
+
     await _cloudinary.uploader.rename(public_id, newPublicId);
-    
-    return newPublicId 
-  
+
+    return newPublicId;
+  },
+  bytesToMb: function (bytes) {
+    if (typeof bytes !== "number" || isNaN(bytes) || bytes < 0) {
+      throw new Error("El valor debe ser un número positivo.");
+    }
+
+    const megabytes = bytes / (1024 * 1024);
+    return megabytes.toFixed(2);
   },
 };
 

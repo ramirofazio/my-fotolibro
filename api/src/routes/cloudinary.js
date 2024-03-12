@@ -4,8 +4,8 @@ const cloudinary = require("cloudinary");
 const router = Router();
 const { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } =
   process.env;
-const { Client, Book, Photo } = require("../db.js");
-const bytesToMb = require("../u_tils.js");
+const { Client, Photo } = require("../db.js");
+const { bytesToMb } = require("../utils/cloudinary");
 
 router.get("/signature", (req, res) => {
   try {
@@ -37,9 +37,7 @@ router.get("/download/:clientId", async (req, res) => {
     const client = await Client.findByPk(clientId);
     const zipName = client?.name.trim().toLowerCase();
 
-    const book = await Book.findOne({ where: { clientId } });
-    const sizeMb = parseInt(bytesToMb(parseInt(book.totalSize)));
-
+    // TODO Limpiar funcion
     const photos = await Photo.findAll({
       where: { clientId: clientId },
     });
@@ -332,7 +330,7 @@ router.post("/add_cloud_imgs_index/:clientId", async (req, res) => {
         slice.map(async (p) => {
           try {
             const [folder, album, originalName] = p?.publicId.split("/");
-            
+
             let index = `${p.index}`;
             let newIndex = "";
 
@@ -362,7 +360,8 @@ router.post("/add_cloud_imgs_index/:clientId", async (req, res) => {
               };
             }
           } catch (err) {
-            if (err?.http_code === 420) { // ? 420 es la respuesta de "to many concurrent api request"
+            if (err?.http_code === 420) {
+              // ? 420 es la respuesta de "to many concurrent api request"
               failUpload.push(p);
             }
             console.log(err);
@@ -371,19 +370,19 @@ router.post("/add_cloud_imgs_index/:clientId", async (req, res) => {
       }
 
       if (failUpload?.length) {
-        console.log("errs", failUpload)
+        console.log("errs", failUpload);
         await new Promise((resolve) => setTimeout(resolve, 500));
         return await changeIndex(failUpload);
       }
     }
-    let large = photos.length
-    if(large > 150) { // encontrar una forma de no generar tantas solicitudes concurrentes
-      const part1 = photos.slice(0, large / 2)
-      const part2 = photos.slice(large / 2, large)
+    let large = photos.length;
+    if (large > 150) {
+      // encontrar una forma de no generar tantas solicitudes concurrentes
+      const part1 = photos.slice(0, large / 2);
+      const part2 = photos.slice(large / 2, large);
       await changeIndex(part1);
-      await new Promise((resolve) => setTimeout(resolve, 500))
+      await new Promise((resolve) => setTimeout(resolve, 500));
       await changeIndex(part2);
-      
     }
 
     return res.json({

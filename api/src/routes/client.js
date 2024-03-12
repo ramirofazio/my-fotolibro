@@ -3,18 +3,17 @@ const {
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
   CLOUDINARY_CLOUD_NAME,
-  EMAIL_PASSWORD,
   EMAIL_USER,
   ADMIN_EMAIL,
 } = process.env;
 const { Router } = require("express");
 const router = Router();
-const { Client, Photo, Admin, Book } = require("../db.js");
+const { Client, Photo } = require("../db.js");
 const cloudinary = require("cloudinary");
 const transporter = require("../node_mailer");
 const { DateTime } = require("luxon");
 const { Op } = require("sequelize");
-const bytesToMb = require("../u_tils.js");
+
 const {
   getAlbums,
   createAlbum,
@@ -75,11 +74,6 @@ router.post("/", async (req, res) => {
       created_at: DateTime.now().setLocale("es").toFormat("dd/MM/yyyy"),
     });
 
-    await Book.create({
-      name,
-      clientId: newClient.id,
-    });
-
     newClient.upload_preset = `${newClient.name}-${newClient.id}`;
     await newClient.save();
 
@@ -126,10 +120,6 @@ router.delete("/:clientId", async (req, res) => {
     const client = await Client.findByPk(clientId);
     client.destroy();
     await client.save();
-
-    await Book.destroy({
-      where: { clientId: clientId },
-    });
 
     cloudinary.v2.config({
       api_key: CLOUDINARY_API_KEY,
@@ -190,17 +180,9 @@ router.post("/imgs", async (req, res) => {
     });
 
     const bulk = await Photo.bulkCreate(rawImgs);
-    const book = await Book.findOne({ where: { clientId } });
 
-    const sizeSum = parseInt(book.totalSize) + parseInt(totalSize);
-    const itemsSum = parseInt(book.totalItems) + parseInt(rawImgs.length);
-    console.log("suma:", sizeSum);
+    // TODO modificar modelo album para actualizar propiedades SIZE & PHOTOS_LENGTH
 
-    const newBook = await Book.update(
-      { totalSize: sizeSum, totalItems: itemsSum },
-      { where: { clientId: clientId } }
-    );
-    console.log(newBook);
     res.json({
       res: " se subieron",
       imgs: bulk,
@@ -231,12 +213,14 @@ router.get("/canFinish/:clientId", async (req, res) => {
   }
 });
 
+
+// TODO refactorizar con el arhcivo mail.js
 router.post("/finish_upload", async (req, res) => {
   const { clientId, photos_length } = req.body;
   try {
     const client = await Client.findByPk(clientId);
     client.can_download = true;
-    await client.save()
+    await client.save();
 
     const info = await transporter.sendMail({
       from: `"myfotolibro 📷" <${EMAIL_USER}>`,
