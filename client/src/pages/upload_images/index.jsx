@@ -43,7 +43,7 @@ export function SelectImagesPage() {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row gap-y-2 justify-between w-full my-6 px-4">
+      <div className="flex flex-col md:flex-row gap-y-2 justify-between w-full my-6 px-6">
         <table className=" text-white w-fit text-lg mb-5">
           <tr>
             <th className="text-xl">Fotos seleccionadas</th>
@@ -83,16 +83,18 @@ function UploadButton({ total, pending, onUpload }) {
 
   return (
     <button
-      className={`w-fit cursor-pointer text-xl text-white ${
+      className={`w-[25%] mr-7 cursor-pointer text-xl  text-white ${
         pending === 0 ? "bg-green-600" : "bg-blue-700"
       } px-5 py-3 rounded hover:font-medium self-center md:self-end `}
       onClick={() => onUpload()}
     >
-      <span className={`flex gap-2 items-center ${"animate-pulse"}`}>
+      <span className={`flex gap-2 items-center justify-center ${"animate-pulse"}`}>
         {pending === 0
-          ? "Imagenes subidas, seleccione mas o pase a ordenar"
+          ? "Imagenes subidas! seleccione mas o pase a ordenar"
           : "Subir imagenes"}
-        <CloudArrowUpIcon className="w-8 aspect-square " />
+        <CloudArrowUpIcon className={`w-8 aspect-square ${pending === 0
+          ? "hidden"
+          : "inline"}`} />
       </span>
     </button>
   );

@@ -12,10 +12,6 @@ export function ImageInput() {
     const promisesFiles = [];
     const nameSet = new Set();
 
-    // jean: {
-    //   name: JeAn
-    //   }
-    
 
     for (let i = 0; i < files.length; i++) {
       const image = files[i];

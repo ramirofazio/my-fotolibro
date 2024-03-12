@@ -10,6 +10,7 @@ import { useApp } from "../contexts/AppContext";
 import { storage } from "../utils/storage"
 import { toast } from 'react-hot-toast'
 import {ChevronRightIcon } from '@heroicons/react/24/outline'
+import { Scroll } from "../components/Scroll";
 
 export function Root() {
   const { id, active_link, upload_preset } = useLoaderData();
@@ -104,6 +105,7 @@ export function Root() {
         <Nav />
         <PreviousNext />
         <Outlet />
+        <Scroll />
         <Loader />
       </>
     </div>
