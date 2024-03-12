@@ -181,8 +181,6 @@ router.post("/imgs", async (req, res) => {
 
     const bulk = await Photo.bulkCreate(rawImgs);
 
-    // TODO modificar modelo album para actualizar propiedades SIZE & PHOTOS_LENGTH
-
     res.json({
       res: " se subieron",
       imgs: bulk,

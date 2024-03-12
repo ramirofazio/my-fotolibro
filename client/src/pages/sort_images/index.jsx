@@ -74,8 +74,7 @@ export function SortImagesPage() {
       await API.client.photo.update_indexes({ photos: cloudImages.values });
       await API.client.photo.send({ clientId });
 
-      // TODO descomentar
-      //setTimeout(() => navigate(0), 3000);
+      setTimeout(() => navigate(0), 3000);
     } catch (error) {
       toast.error(error.message);
       throw error;

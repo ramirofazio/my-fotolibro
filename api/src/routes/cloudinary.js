@@ -36,83 +36,18 @@ router.get("/download/:clientId", async (req, res) => {
     const client = await Client.findByPk(clientId);
     const zipName = client?.name.trim().toLowerCase();
 
-    // TODO Limpiar funcion
-    const photos = await Photo.findAll({
-      where: { clientId: clientId },
+    const download_url = await cloudinary.v2.utils.download_folder(clientId, {
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+      prefixes: "/",
+      target_public_id: zipName,
     });
 
-    if (sizeMb < 100) {
-      const download_url = await cloudinary.v2.utils.download_folder(clientId, {
-        api_key: CLOUDINARY_API_KEY,
-        api_secret: CLOUDINARY_API_SECRET,
-        cloud_name: CLOUDINARY_CLOUD_NAME,
-        prefixes: "/",
-        target_public_id: zipName,
-      });
-
-      return res.json({
-        download_url: [download_url],
-      });
-    } else if (sizeMb >= 99) {
-      const photos = await Photo.findAll();
-
-      let ids = [];
-      let sliceOfIds = [];
-      let sizeCounter = 0;
-      let downloadUrls = [];
-      // const URL_LIMIT = 2164;
-      // const BASE_URL = 271;
-      const TOTAL_URL = 1893;
-      const MB_LIMIT = 1e8;
-      let digitsCounter = 0;
-
-      console.log(digitsCounter);
-      photos.map((img, index) => {
-        const imgSize = parseInt(img.size);
-        const { publicId } = img;
-        let base = 12;
-
-        if (
-          sizeCounter + imgSize < MB_LIMIT &&
-          publicId.length + base + digitsCounter < TOTAL_URL
-        ) {
-          sizeCounter = sizeCounter + imgSize;
-          digitsCounter = digitsCounter + base + publicId.length;
-          sliceOfIds.push(publicId);
-          console.log(sizeCounter);
-          if (index === photos.length - 1) {
-            ids.push(sliceOfIds);
-          }
-        } else {
-          ids.push(sliceOfIds);
-          sliceOfIds = [];
-          sizeCounter = imgSize;
-          digitsCounter = publicId.length + base;
-          sliceOfIds.push(publicId);
-        }
-        return publicId;
-      });
-
-      ids.forEach((slice, i) => {
-        const url = cloudinary.v2.utils.download_zip_url({
-          public_ids: slice,
-          api_key: CLOUDINARY_API_KEY,
-          api_secret: CLOUDINARY_API_SECRET,
-          cloud_name: CLOUDINARY_CLOUD_NAME,
-          target_public_id: `${zipName}-part-${i + 1}`,
-        });
-        //console.log(url)
-        downloadUrls.push(url);
-      });
-      //console.log(downloadUrls);
-
-      res.json({
-        url: downloadUrls,
-        ids,
-        sliceOfIds,
-        downloadUrls,
-      });
-    }
+    return res.json({
+      download_url: [download_url],
+    });
+  
   } catch (e) {
     console.log(e);
     return res.json({
@@ -120,29 +55,6 @@ router.get("/download/:clientId", async (req, res) => {
     });
   }
 });
-
-// router.get("/download_with_limit/:clientId", async (req, res) => {
-//   try {
-//     const { clientId } = req.params;
-//     const client = await Client.findByPk(clientId);
-//     const zipName = client?.name.trim().toLowerCase();
-//     console.log(zipName);
-//     const download_url = await cloudinary.v2.utils.download_folder(clientId, {
-//       api_key: CLOUDINARY_API_KEY,
-//       api_secret: CLOUDINARY_API_SECRET,
-//       cloud_name: CLOUDINARY_CLOUD_NAME,
-//       prefixes: "/",
-//       target_public_id: zipName,
-//     });
-
-//     return res.send(download_url);
-//   } catch (e) {
-//     console.log(e);
-//     return res.json({
-//       e,
-//     });
-//   }
-// });
 
 router.get("/folders", async (req, res) => {
   try {
