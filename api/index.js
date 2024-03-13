@@ -11,7 +11,7 @@ function main(force) {
 
   conn.sync({ force, alter: !force }).then(() => {
     server.listen(PORT, () => console.log("%s listening at " + PORT));
-    loadAllJsonClients(clients)
+    //loadAllJsonClients(clients)
   });
 }
 

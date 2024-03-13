@@ -67,20 +67,18 @@ export const API = {
     return api.post(`cloudinary/reset_cloudinary_index/${clientId}`);
   },
   session: {
-    connect: function ({ clientId, deviceId = null }) {
+    connect: function ({ clientId }) {
       return api.post("/session", {
         clientId,
-        deviceId,
       });
     },
-    forceConnect: function ({ deviceId = null, clientId }) {
+    forceConnect: function ({ clientId }) {
       return api.post("/session/force", {
         clientId,
-        deviceId,
       });
     },
-    disconnect: function ({ deviceId = null }) {
-      return api.post("/session/off", { deviceId });
+    disconnect: function ({ clientId }) {
+      return api.post("/session/off", { clientId });
     },
   },
   client: {

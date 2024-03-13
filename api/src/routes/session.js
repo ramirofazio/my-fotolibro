@@ -1,104 +1,52 @@
 const { Router } = require('express')
 const router = Router()
-const { Session } = require('../db.js')
+const { Session, Client } = require('../db.js')
 const { Op } = require('sequelize')
 
 router.post('/', async function (req, res) {
-  const { clientId, deviceId } = req.body
+  const { clientId } = req.body
   try {
-    let exist = await Session.findOne({
-      where: {
-        id: {
-          [Op.not]: deviceId || 0,
-        },
-        clientId,
-        active: true,
-      },
+    console.log("TRY CONNECT")
+    let client = await Client.findByPk(clientId)
+
+    if(client.online) return res.status(409).json({
+      msg: 'Una persona esta utilizando el link',
     })
+    client.online = true
+    await client.save()
 
-    if (exist)
-      return res.status(409).json({
-        msg: 'Una persona esta utilizando el link',
-      })
+    console.log(client.online)
 
-    const [session, created] = await Session.findOrCreate({
-      where: {
-        id: deviceId,
-      },
-      defaults: deviceId
-        ? {
-            id: deviceId,
-            clientId,
-          }
-        : {
-            clientId,
-          },
-    })
-
-    if (!session.active) {
-      session.active = true
-      await session.save()
-    }
-
-    return res.send({ session, created })
+    
+    return res.send({ online: client.online ? 'online' : 'ofline' })
   } catch (error) {
     console.log(error)
     res.status(500).send({ error: error.message })
   }
 })
 router.post('/off', async function (req, res) {
-  const { deviceId } = req.body
   try {
-    const updated = await Session.update(
-      { active: false },
-      {
-        where: {
-          id: deviceId,
-        },
-      }
-    )
+    const { clientId } = req.body
+    console.log("TRY DISCONNECT")
+    let client = await Client.findByPk(clientId)
 
-    if (updated[0]) return res.send('Disconnected')
-    return res.status(404).send({
-      msg: 'No encontrado',
-    })
+    client.online = false
+    await client.save()
+    console.log("client.online", client.online)
+    return res.send({ online: client.online ? 'online' : 'ofline' })
   } catch (error) {
     res.status(500).send({ error: error.message })
   }
 })
 router.post('/force', async function (req, res) {
-  const { clientId, deviceId } = req.body
+  const { clientId } = req.body
   try {
-    await Session.destroy({
-      where: {
-        clientId,
-        active: true,
-        id: {
-          [Op.not]: deviceId || 0,
-        },
-      },
-    })
+    let client = await Client.findByPk(clientId)
 
-    const [session, created] = await Session.findOrCreate({
-      where: {
-        id: deviceId,
-      },
-      defaults: deviceId
-        ? {
-            id: deviceId,
-            clientId,
-          }
-        : {
-            clientId,
-          },
-    })
+    client.online = true
+    await client.save()
 
-    if (!session.active) {
-      session.active = true
-      await session.save()
-    }
-
-    return res.send({ session, created })
+    return res.send({ online: client.online ? 'online' : 'ofline' })
   } catch (error) {
     res.status(500).send({ error: error.message })
   }

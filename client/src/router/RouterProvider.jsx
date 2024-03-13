@@ -3,7 +3,7 @@ import { Root, AdminRoot } from '../pages/'
 import { ClientData, Clients, Folders } from '../pages'
 import { RouterError } from '../components/RouterError'
 import { API } from '../api_instance'
-import { verifyClient, connectClient } from './loaders'
+import { verifyClient } from './loaders'
 import { CreateClient } from '../pages/admin_clients/CreateClient'
 import { UpdateClient } from '../pages/admin_clients/UpdateClient'
 import { SelectImagesPage } from '../pages/upload_images'
@@ -20,7 +20,7 @@ export function Routes() {
       children: [
         {
           path: '/client/:clientId/client_data',
-          loader: connectClient,
+          //loader: loadData,
           errorElement: <RouterError />,
           element: <ClientData />,
         },

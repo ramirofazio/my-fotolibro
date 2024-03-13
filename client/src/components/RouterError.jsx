@@ -1,6 +1,15 @@
 import { NoSymbolIcon } from '@heroicons/react/24/solid'
+import { useRouteError } from 'react-router-dom'
+import { UrlInUse } from './UrlInUse';
 
 export function RouterError() {
+
+  let error = useRouteError();
+
+  if(error.data === 'CONNECTED'){
+    return <UrlInUse />
+  }
+ 
   return (
     <main className="bg-slate-800 h-screen flex justify-center items-center">
       <div className="border-slate-700 border-2 p-4 h-fit  w-fit text-2xl lg:text-4xl mx-auto bg-slate-600 rounded-sm px-4">

@@ -7,7 +7,6 @@ import { PreviousNext } from "../components/PreviousNext";
 import { SuccessPage } from "./SuccessPage";
 import { Loader } from "../components/Loader";
 import { useApp } from "../contexts/AppContext";
-import { storage } from "../utils/storage"
 import { toast } from 'react-hot-toast'
 import {ChevronRightIcon } from '@heroicons/react/24/outline'
 import { Scroll } from "../components/Scroll";
@@ -31,19 +30,13 @@ export function Root() {
 
 
   useEffect(()=> {
-    if (!active_link) return
-    const device = storage.get({name: 'device'})
-    window.addEventListener("beforeunload" ,async () => await API.session.disconnect({deviceId: device.id}))
+    window.addEventListener("unload" ,() => API.session.disconnect({clientId: id}))
+    window.addEventListener("beforeunload" ,() => API.session.disconnect({clientId: id}))
 
     API.session.connect({
-      clientId: id, deviceId: device?.id
+      clientId: id
     }).then(({ data })=> {
-      storage.set({
-        name: 'device',
-        object: {
-          id: data.session.id
-        }
-      })
+      toast.success(data.online)
     }).catch(({response, ...err})=>{
       if(response){
         toast.error(response.data.msg)
@@ -53,7 +46,7 @@ export function Root() {
       }
     })
 
-    return () => window.addEventListener("beforeunload" ,async () => await API.session.disconnect({deviceId: device.id}))
+    return () => window.addEventListener("unload" ,() => API.session.disconnect({clientId: id}))
   },[])
 
   if (!active_link) {
@@ -70,19 +63,12 @@ export function Root() {
             )
 
             if (res) {
-              const device = storage.get({ name: 'device' })
               API.session
                 .forceConnect({
                   clientId: id,
-                  deviceId: device?.id || null,
                 })
                 .then(({ data }) => {
-                  if (data?.session) {
-                    setRender(false)
-                    storage.set({
-                      name: 'device',
-                      object: { id: data?.session?.id },
-                    })
+                  if (data?.online) {
                     toast.success('Acabas de desabilitar un dispositivo.')
                   }
                 })

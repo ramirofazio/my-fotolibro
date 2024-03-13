@@ -80,14 +80,20 @@ async function getPromisesUpload({ clientId, albums, images, promises = [] }) {
     size += parseInt(img.size);
     available -= parseInt(img.size);
 
-    promises.push({ ...img, albumId: id });
+    
 
     const newPublicId = `${clientId}/albm-${id}/${getStringWithZeros(
       img.index,
       4
     )}_${img.originalName}`;
     console.log("public id" + newPublicId, "index:" + img.index);
-    //await cloudinary.renameFile({public_id: img.publicId, to: newPublicId})
+    /*
+    const data = await cloudinary.renameFile({public_id: img.publicId, to: newPublicId})
+    img.publicId = data.public_id
+    img.URL = data.secure_url
+    */
+
+    promises.push({ ...img, albumId: id });
   }
   console.log("size: ", size, "available: ", available);
   console.log("faltan: ", images.length);

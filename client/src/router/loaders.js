@@ -3,9 +3,20 @@ import { API } from '../api_instance/index'
 export async function verifyClient({ params }) {
   const { data } = await API.getCLientById(params.clientId)
 
-  if (!data) {
+  if (!data) { // SI esta deshabilitado el link
     throw new Error('Link deshabilitado', { cause: 'zaracatunga' })
   }
+
+  if(data.online) {
+    console.log("client:", data)
+    throw new Response("CONNECTED", { status: 404 });
+  }
+
+  if (!data.active_link) { 
+    console.log("active:", data.active_link)
+    throw new Error('Usuario Finalizo el libro', { cause: 'END' })
+  }
+
   return data
 }
 
