@@ -20,26 +20,27 @@ const cloudinary = {
 
     return response;
   },
-  renameFile: async function ({ public_id, albumId, index }) {
-    let newPublicId = public_id.split("/");
-    newPublicId[2] = newPublicId[2].split("_");
-    newPublicId[2] = getStringWithZeros(index, 4) + "_" + newPublicId[2][1];
-    newPublicId[1] = "albm-" + albumId;
-    newPublicId = newPublicId.join("/");
+  renameFile: async function ({ to = null, public_id, albumId, index }) {
+    if (!to) {
+      let newPublicId = public_id.split("/");
+      newPublicId[2] = newPublicId[2].split("_");
+      newPublicId[2] = getStringWithZeros(index, 4) + "_" + newPublicId[2][1];
+      newPublicId[1] = "albm-" + albumId;
+      to = newPublicId.join("/");
+    }
 
-    await _cloudinary.uploader.rename(public_id, newPublicId);
-
-    return newPublicId;
+    if (public_id === to) return "same values";
+    return await _cloudinary.uploader.rename(public_id, to);
   },
-  createUpload_preset: async function({name, folder}){
+  createUpload_preset: async function ({ name, folder }) {
     const response = await _cloudinary.api.create_upload_preset({
-    name,
-    folder,
-    unsigned: true,
-    disallow_public_id: false,
-    use_asset_folder_as_public_id_prefix: false,
-    })
-    return response
+      name,
+      folder,
+      unsigned: true,
+      disallow_public_id: false,
+      use_asset_folder_as_public_id_prefix: false,
+    });
+    return response;
   },
   bytesToMb: function (bytes) {
     if (typeof bytes !== "number" || isNaN(bytes) || bytes < 0) {

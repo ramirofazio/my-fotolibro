@@ -133,21 +133,23 @@ async function addCloudIndex({ photos, errors = [] }) {
   const { publicId, index, albumId } = photo;
 
   try {
-    const newPublicId = await cloudinary.renameFile({
+    const data = await cloudinary.renameFile({
       public_id: publicId,
       index,
       albumId,
     });
 
-    photo.publicId = newPublicId;
-    console.log(photo.publicId);
-    await photo.save();
+    if (data !== "same values") {
+      photo.publicId = data.public_id;
+      photo.URL = data.secure_url;
+      await photo.save();
+    }
   } catch (err) {
-    if (err.status === 420)
-      errors.push({
-        error: err,
-        photo,
-      });
+    if (err.status === 420) console.log(err);
+    errors.push({
+      error: err,
+      photo,
+    });
   }
 
   return addCloudIndex({ photos, errors });
