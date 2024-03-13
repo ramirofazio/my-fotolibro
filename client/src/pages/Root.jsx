@@ -19,18 +19,13 @@ export function Root() {
 
 
   useEffect(() => {
-    window.addEventListener("beforeunload", () => API.disconnectClient(id));
-    client.set({
+   client.set({
       upload_preset,
     });
 
     console.log(client.upload_preset);
     
-    return () => {
-      window.removeEventListener("beforeunload", () =>
-        API.disconnectClient(id)
-      );
-    };
+    
   }, [client.upload_preset]);
 
 
@@ -38,6 +33,7 @@ export function Root() {
   useEffect(()=> {
     if (!active_link) return
     const device = storage.get({name: 'device'})
+    window.addEventListener("beforeunload" ,async () => await API.session.disconnect({deviceId: device.id}))
 
     API.session.connect({
       clientId: id, deviceId: device?.id
@@ -56,6 +52,8 @@ export function Root() {
         toast.error(err.message)
       }
     })
+
+    return () => window.addEventListener("beforeunload" ,async () => await API.session.disconnect({deviceId: device.id}))
   },[])
 
   if (!active_link) {

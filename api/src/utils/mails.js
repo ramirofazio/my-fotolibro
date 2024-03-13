@@ -3,6 +3,15 @@ const { env } = require("./env");
 const { Client, Photo, Album } = require("../db");
 const cloudinary = require("./cloudinary");
 
+async function loadAllJsonClients(clients) {
+  if (!clients?.length) return;
+  console.log('# Clientes: ' + clients.length);
+  const client = clients.shift();
+  await loadJsonClients(client);
+
+  return await loadAllJsonClients(clients);
+}
+
 async function loadJsonClients(_client) {
   try {
     const { name, email, photos } = _client;
@@ -18,17 +27,17 @@ async function loadJsonClients(_client) {
     });
 
     if (!created) return console.log("Creado previamente");
-    console.log(client);
+    console.log("Cliente:", client.name);
     const upload_preset = await cloudinary.createUpload_preset({
       folder: client.id,
       name: `${client.name.split(" ").join("-")}-${client.id}`,
     });
-    
+
     client.upload_preset = upload_preset.name;
     await client.save();
 
     if (!photos?.length) return console.log("Sin photos");
-
+    console.log("Photos: " + photos.length);
     const rawPhotos = photos.map(({ URL, publicId, ...p }) => {
       const spl = URL.split("/");
       URL = URL.replace(
@@ -40,52 +49,51 @@ async function loadJsonClients(_client) {
         size: parseInt(p.size),
         URL,
         publicId,
-        index: "",
         ...p,
       };
     });
 
-    getPromisesUpload({clientId:client.id, images: rawPhotos})
-    
-    await Photo.bulkCreate(rawPhotos);
+    const photosWhit = await getPromisesUpload({
+      clientId: client.id,
+      images: rawPhotos,
+    });
+
+    //console.log(photosWhit)
+
+    await Photo.bulkCreate(photosWhit);
   } catch (err) {
     console.log(err);
   }
 }
 
-async function getPromisesUpload({
-  clientId,
-  albums,
-  images,
-  promises = {},
-}) {
+const AVAILABLE_SIZE = 5000000; //5MB
+async function getPromisesUpload({ clientId, albums, images, promises = [] }) {
   if (!images.length) return promises;
   if (!albums?.id) {
-    albums =[ await Album.create({ clientId })];
+    albums = [await Album.create({ clientId })];
   }
 
   let { size, available, id } = albums[0];
-
-  promises[id] = [];
-
+  console.log("album creado:" + id);
   while (available > AVAILABLE_SIZE && images.length) {
     const img = images.shift();
-    size += img.size;
-    available -= img.size;
+    size += parseInt(img.size);
+    available -= parseInt(img.size);
 
-    promises[id].push({ ...img, albumId: id });
+    promises.push({ ...img, albumId: id });
 
     const newPublicId = `${clientId}/albm-${id}/${getStringWithZeros(
       img.index,
       4
     )}_${img.originalName}`;
-    console.log(newPublicId);
+    console.log("public id" + newPublicId, "index:" + img.index);
     //await cloudinary.renameFile({public_id: img.publicId, to: newPublicId})
   }
-
-  albums.size = size;
-  albums.available = available;
-  await albums.save();
+  console.log("size: ", size, "available: ", available);
+  console.log("faltan: ", images.length);
+  albums[0].size = size;
+  albums[0].available = available;
+  await albums[0].save();
 
   return await getPromisesUpload({
     clientId,
@@ -102,6 +110,7 @@ function getStringWithZeros(num, size) {
 
 module.exports = {
   loadJsonClients,
+  loadAllJsonClients,
   sendConfirmationMail: async function ({ name, id, photos_length }) {
     const response = await transporter.sendMail({
       from: `"myfotolibro 📷" <${env.mail.USER}>`,
