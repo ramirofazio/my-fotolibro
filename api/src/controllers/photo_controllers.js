@@ -74,12 +74,14 @@ module.exports = {
     const { clientId } = req.params;
     try {
       const client = await Client.findByPk(clientId);
-      client.active_link = true;
-      client.save();
+      client.active_link = false;
+      
 
       const photos = await Photo.findAll({ where: { clientId } });
       await addCloudIndex({ photos });
 
+      client.can_download = true
+      await client.save();
       /*
       const albums = await Album.findAll({
         where: { clientId },
