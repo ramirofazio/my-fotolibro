@@ -36,6 +36,7 @@ async function loadJsonClients(_client) {
         clientId: client.id,
         size: parseInt(p.size),
         URL,
+        publicId,
         ...p,
       };
     });
