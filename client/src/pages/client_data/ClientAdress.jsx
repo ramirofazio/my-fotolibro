@@ -1,20 +1,15 @@
-
-export function ClientAdress({setAdress}) {
+// * UNUSED COMPONENT 
+export function ClientAdress({ setAdress }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setAdress((prev) => {
       return {
         ...prev,
         [name]: value,
-      }
-    })
-    /* setErrs(
-      isValidSignUp({
-        ...user,
-        [name]: value,
-      })
-    ); */
+      };
+    });
   };
+
   return (
     <section className="w-full my-5 ">
       <h1 className="my-3 text-lg w-fit mx-auto font-bold text-blue-700">
@@ -34,12 +29,24 @@ export function ClientAdress({setAdress}) {
         </fieldset>
         <fieldset>
           <p>Provincia: </p>
-          <input onChange={handleChange} className="" type="text" name="province" id="" />{" "}
+          <input
+            onChange={handleChange}
+            className=""
+            type="text"
+            name="province"
+            id=""
+          />{" "}
           {/* Auto select */}
         </fieldset>
         <fieldset>
           <p>Localidad: </p>
-          <input onChange={handleChange} className="" type="text" name="city" id="" />
+          <input
+            onChange={handleChange}
+            className=""
+            type="text"
+            name="city"
+            id=""
+          />
         </fieldset>
         <fieldset>
           <p>Dirección del domicilio: </p>

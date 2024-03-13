@@ -1,8 +1,9 @@
 import { api } from "./base_api";
-console.log(api)
+console.log(api);
 export const API = {
-  getClients: () => {
-    return api.get("client");
+  getClients: ({ orderBy, direction }) => {
+    
+    return api.get(`client/?orderBy=${orderBy}&direction=${direction}`);
   },
   getCLientById: (clientId) => {
     return api.get(`client/${clientId}`);
@@ -10,8 +11,8 @@ export const API = {
   createClient: (newClient) => {
     return api.post("client", newClient);
   },
-  updateClient: ({ clientId, newData }) => {
-    return api.put(`client/edit_client/${clientId}`, newData);
+  updateClient: ({ clientId, newClient }) => {
+    return api.put(`client/edit_client/${clientId}`, newClient);
   },
   deleteClient: (clientId) => {
     return api.delete(`client/${clientId}`);
@@ -20,7 +21,7 @@ export const API = {
     return api.delete(`cloudinary/images/${clientId}`);
   },
   uploadImagesDB: ({ imgs, clientId }) => {
-    console.log("manda: ", imgs.length )
+    console.log("manda: ", imgs.length);
     return api.post("client/imgs", { imgs, clientId });
   },
   getDownloadUrl: (clientId) => {
@@ -41,8 +42,8 @@ export const API = {
   addImgsIndex: (imgs) => {
     return api.put(`client/index_images`, { imgs });
   },
-  addDownloadImgsIndex: (clientId) => {
-    return api.post(`cloudinary/sort_download_imgs/${clientId}`);
+  addCloudImgsIndex: (clientId) => {
+    return api.post(`cloudinary/add_cloud_imgs_index/${clientId}`);
   },
   deleteSingleImg: ({ publicId, id }) => {
     return api.post(`cloudinary/delete/single_img/`, { publicId, id });
@@ -59,33 +60,62 @@ export const API = {
       photos_length,
     });
   },
+  updateLastDownload: function () {
+    return api.put("/client/timestamp/:clientId");
+  },
   resetCloudinaryIndex: (clientId) => {
     return api.post(`cloudinary/reset_cloudinary_index/${clientId}`);
   },
   session: {
     connect: function ({ clientId, deviceId = null }) {
-      return api.post('/session', {
+      return api.post("/session", {
         clientId,
         deviceId,
-      })
+      });
     },
     forceConnect: function ({ deviceId = null, clientId }) {
-      return api.post('/session/force', {
+      return api.post("/session/force", {
         clientId,
         deviceId,
-      })
+      });
     },
     disconnect: function ({ deviceId = null }) {
-      return api.post('/session/off', { deviceId })
+      return api.post("/session/off", { deviceId });
     },
   },
-  /* getBooks: () => {
-    return api.get("cloudinary/book");
+  client: {
+    album: {
+      getAll: function ({ clientId }) {
+        return api.get("/client/albums/" + clientId);
+      },
+      create: function ({ clientId }) {
+        return api.post("/client/albums/" + clientId);
+      },
+      update: function ({ id, size, available, photos_length }) {
+        return api.put("/client/albums/" + id, {
+          size,
+          available,
+          photos_length,
+        });
+      },
+    },
+    photo: {
+      create: function ({ clientId, photos }) {
+        return api.post("client/photos/" + clientId, { photos });
+      },
+      getAll: function ({ clientId }) {
+        return api.get("/client/photos/" + clientId);
+      },
+      update_indexes: function ({ photos }) {
+        return api.put("/client/photos/update_index", { photos });
+      },
+
+      send: function ({ clientId }) {
+        return api.post("/client/photos/send/" + clientId);
+      },
+      delete: function ({ id }) {
+        return api.delete("/client/photo/" + id);
+      },
+    },
   },
-  getBookImages: ({ clientId, bookId }) => {
-    return api.get(`cloudinary/book/${clientId}`);
-  },
-  deleteBook: ({ clientId, bookId }) => {
-    return api.delete("cloudinary/book/:id", { clientId, bookId });
-  }, */
 };

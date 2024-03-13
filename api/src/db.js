@@ -29,16 +29,20 @@ let capsEntries = entries.map((entry) => [
 ]);
 sequelize.models = Object.fromEntries(capsEntries);
 
-const { Client, Photo, Book, Session } = sequelize.models;
+const { Client, Photo, Session, Album } = sequelize.models;
 
 Client.hasMany(Photo, { onDelete: "CASCADE" });
 Photo.belongsTo(Client);
-Book.hasMany(Photo, { onDelete: "CASCADE" });
-Photo.belongsTo(Book);
 
-Client.hasMany(Session, { onDelete: 'CASCADE' })
-Session.belongsTo(Client)
- 
+Client.hasMany(Session, { onDelete: "CASCADE" });
+Session.belongsTo(Client);
+
+Client.hasMany(Album, { onDelete: "CASCADE" });
+Album.belongsTo(Client);
+
+Album.hasMany(Photo, { onDelete: "CASCADE" });
+Photo.belongsTo(Album);
+
 module.exports = {
   ...sequelize.models,
   conn: sequelize,

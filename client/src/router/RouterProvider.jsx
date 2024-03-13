@@ -9,6 +9,7 @@ import { UpdateClient } from '../pages/admin_clients/UpdateClient'
 import { SelectImagesPage } from '../pages/upload_images'
 import { SortImagesPage } from '../pages/sort_images'
 
+
 export function Routes() {
   const routes = createBrowserRouter([
     {
@@ -45,7 +46,8 @@ export function Routes() {
         {
           path: '/admin/:adminId/clients',
           loader: async () => {
-            const clients = await API.getClients()
+            const clients = await API.getClients({orderBy: "created_at", direction: "DESC"})
+            console.log(clients.data)
             return clients.data
           },
           element: <Clients />,
@@ -68,8 +70,9 @@ export function Routes() {
         {
           path: '/admin/:adminId/folders',
           loader: async () => {
-            const books = await API.getClients()
-            return books.data
+            const folders = await API.getClients({orderBy : "last_link_download", direction: "DESC"})
+            console.log(folders)
+            return folders.data
           },
           element: <Folders />,
         },

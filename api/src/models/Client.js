@@ -31,16 +31,14 @@ module.exports = (sequelize) => {
         allowNull: false,
         defaultValue: false
       },
-      event: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
       last_link_download: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
+        defaultValue: null,
         allowNull: true
       },
       created_at: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
+        defaultValue: null,
         allowNull: true
       },
       active_link: {
@@ -50,10 +48,14 @@ module.exports = (sequelize) => {
       upload_preset: {
         type: DataTypes.STRING,
         allowNull: true,
-      }
+      },
+      can_download: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
     },
     {
-      timestamps: false,
+      timestamps: true,
     }
   );
 };

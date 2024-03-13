@@ -1,47 +1,44 @@
-import { useEffect } from 'react'
-import { API } from '../../api_instance'
-import { ViewImage } from './ViewImage'
-import { useApp } from '../../contexts/AppContext'
-import toast from 'react-hot-toast'
+import { useEffect } from "react";
+import { API } from "../../api_instance";
+import { ViewImage } from "./ViewImage";
+import { useApp } from "../../contexts/AppContext";
+import toast from "react-hot-toast";
 
 export function CloudListImages({ clientId }) {
-  const { cloudImages, loading, refresh } = useApp()
+  const { cloudImages, loading, refresh } = useApp();
 
   useEffect(() => {
     if (refresh.value) {
-      loading.set(true)
+      loading.set(true);
       API.getPreviusImgs(clientId)
         .then(({ data }) => {
-          cloudImages.set(data.photos)
-          loading.set(false)
+          cloudImages.set(data.photos);
+          loading.set(false);
         })
         .catch((err) => {
-          alert(err)
-          loading.set(false)
-        })
-      refresh.off()
+          alert(err);
+          loading.set(false);
+        });
+      refresh.off();
     }
-  }, [])
+  }, []);
 
   async function onRemove(id, publicId, name) {
-    const res = confirm(`¿Quieres eliminar la imagen ${name}?`)
+    const res = confirm(`¿Quieres eliminar la imagen ${name}?`);
     if (res) {
-      loading.set(true)
-      await API.deleteSingleImg({
-        publicId: publicId,
-        id: id,
-      })
-      toast.success(`Se elimino ${name}`)
+      loading.set(true);
+      const res = await API.client.photo.delete({ id });
+      toast.success(res.data);
 
       //llamar a la api
-      const { data } = await API.getPreviusImgs(clientId)
-      cloudImages.set(data.photos)
+      const { data } = await API.getPreviusImgs(clientId);
+      cloudImages.set(data.photos);
     }
 
-    loading.set(false)
+    loading.set(false);
   }
 
-  if (!cloudImages.size) return null
+  if (!cloudImages.size) return null;
 
   return (
     <>
@@ -57,5 +54,5 @@ export function CloudListImages({ clientId }) {
         />
       ))}
     </>
-  )
+  );
 }

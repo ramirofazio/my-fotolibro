@@ -3,26 +3,41 @@ const {
   CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET,
   CLOUDINARY_CLOUD_NAME,
-  EMAIL_PASSWORD,
   EMAIL_USER,
   ADMIN_EMAIL,
 } = process.env;
 const { Router } = require("express");
 const router = Router();
-const { Client, Photo, Admin, Book } = require("../db.js");
+const { Client, Photo } = require("../db.js");
 const cloudinary = require("cloudinary");
 const transporter = require("../node_mailer");
 const { DateTime } = require("luxon");
 const { Op } = require("sequelize");
-const bytesToMb = require("../utils.js");
+
+const {
+  getAlbums,
+  createAlbum,
+  updateAlbum,
+  createPhoto,
+  getPhotos,
+  deletePhoto,
+  updateIndexPhotos,
+  sendPhotos,
+} = require("../controllers");
 
 router.get("/", async (req, res) => {
   try {
-    const clients = await Client.findAll();
+    const { orderBy, direction } = req.query;
+
+    const clients =
+      orderBy && direction
+        ? await Client.findAll({ order: [[orderBy, direction]] })
+        : await Client.findAll();
+
     res.json(clients);
-  } catch (e) {
-    console.log(e);
-    res.json({ e });
+  } catch (err) {
+    console.log(err);
+    res.json({ err });
   }
 });
 
@@ -62,12 +77,7 @@ router.post("/", async (req, res) => {
 
     const newClient = await Client.create({
       ...req.body,
-      created_at: DateTime.now().setLocale("es").toFormat("dd/MM/yyyy"),
-    });
-
-    const newBook = await Book.create({
-      name,
-      clientId: newClient.id,
+      created_at: new Date(),
     });
 
     newClient.upload_preset = `${newClient.name}-${newClient.id}`;
@@ -83,7 +93,7 @@ router.post("/", async (req, res) => {
       disallow_public_id: false,
       use_asset_folder_as_public_id_prefix: false,
     });
-    return res.json({ upload_preset: result, clientId: newClient.id });
+    return res.status(200).json({ upload_preset: result, newClient });
   } catch (e) {
     console.log(e);
     res.status(401).json({ e });
@@ -100,43 +110,42 @@ router.put("/edit_client/:id", async (req, res) => {
       },
       { where: { id } }
     );
-    res.json({
+    res.status(200).json({
       esa: `cliente ${id} actualizado`,
       updated,
     });
   } catch (e) {
     console.log(e);
-    res.json({ e });
+    res.status(409).json({ e });
   }
 });
 
 router.delete("/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
-    const deleted = await Client.destroy({
-      where: {
-        id: clientId,
-      },
-    });
-    await Book.destroy({
-      where: { clientId: clientId },
-    });
+    const client = await Client.findByPk(clientId);
+    client.destroy();
+    await client.save();
+
     cloudinary.v2.config({
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
       cloud_name: CLOUDINARY_CLOUD_NAME,
     });
     const deleted_upload_preset = await cloudinary.v2.api.delete_upload_preset(
-      clientId
+      client.upload_preset
     );
-    res.json({
-      message: `cliente ${clientId} eliminado`,
+    res.status(200).json({
+      message: `cliente ${client.name} eliminado`,
       upload_preset: deleted_upload_preset,
-      deleted,
+      deleted: true,
     });
-  } catch (e) {
-    console.log(e);
-    res.json({ e });
+  } catch (err) {
+    console.log(err);
+    res.status(409).json({
+      err,
+      deleted: false,
+    });
   }
 });
 
@@ -177,17 +186,7 @@ router.post("/imgs", async (req, res) => {
     });
 
     const bulk = await Photo.bulkCreate(rawImgs);
-    const book = await Book.findOne({ where: { clientId } });
 
-    const sizeSum = parseInt(book.totalSize) + parseInt(totalSize);
-    const itemsSum = parseInt(book.totalItems) + parseInt(rawImgs.length);
-    console.log("suma:", sizeSum);
-
-    const newBook = await Book.update(
-      { totalSize: sizeSum, totalItems: itemsSum },
-      { where: { clientId: clientId } }
-    );
-    console.log(newBook);
     res.json({
       res: " se subieron",
       imgs: bulk,
@@ -218,10 +217,14 @@ router.get("/canFinish/:clientId", async (req, res) => {
   }
 });
 
+// TODO refactorizar con el arhcivo mail.js
 router.post("/finish_upload", async (req, res) => {
   const { clientId, photos_length } = req.body;
   try {
     const client = await Client.findByPk(clientId);
+    client.can_download = true;
+    await client.save();
+
     const info = await transporter.sendMail({
       from: `"myfotolibro 📷" <${EMAIL_USER}>`,
       to: ADMIN_EMAIL,
@@ -251,8 +254,9 @@ router.get("/connect/:clientId", async (req, res) => {
     const client = await Client.findByPk(clientId);
 
     const connected = await client.update({
-      online: true,
+      online: false,
     });
+
     return res.status(202).json(connected);
   } catch (e) {
     console.log(e);
@@ -265,7 +269,7 @@ router.get("/disconnect/:clientId", async (req, res) => {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
 
-    const connected = await client.update({
+    const connected = await Client.update({
       // undefined
       online: false,
     });
@@ -306,13 +310,14 @@ router.put("/timestamp/:clientId", async (req, res) => {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
 
-    const newDate = await client.update({
-      last_link_download: Date.now(),
-    });
-    res.json(newDate);
-  } catch (e) {
-    console.log(e);
-    res.json({ e });
+    const date = new Date();
+    client.last_link_download = date;
+    await client.save();
+
+    res.json({ date });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ err });
   }
 });
 
@@ -323,12 +328,22 @@ router.put("/activeClient/:clientId", async (req, res) => {
     const paused = await client.update({
       active_link: client.active_link === true ? false : true,
     });
-    res.json(paused);
-  } catch (e) {
-    res.status(404).json({
-      e,
+    res.status(200).json(paused);
+  } catch (err) {
+    res.status(409).json({
+      err,
     });
   }
 });
+
+router.get("/albums/:clientId", getAlbums);
+router.post("/albums/:clientId", createAlbum);
+router.put("/albums/:id", updateAlbum);
+
+router.get("/photos/:clientId", getPhotos);
+router.post("/photos/send/:clientId", sendPhotos);
+router.post("/photos/:clientId", createPhoto);
+router.put("/photos/update_index", updateIndexPhotos);
+router.delete("/photo/:id", deletePhoto);
 
 module.exports = router;

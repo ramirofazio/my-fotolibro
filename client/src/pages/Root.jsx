@@ -1,15 +1,16 @@
 import { Outlet, useLoaderData } from "react-router-dom";
 import { Nav } from "../components/";
 import { UrlInUse } from "../components/UrlInUse";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { API } from "../api_instance";
 import { PreviousNext } from "../components/PreviousNext";
 import { SuccessPage } from "./SuccessPage";
 import { Loader } from "../components/Loader";
 import { useApp } from "../contexts/AppContext";
-import { storage } from "../utils"
+import { storage } from "../utils/storage"
 import { toast } from 'react-hot-toast'
 import {ChevronRightIcon } from '@heroicons/react/24/outline'
+import { Scroll } from "../components/Scroll";
 
 export function Root() {
   const { id, active_link, upload_preset } = useLoaderData();
@@ -35,6 +36,7 @@ export function Root() {
 
 
   useEffect(()=> {
+    if (!active_link) return
     const device = storage.get({name: 'device'})
 
     API.session.connect({
@@ -49,7 +51,7 @@ export function Root() {
     }).catch(({response, ...err})=>{
       if(response){
         toast.error(response.data.msg)
-        if(response.status === 409) return
+        if(response.status === 409) return setRender(true)
       }else{
         toast.error(err.message)
       }
@@ -98,11 +100,12 @@ export function Root() {
     )
 
   return (
-    <div className="bg-main min-h-screen">
+    <div className="bg-main min-h-screen min-w-[320px]">
       <>
         <Nav />
         <PreviousNext />
         <Outlet />
+        <Scroll />
         <Loader />
       </>
     </div>

@@ -1,8 +1,15 @@
+const { check_env, env } = require("./src/utils");
 const server = require("./src/app.js");
 const { conn } = require("./src/db.js");
 
-conn.sync({ force: false, alter: true }).then(() => {
-  server.listen(3001, () => {
-    console.log("%s listening at 3001");
+function main(force) {
+  const PORT = env.PORT || 3001;
+
+  check_env();
+
+  conn.sync({ force, alter: !force }).then(() => {
+    server.listen(PORT, () => console.log("%s listening at " + PORT));
   });
-});
+}
+
+main(true);
