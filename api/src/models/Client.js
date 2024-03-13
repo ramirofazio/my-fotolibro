@@ -37,7 +37,8 @@ module.exports = (sequelize) => {
         allowNull: true
       },
       created_at: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
+        defaultValue: null,
         allowNull: true
       },
       active_link: {
@@ -54,7 +55,7 @@ module.exports = (sequelize) => {
       },
     },
     {
-      timestamps: false,
+      timestamps: true,
     }
   );
 };

@@ -1,8 +1,9 @@
 import { api } from "./base_api";
 console.log(api);
 export const API = {
-  getClients: () => {
-    return api.get("client");
+  getClients: ({ orderBy, direction }) => {
+    
+    return api.get(`client/?orderBy=${orderBy}&direction=${direction}`);
   },
   getCLientById: (clientId) => {
     return api.get(`client/${clientId}`);

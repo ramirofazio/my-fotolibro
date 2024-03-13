@@ -12,7 +12,7 @@ const { Client, Photo } = require("../db.js");
 const cloudinary = require("cloudinary");
 const transporter = require("../node_mailer");
 const { DateTime } = require("luxon");
-const { Op, NOW } = require("sequelize");
+const { Op } = require("sequelize");
 
 const {
   getAlbums,
@@ -27,11 +27,17 @@ const {
 
 router.get("/", async (req, res) => {
   try {
-    const clients = await Client.findAll({order : [["last_link_download", 'DESC']]});
+    const { orderBy, direction } = req.query;
+
+    const clients =
+      orderBy && direction
+        ? await Client.findAll({ order: [[orderBy, direction]] })
+        : await Client.findAll();
+
     res.json(clients);
-  } catch (e) {
-    console.log(e);
-    res.json({ e });
+  } catch (err) {
+    console.log(err);
+    res.json({ err });
   }
 });
 
@@ -71,7 +77,7 @@ router.post("/", async (req, res) => {
 
     const newClient = await Client.create({
       ...req.body,
-      created_at: DateTime.now().setLocale("es").toFormat("dd/MM/yyyy"),
+      created_at: new Date(),
     });
 
     newClient.upload_preset = `${newClient.name}-${newClient.id}`;
@@ -304,13 +310,14 @@ router.put("/timestamp/:clientId", async (req, res) => {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
 
-    const date = new Date()
+    const date = new Date();
     client.last_link_download = date;
     await client.save();
 
     res.json({ date });
-  } catch (e) {
-    res.json({ e });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ err });
   }
 });
 
