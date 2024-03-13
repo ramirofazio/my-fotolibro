@@ -20,7 +20,11 @@ export function Routes() {
       children: [
         {
           path: '/client/:clientId/client_data',
-          //loader: loadData,
+          loader: async ({ params }) => {
+            const client = await API.getCLientById(params.clientId)
+            
+            return client.data
+          },
           errorElement: <RouterError />,
           element: <ClientData />,
         },
