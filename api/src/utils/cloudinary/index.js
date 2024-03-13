@@ -31,6 +31,16 @@ const cloudinary = {
 
     return newPublicId;
   },
+  createUpload_preset: async function({name, folder}){
+    const response = await _cloudinary.api.create_upload_preset({
+    name,
+    folder,
+    unsigned: true,
+    disallow_public_id: false,
+    use_asset_folder_as_public_id_prefix: false,
+    })
+    return response
+  },
   bytesToMb: function (bytes) {
     if (typeof bytes !== "number" || isNaN(bytes) || bytes < 0) {
       throw new Error("El valor debe ser un número positivo.");

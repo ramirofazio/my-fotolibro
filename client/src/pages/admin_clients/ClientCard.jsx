@@ -71,7 +71,7 @@ export function ClientCard({ clientData, onRemove }) {
 
             <h1>
               <p className="border-b-[1px] text-center">Creado</p>
-              <p className=" font-bold">{parseDate(created_at).slice(0,8)}</p>
+              <p className=" font-bold">{created_at && parseDate(created_at).slice(0,8)}</p>
             </h1>
           </span>
           <button

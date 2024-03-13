@@ -80,10 +80,7 @@ router.post("/", async (req, res) => {
       created_at: new Date(),
     });
 
-    newClient.upload_preset = `${newClient.name}-${newClient.id}`;
-    await newClient.save();
-
-    const result = await cloudinary.v2.api.create_upload_preset({
+    const upload_preset = await cloudinary.v2.api.create_upload_preset({
       cloud_name: CLOUDINARY_CLOUD_NAME,
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
@@ -93,10 +90,14 @@ router.post("/", async (req, res) => {
       disallow_public_id: false,
       use_asset_folder_as_public_id_prefix: false,
     });
-    return res.status(200).json({ upload_preset: result, newClient });
-  } catch (e) {
-    console.log(e);
-    res.status(401).json({ e });
+
+    newClient.upload_preset = upload_preset.name;
+    await newClient.save();
+
+    return res.status(200).json({ upload_preset, newClient });
+  } catch (err) {
+    console.log(err);
+    res.status(401).json({ err });
   }
 });
 
