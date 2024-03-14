@@ -71,7 +71,8 @@ export function SortImagesPage() {
 
   async function submitBook() {
     try {
-      await API.client.photo.update_indexes({ photos: cloudImages.values });
+      await API.client.photo.update_indexes({ photos: cloudImages?.values });
+      await API.finishUpload({clientId, photos_length: cloudImages.values?.length})
       await API.client.photo.send({ clientId });
 
       setTimeout(() => navigate(0), 3000);

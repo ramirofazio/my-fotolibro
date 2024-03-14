@@ -104,10 +104,10 @@ module.exports = {
       }); */
 
       res.send("ok");
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
       res.status(500).send({
-        msg: error.message,
+        msg: err.message,
       });
     }
   },

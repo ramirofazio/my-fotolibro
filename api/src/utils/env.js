@@ -39,7 +39,6 @@ module.exports = {
     if (errors.length) {
       console.log("\nvariables are missing in the .env file.");
       errors.forEach((err) => console.log(err));
-      console.log("");
       throw "Something went wrong!";
     }
   },
