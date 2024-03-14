@@ -43,7 +43,7 @@ router.post('/force', async function (req, res) {
   try {
     let client = await Client.findByPk(clientId)
 
-    client.online = true
+    client.online = false
     await client.save()
 
     return res.send({ online: client.online ? 'online' : 'ofline' })
