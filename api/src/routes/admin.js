@@ -12,9 +12,9 @@ router.post("/create", async (req, res) => {
       res: "se creo el admin con exito",
       admin,
     });
-  } catch (e) {
-    console.log(e);
-    res.json({ e });
+  } catch (err) {
+    console.log(err);
+    res.json({ err });
   }
 });
 
@@ -29,8 +29,9 @@ router.get("/verify/:adminId", async (req, res) => {
       });
     }
     return res.send("authorized");
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.log(err);
+    res.status(401).json({err})
   }
 });
 

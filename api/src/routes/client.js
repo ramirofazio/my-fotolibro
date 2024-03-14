@@ -57,9 +57,9 @@ router.get("/:id", async (req, res) => {
       });
     }
     res.json(client);
-  } catch (e) {
-    console.log(e);
-    res.status(404).json({ e });
+  } catch (err) {
+    console.log(err);
+    res.status(404).json({ err });
   }
 });
 
@@ -115,9 +115,9 @@ router.put("/edit_client/:id", async (req, res) => {
       esa: `cliente ${id} actualizado`,
       updated,
     });
-  } catch (e) {
-    console.log(e);
-    res.status(409).json({ e });
+  } catch (err) {
+    console.log(err);
+    res.status(409).json({ err });
   }
 });
 
@@ -167,8 +167,11 @@ router.get("/imgs/:clientId", async (req, res) => {
     return res.json({
       photos: sortedPhotos,
     });
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      err
+    });
   }
 });
 
@@ -178,7 +181,7 @@ router.post("/imgs", async (req, res) => {
     if (!imgs || !clientId) {
       res.status(401).send("faltan parametros");
     }
-    console.log(clientId);
+    
     let totalSize = 0;
 
     const rawImgs = imgs.map((i) => {
@@ -192,8 +195,11 @@ router.post("/imgs", async (req, res) => {
       res: " se subieron",
       imgs: bulk,
     });
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      err
+    });
   }
 });
 
@@ -210,10 +216,10 @@ router.get("/canFinish/:clientId", async (req, res) => {
     return res.json({
       canFinish: photos.length ? false : true,
     });
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.log(err);
     return res.json({
-      e,
+      err,
     });
   }
 });
@@ -259,9 +265,9 @@ router.get("/connect/:clientId", async (req, res) => {
     });
 
     return res.status(202).json(connected);
-  } catch (e) {
-    console.log(e);
-    return res.status(401).json(e);
+  } catch (err) {
+    console.log(err);
+    return res.status(401).json(err);
   }
 });
 
@@ -276,8 +282,8 @@ router.get("/disconnect/:clientId", async (req, res) => {
     });
 
     return res.status(202).json(connected);
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.log(err);
     return res.status(401).json(e);
   }
 });
@@ -289,8 +295,8 @@ router.put("/index_images", async (req, res) => {
     const indexedImgs = await imgs.forEach(async (img, i) => {
       try {
         await Photo.update({ index: i + 1 }, { where: { id: img.id } });
-      } catch (e) {
-        console.log(e);
+      } catch (err) {
+        console.log(err);
       }
     });
 
@@ -298,10 +304,10 @@ router.put("/index_images", async (req, res) => {
       imgs,
       indexedImgs,
     });
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.log(err);
     return res.status(401).json({
-      e,
+      err,
     });
   }
 });
