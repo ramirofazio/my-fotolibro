@@ -1,9 +1,6 @@
-import { CheckCircleIcon } from '@heroicons/react/24/solid'
-import { useLoaderData } from 'react-router-dom'
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
-export function SuccessPage() {
-  const client = useLoaderData()
-
+export function SuccessPage({ client = '' }) {
   return (
     <div className="bg-main min-h-screen text-white flex flex-col justify-center items-center">
       <CheckCircleIcon className="aspect-square w-20 text-green-700" />
@@ -18,5 +15,5 @@ export function SuccessPage() {
         </p>
       </div>
     </div>
-  )
+  );
 }
