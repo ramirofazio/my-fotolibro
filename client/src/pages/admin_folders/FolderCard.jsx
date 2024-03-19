@@ -28,9 +28,9 @@ export function FolderCard({ clientData, onRemove }) {
     }
   }
 
-  async function handleDownload() {
-    await API.updateLastDownload();
-    window.location.replace(url);
+  async function handleDownload() { 
+    await API.updateLastDownload(id);
+    return window.location.replace(url);
   }
 
   return (

@@ -10,7 +10,6 @@ import { useApp } from "../../contexts/AppContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { SortImages } from "./sort_images";
 
-
 export function SortImagesPage() {
   const [trySort, setTrySort] = useState(false);
   const [visibleOrder, setVisibleOrder] = useState(true);
@@ -71,10 +70,13 @@ export function SortImagesPage() {
 
   async function submitBook() {
     try {
-      await API.client.photo.update_indexes({ photos: cloudImages.values });
-      await API.client.photo.send({ clientId });
-
-      setTimeout(() => navigate(0), 3000);
+      await API.client.photo.update_indexes({ photos: cloudImages?.values });
+      await API.finishUpload({
+        clientId,
+        photos_length: cloudImages.values?.length,
+      });
+      API.client.photo.send({ clientId });
+      navigate(0);
     } catch (error) {
       toast.error(error.message);
       throw error;
@@ -102,7 +104,7 @@ export function SortImagesPage() {
         Guarde el orden deseado para las fotos abajo del todo{" "}
         <div className="animate-bounce mt-3">👇</div>
       </h2>
-      
+
       <SortImages
         cloudImages={cloudImages.values}
         updateIndex={(images) => {

@@ -73,13 +73,10 @@ module.exports = {
   sendPhotos: async function (req, res) {
     const { clientId } = req.params;
     try {
-      const client = await Client.findByPk(clientId);
-      client.active_link = true;
-      client.save();
-
       const photos = await Photo.findAll({ where: { clientId } });
       await addCloudIndex({ photos });
 
+      
       /*
       const albums = await Album.findAll({
         where: { clientId },
@@ -102,10 +99,10 @@ module.exports = {
       }); */
 
       res.send("ok");
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
       res.status(500).send({
-        msg: error.message,
+        msg: err.message,
       });
     }
   },
@@ -133,21 +130,22 @@ async function addCloudIndex({ photos, errors = [] }) {
   const { publicId, index, albumId } = photo;
 
   try {
-    const newPublicId = await cloudinary.renameFile({
+    const data = await cloudinary.renameFile({
       public_id: publicId,
       index,
       albumId,
     });
-
-    photo.publicId = newPublicId;
-    console.log(photo.publicId);
-    await photo.save();
+    if (data !== "same values") {
+      photo.publicId = data.public_id;
+      photo.URL = data.secure_url;
+      await photo.save();
+    }
   } catch (err) {
-    if (err.status === 420)
-      errors.push({
-        error: err,
-        photo,
-      });
+    if (err.status === 420) console.log(err);
+    errors.push({
+      error: err,
+      photo,
+    });
   }
 
   return addCloudIndex({ photos, errors });

@@ -1,6 +1,7 @@
 const transporter = require("../node_mailer");
 const { env } = require("./env");
 
+
 module.exports = {
   sendConfirmationMail: async function ({ name, id, photos_length }) {
     const response = await transporter.sendMail({
