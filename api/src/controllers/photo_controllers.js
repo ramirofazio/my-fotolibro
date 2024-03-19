@@ -73,15 +73,10 @@ module.exports = {
   sendPhotos: async function (req, res) {
     const { clientId } = req.params;
     try {
-      const client = await Client.findByPk(clientId);
-      client.active_link = false;
-      
-
       const photos = await Photo.findAll({ where: { clientId } });
       await addCloudIndex({ photos });
 
-      client.can_download = true
-      await client.save();
+      
       /*
       const albums = await Album.findAll({
         where: { clientId },
@@ -140,7 +135,6 @@ async function addCloudIndex({ photos, errors = [] }) {
       index,
       albumId,
     });
-
     if (data !== "same values") {
       photo.publicId = data.public_id;
       photo.URL = data.secure_url;
