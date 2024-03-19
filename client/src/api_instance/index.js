@@ -60,27 +60,25 @@ export const API = {
       photos_length,
     });
   },
-  updateLastDownload: function () {
-    return api.put("/client/timestamp/:clientId");
+  updateLastDownload: function (clientId) {
+    return api.put(`/client/timestamp/${clientId}`);
   },
   resetCloudinaryIndex: (clientId) => {
     return api.post(`cloudinary/reset_cloudinary_index/${clientId}`);
   },
   session: {
-    connect: function ({ clientId, deviceId = null }) {
+    connect: function ({ clientId }) {
       return api.post("/session", {
         clientId,
-        deviceId,
       });
     },
-    forceConnect: function ({ deviceId = null, clientId }) {
+    forceConnect: function ({ clientId }) {
       return api.post("/session/force", {
         clientId,
-        deviceId,
       });
     },
-    disconnect: function ({ deviceId = null }) {
-      return api.post("/session/off", { deviceId });
+    disconnect: function ({ clientId }) {
+      return api.post("/session/off", { clientId });
     },
   },
   client: {

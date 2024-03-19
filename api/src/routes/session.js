@@ -1,106 +1,51 @@
-const { Router } = require('express')
-const router = Router()
-const { Session } = require('../db.js')
-const { Op } = require('sequelize')
+const { Router } = require("express");
+const router = Router();
+const { Session, Client } = require("../db.js");
+const { Op } = require("sequelize");
 
-router.post('/', async function (req, res) {
-  const { clientId, deviceId } = req.body
+router.post("/", async function (req, res) {
+  const { clientId } = req.body;
   try {
-    let exist = await Session.findOne({
-      where: {
-        id: {
-          [Op.not]: deviceId || 0,
-        },
-        clientId,
-        active: true,
-      },
-    })
+    let client = await Client.findByPk(clientId);
 
-    if (exist)
+    if (client.online)
       return res.status(409).json({
-        msg: 'Una persona esta utilizando el link',
-      })
+        msg: "Una persona esta utilizando el link",
+      });
+    client.online = true;
+    await client.save();
 
-    const [session, created] = await Session.findOrCreate({
-      where: {
-        id: deviceId,
-      },
-      defaults: deviceId
-        ? {
-            id: deviceId,
-            clientId,
-          }
-        : {
-            clientId,
-          },
-    })
-
-    if (!session.active) {
-      session.active = true
-      await session.save()
-    }
-
-    return res.send({ session, created })
-  } catch (error) {
-    console.log(error)
-    res.status(500).send({ error: error.message })
+    return res.send({ online: client.online ? "online" : "ofline" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ error: err.message });
   }
-})
-router.post('/off', async function (req, res) {
-  const { deviceId } = req.body
+});
+router.post("/off", async function (req, res) {
   try {
-    const updated = await Session.update(
-      { active: false },
-      {
-        where: {
-          id: deviceId,
-        },
-      }
-    )
+    const { clientId } = req.body;
 
-    if (updated[0]) return res.send('Disconnected')
-    return res.status(404).send({
-      msg: 'No encontrado',
-    })
+    let client = await Client.findByPk(clientId);
+
+    client.online = false;
+    await client.save();
+
+    return res.send({ online: client.online ? "online" : "ofline" });
   } catch (error) {
-    res.status(500).send({ error: error.message })
+    res.status(500).send({ error: error.message });
   }
-})
-router.post('/force', async function (req, res) {
-  const { clientId, deviceId } = req.body
+});
+router.post("/force", async function (req, res) {
+  const { clientId } = req.body;
   try {
-    await Session.destroy({
-      where: {
-        clientId,
-        active: true,
-        id: {
-          [Op.not]: deviceId || 0,
-        },
-      },
-    })
+    let client = await Client.findByPk(clientId);
 
-    const [session, created] = await Session.findOrCreate({
-      where: {
-        id: deviceId,
-      },
-      defaults: deviceId
-        ? {
-            id: deviceId,
-            clientId,
-          }
-        : {
-            clientId,
-          },
-    })
+    client.online = false
+    await client.save()
 
-    if (!session.active) {
-      session.active = true
-      await session.save()
-    }
-
-    return res.send({ session, created })
+    return res.send({ online: client.online ? "online" : "ofline" });
   } catch (error) {
-    res.status(500).send({ error: error.message })
+    res.status(500).send({ error: error.message });
   }
-})
-module.exports = router
+});
+module.exports = router;

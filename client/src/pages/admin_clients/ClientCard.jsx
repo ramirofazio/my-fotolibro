@@ -4,6 +4,7 @@ import { API } from "../../api_instance";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-hot-toast";
 import { useApp } from "../../contexts/AppContext";
+import {parseDate} from "../../utils/client"
 
 export function ClientCard({ clientData, onRemove }) {
   const {
@@ -56,7 +57,7 @@ export function ClientCard({ clientData, onRemove }) {
       </h1>
       <section className="flex flex-col">
         <span className="flex border-t-2 items-center justify-between">
-          <span className="flex flex-col items-center gap-1">
+          <span className="flex flex-col items-start gap-1">
             <h1 className="flex items-center gap-1">
               <p
                 className={`w-3.5 h-3.5 rounded-full border-2 ${
@@ -70,12 +71,12 @@ export function ClientCard({ clientData, onRemove }) {
 
             <h1>
               <p className="border-b-[1px] text-center">Creado</p>
-              <p className=" font-bold">{created_at}</p>
+              <p className=" font-bold">{created_at && parseDate(created_at).slice(0,8)}</p>
             </h1>
           </span>
           <button
             onClick={updateActiveClient}
-            className=" rounded-md border-blue-600 bg-slate-400 hover:bg-white text-sm font-bold uppercase text-violet-900 !self-end p-2 my-4 border-2"
+            className="lg:w-[40%] rounded-md border-violet-500 bg-[#b8b6b2] hover:bg-gray-400 text-sm font-bold uppercase hover:text-violet-500 text-violet-600 !self-end p-2 my-4 border-2"
           >
             Cambiar estado
           </button>

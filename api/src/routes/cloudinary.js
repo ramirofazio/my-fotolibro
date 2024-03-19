@@ -47,11 +47,10 @@ router.get("/download/:clientId", async (req, res) => {
     return res.json({
       download_url: [download_url],
     });
-  
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.log(err);
     return res.json({
-      e,
+      err,
     });
   }
 });
@@ -68,10 +67,10 @@ router.get("/folders", async (req, res) => {
     return res.json({
       res: folders,
     });
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.log(err);
     return res.json({
-      e,
+      err,
     });
   }
 });
@@ -119,11 +118,11 @@ router.delete("/images/:clientId", async (req, res) => {
         res: `the folder ${clientId} dosen't exist`,
       });
     }
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     res.status(409).json({
       message: "cannot delete folder",
-      err: error,
+      err: err,
     });
   }
 });
@@ -131,7 +130,7 @@ router.delete("/images/:clientId", async (req, res) => {
 router.post("/delete/single_img", async (req, res) => {
   try {
     const { publicId, id } = req.body;
-    console.log(req.body);
+
     cloudinary.v2.config({
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
@@ -151,11 +150,11 @@ router.post("/delete/single_img", async (req, res) => {
       deleted_cloudinary,
       deleted_db,
     });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     return res.status(401).json({
       message: "cannot delete folder",
-      err: error,
+      err: err,
     });
   }
 });
@@ -186,7 +185,7 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
         try {
           const [folder, originalName] = p?.publicId.split("/");
           const oldIndex = originalName.slice(0, 4);
-          console.log("old", oldIndex);
+
           if (oldIndex === "000_") return;
 
           let resetedIndex = originalName.replace(oldIndex, "000_");
@@ -198,9 +197,8 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
           const dbPhoto = await Photo.findByPk(p.id);
           const dbUpdate = await dbPhoto.update({ publicId: newImg.public_id });
           return { newImg, dbUpdate };
-        } catch (e) {
-          console.log("no encontro", p);
-          console.log(e);
+        } catch (err) {
+          console.log(err);
         }
       });
       totalSlices.push(newImgs);
@@ -208,8 +206,11 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
     return res.json({
       photos: totalSlices,
     });
-  } catch (e) {
-    console.log("ERROR", e);
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      err
+    });
   }
 });
 
@@ -254,7 +255,7 @@ router.post("/add_cloud_imgs_index/:clientId", async (req, res) => {
 
             if (oldIndex !== newIndex) {
               let indexedName = originalName.replace(oldIndex, newIndex);
-              console.log("indexedName", indexedName);
+              
               const newImg = await cloudinary.v2.uploader.rename(
                 p?.publicId,
                 `${folder}/${album}/${indexedName}`,
@@ -299,8 +300,8 @@ router.post("/add_cloud_imgs_index/:clientId", async (req, res) => {
     return res.json({
       photos,
     });
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.log(err);
     const { clientId } = req.body;
     return res.status(401).json({
       e,

@@ -52,7 +52,7 @@ export const AppProvider = ({ children }) => {
   };
 
   const addClients = (client) => {
-    setAdminClients((cur) => [...cur, client]);
+    setAdminClients((cur) => [client, ...cur]);
   };
 
   return (

@@ -37,7 +37,6 @@ export async function getPromisesUpload({
     promises[id].push(axios.post(URL, formdata));
   }
   
-  console.log(photos_length, "ya supidte")
   await API.client.album.update({ id, size, available, photos_length });
 
   return await getPromisesUpload({
@@ -88,67 +87,3 @@ export const cloudinary = {
     return (await API.client.photo.create({ clientId, photos })).data;
   },
 };
-
-// en deuso
-// export async function uploadImagesCloudinary(
-//   images = [],
-//   clientId,
-//   upload_preset
-// ) {
-//   if (!clientId) return;
-
-//   const cloud_name = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-
-//   const URL = `https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`;
-
-//   const photos = {};
-//   const promises = [];
-
-//   images.forEach(({ file, originalName, upload }) => {
-//     if (!upload) {
-//       const formdata = new FormData();
-//       const indexedName = `000_${originalName}`;
-//       formdata.append("file", file);
-//       formdata.append("upload_preset", upload_preset);
-//       formdata.append("filename_override", originalName.trim());
-//       formdata.append("public_id", indexedName.trim());
-//       promises.push(axios.post(URL, formdata));
-//     }
-//   });
-
-//   try {
-//     const responses = await Promise.all(promises);
-
-//     responses.forEach(({ data }, i) => {
-//       if (data.secure_url) {
-//         if (photos[data.original_filename]) {
-//           photos[data.original_filename + i] = {
-//             URL: data.secure_url,
-//             id: data.asset_id,
-//             originalName: data.original_filename + i,
-//             size: data.bytes,
-//             publicId: `${data.public_id}`,
-//           };
-//         } else {
-//           const name = data.public_id.split('"');
-//           photos[data.original_filename || name[1]] = {
-//             URL: data.secure_url,
-//             id: data.asset_id,
-//             originalName: data.original_filename || name[1],
-//             size: data.bytes,
-//             publicId: `${data.public_id}`,
-//           };
-//         }
-//       }
-//     });
-  
-//     await API.uploadImagesDB({
-//       clientId,
-//       imgs: Object.values(photos),
-//     });
-//   } catch (err) {
-//     console.log(err);
-//   }
-
-//   return photos;
-// }
