@@ -35,7 +35,7 @@ export function ImageInput() {
       promisesFiles.push(
         new Promise((resolve) => {
           const reader = new FileReader();
-          if (image.size >= 8000000) {
+          if (image.size >= 1000000) {
             new Compressor(image, {
               quality: 0.6,
               success: (compressed) => {
