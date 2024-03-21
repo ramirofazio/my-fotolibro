@@ -70,6 +70,7 @@ export function ImageInput() {
     try {
       const res = await Promise.all(promisesFiles);
       localImages.add(res);
+      target.value = ""
       loading.set(false);
     } catch (error) {
       toast.error(`Algo salio mal - Intenta nuevamente`);

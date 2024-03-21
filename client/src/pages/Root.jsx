@@ -20,11 +20,11 @@ export function Root() {
   }, [client.upload_preset]);
 
   useEffect(() => {
-    window.addEventListener("unload", () =>
-      API.session.disconnect({ clientId: id })
+    window.addEventListener("unload", async () =>
+      await API.session.disconnect({ clientId: id })
     );
-    window.addEventListener("beforeunload", () =>
-      API.session.disconnect({ clientId: id })
+    window.addEventListener("beforeunload", async () =>
+      await API.session.disconnect({ clientId: id })
     );
 
     API.session

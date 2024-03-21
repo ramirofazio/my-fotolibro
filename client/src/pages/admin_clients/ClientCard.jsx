@@ -128,7 +128,7 @@ export function ClientCard({ clientData, onRemove }) {
             <CopyToClipboard
               text={
                 import.meta.env.VITE_ENV === "production"
-                  ? `http://myfotolibro.cloud/client/${id}/client_data`
+                  ? `https://myfotolibro.cloud/client/${id}/client_data`
                   : `http://localhost:5173/client/${id}/client_data`
               }
             >
