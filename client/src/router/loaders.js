@@ -21,7 +21,7 @@ export async function verifyClient({ params }) {
   }
 
   
-
+  console.log(data.online)
   return data;
 }
 

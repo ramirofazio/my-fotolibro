@@ -8,6 +8,7 @@ import { useApp } from "../contexts/AppContext";
 import { toast } from "react-hot-toast";
 import { Scroll } from "../components/Scroll";
 
+
 export function Root() {
   const { id, upload_preset } = useLoaderData();
   const { client } = useApp();
@@ -19,14 +20,8 @@ export function Root() {
     console.log(client.upload_preset);
   }, [client.upload_preset]);
 
+  
   useEffect(() => {
-    window.addEventListener("unload", async () =>
-      await API.session.disconnect({ clientId: id })
-    );
-    window.addEventListener("beforeunload", async () =>
-      await API.session.disconnect({ clientId: id })
-    );
-
     API.session
       .connect({
         clientId: id,
@@ -42,10 +37,7 @@ export function Root() {
         }
       });
 
-    return () =>
-      window.addEventListener("unload", () =>
-        API.session.disconnect({ clientId: id })
-      );
+    return () => API.session.disconnect({ clientId: id });
   }, []);
 
   return (
