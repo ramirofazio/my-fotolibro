@@ -8,7 +8,6 @@ import { useApp } from "../contexts/AppContext";
 import { toast } from "react-hot-toast";
 import { Scroll } from "../components/Scroll";
 
-
 export function Root() {
   const { id, upload_preset } = useLoaderData();
   const { client } = useApp();
@@ -20,8 +19,14 @@ export function Root() {
     console.log(client.upload_preset);
   }, [client.upload_preset]);
 
-  
   useEffect(() => {
+    function handleClosing(e) {
+      return API.session.disconnect({ clientId: id });
+    }
+    // posibble
+    window.addEventListener("pagehide", handleClosing);
+    window.addEventListener("beforeunload", handleClosing, { capture: true });
+
     API.session
       .connect({
         clientId: id,
@@ -37,7 +42,11 @@ export function Root() {
         }
       });
 
-    return () => API.session.disconnect({ clientId: id });
+    return () => {
+      API.session.disconnect({ clientId: id });
+      window.addEventListener("pagehide", handleClosing);
+      window.removeEventListener("beforeunload", handleClosing);
+    };
   }, []);
 
   return (
