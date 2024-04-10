@@ -18,7 +18,7 @@ export function UpdateClient() {
       e.preventDefault();
       loading.set(true)
       const { email, name, dni, phone, active_link, created_at, id } = client;
-      console.log(client)
+      
       const newClient = {
         email,
         name,
@@ -26,7 +26,7 @@ export function UpdateClient() {
         phone,
       };
       const res = await API.updateClient({ newClient, clientId: _client?.id });
-      console.log(res.data, newClient)
+      
       if (res.status === 200) {
         loading.set(false);
         toast.success("Cliente actualizado");

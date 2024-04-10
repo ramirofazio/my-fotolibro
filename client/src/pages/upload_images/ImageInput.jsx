@@ -8,7 +8,7 @@ export function ImageInput() {
 
   async function handleImages({ target }) {
     const files = target.files;
-    console.log(files);
+    
     if (!files) return;
     loading.set(true);
     const promisesFiles = [];
@@ -37,7 +37,7 @@ export function ImageInput() {
       const imageFormat = image.name.substring(formatIndex + 1).toLowerCase();
 
       if (imageFormat === "heic") {
-        const p = await new Promise((resolve) => {
+        const bufferPromise = await new Promise((resolve) => {
           const reader = new FileReader();
           reader.onload = () => {
             const arrayBuffer = reader.result;
@@ -48,7 +48,7 @@ export function ImageInput() {
         });
         
         const heic = await convert({
-          buffer: p,
+          buffer: bufferPromise,
           format: "JPEG",
           quality: 0.6,
         });

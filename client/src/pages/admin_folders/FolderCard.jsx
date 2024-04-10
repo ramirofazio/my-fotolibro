@@ -8,19 +8,18 @@ import {
 } from "@heroicons/react/24/outline";
 import { API } from "../../api_instance";
 import { useState } from "react";
-import { useApp } from "../../contexts/AppContext";
+// import { useApp } from "../../contexts/AppContext";
 import { parseDate } from "../../utils/client";
 
 export function FolderCard({ clientData, onRemove }) {
   const { name, id, last_link_download, can_download } = clientData;
   const [url, setUrl] = useState(false);
-  const { adminClients } = useApp();
+  // const { adminClients } = useApp();
 
 
   async function generateDownloadUrl() {
     try {
       const url = await API.getDownloadUrl(id);
-      console.log("URL:", url.data.download_url[0]);
       setUrl(url.data.download_url[0]);
     } catch (err) {
       console.log(err);
