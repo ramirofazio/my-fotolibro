@@ -122,6 +122,7 @@ export function ImageInput() {
         className=" invisible w-full h-full border  absolute top-0 right-0"
         id="upload-images"
         type="file"
+        accept="image/*"
         multiple
         onChange={handleImages}
       />
