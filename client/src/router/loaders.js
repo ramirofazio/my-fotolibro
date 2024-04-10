@@ -14,14 +14,13 @@ export async function verifyClient({ params }) {
     });
   }
   
-  if (data.online) {
-    throw new Response(JSON.stringify({ type: "CONNECTED", client: data }), {
-      status: 409,
-    });
-  }
+  // if (data.online) {
+  //   throw new Response(JSON.stringify({ type: "CONNECTED", client: data }), {
+  //     status: 409,
+  //   });
+  // }
 
   
-  console.log(data.online)
   return data;
 }
 

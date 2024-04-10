@@ -1,6 +1,5 @@
 import { NoSymbolIcon } from "@heroicons/react/24/solid";
 import { useRouteError } from "react-router-dom";
-import { UrlInUse } from "./UrlInUse";
 import { SuccessPage } from "./SuccessPage";
 
 export function RouterError() {
@@ -10,9 +9,9 @@ export function RouterError() {
     return <SuccessPage client={client} />;
   }
 
-  if (type === "CONNECTED") {
-    return <UrlInUse id={client.id}/>;
-  }
+  // if (type === "CONNECTED") {
+  //   return <UrlInUse id={client.id}/>;
+  // }
 
   return (
     <main className="bg-slate-800 h-screen flex justify-center items-center">

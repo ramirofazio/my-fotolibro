@@ -51,7 +51,6 @@ export function Routes() {
           path: '/admin/:adminId/clients',
           loader: async () => {
             const clients = await API.getClients({orderBy: "created_at", direction: "DESC"})
-            console.log(clients.data)
             return clients.data
           },
           element: <Clients />,
@@ -75,7 +74,6 @@ export function Routes() {
           path: '/admin/:adminId/folders',
           loader: async () => {
             const folders = await API.getClients({orderBy : "last_link_download", direction: "DESC"})
-            console.log(folders)
             return folders.data
           },
           element: <Folders />,

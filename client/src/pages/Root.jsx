@@ -16,7 +16,7 @@ export function Root() {
     client.set({
       upload_preset,
     });
-    console.log(client.upload_preset);
+    
   }, [client.upload_preset]);
 
   useEffect(() => {
