@@ -14,7 +14,7 @@ export function ClientData() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    API.updateClient({ clientId: _client.id, newData: client })
+    API.updateClient({ clientId: _client.id, newClient: client })
       .then((res) => {
         if (res.data) {
           toast.success("Se cargaron sus datos correctamente");

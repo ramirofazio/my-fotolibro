@@ -13,14 +13,12 @@ export async function verifyClient({ params }) {
       status: 404,
     });
   }
-  
+
   if (data.online) {
     throw new Response(JSON.stringify({ type: "CONNECTED", client: data }), {
       status: 409,
     });
   }
-
-  
 
   return data;
 }

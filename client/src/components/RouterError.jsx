@@ -1,7 +1,7 @@
 import { NoSymbolIcon } from "@heroicons/react/24/solid";
 import { useRouteError } from "react-router-dom";
-import { UrlInUse } from "./UrlInUse";
 import { SuccessPage } from "./SuccessPage";
+import { UrlInUse } from "./UrlInUse";
 
 export function RouterError() {
   let { type, client } = JSON.parse(useRouteError().data);

@@ -23,9 +23,9 @@ export function LocalListImages() {
           {...image}
           onRemove={() => {
             const res = confirm(
-              `¿Quieres eliminar la imagen ${image.originalName}? \n Es posible que NO puedas seleccionarla de nuevo más tarde`
+              `¿Quieres eliminar la imagen ${image.originalName}?`
             )
-
+            
             if (res) localImages.remove(id)
           }}
         />

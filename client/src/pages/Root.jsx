@@ -16,16 +16,14 @@ export function Root() {
     client.set({
       upload_preset,
     });
-    console.log(client.upload_preset);
+    
   }, [client.upload_preset]);
 
+  function handleClosing() {
+    return API.session.disconnect({ clientId: id });
+  }
   useEffect(() => {
-    window.addEventListener("unload", () =>
-      API.session.disconnect({ clientId: id })
-    );
-    window.addEventListener("beforeunload", () =>
-      API.session.disconnect({ clientId: id })
-    );
+    window.addEventListener("beforeunload", handleClosing);
 
     API.session
       .connect({
@@ -42,21 +40,21 @@ export function Root() {
         }
       });
 
-    return () =>
-      window.addEventListener("unload", () =>
-        API.session.disconnect({ clientId: id })
-      );
+    return () => {
+      API.session.disconnect({ clientId: id });
+      window.removeEventListener("beforeunload", handleClosing);
+    };
   }, []);
 
   return (
     <div className="bg-main min-h-screen min-w-[320px]">
-      <>
+      
         <Nav />
         <PreviousNext />
         <Outlet />
         <Scroll />
         <Loader />
-      </>
+      
     </div>
   );
 }

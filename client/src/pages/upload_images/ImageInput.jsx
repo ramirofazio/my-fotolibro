@@ -1,21 +1,24 @@
 import Compressor from "compressorjs";
 import toast from "react-hot-toast";
 import { useApp } from "../../contexts/AppContext";
+import convert from "heic-convert/browser";
 
 export function ImageInput() {
   const { localImages, loading } = useApp();
 
   async function handleImages({ target }) {
     const files = target.files;
+    
     if (!files) return;
     loading.set(true);
     const promisesFiles = [];
     const nameFiles = {};
 
     for (let i = 0; i < files.length; i++) {
-      const image = files[i];
+      let image = files[i];
       if (!image) continue;
 
+      const formatIndex = image.name.lastIndexOf(".");
       let imageName = image.name.replace(/\.[^/.]+$/, "").replace(/ /g, "");
 
       const exist =
@@ -31,11 +34,35 @@ export function ImageInput() {
         }
       }
       nameFiles[imageName.toLowerCase()] = imageName;
+      const imageFormat = image.name.substring(formatIndex + 1).toLowerCase();
+
+      if (imageFormat === "heic") {
+        const bufferPromise = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const arrayBuffer = reader.result;
+            const uint8Array = new Uint8Array(arrayBuffer);
+            resolve(uint8Array);
+          };
+          reader.readAsArrayBuffer(image);
+        });
+        
+        const heic = await convert({
+          buffer: bufferPromise,
+          format: "JPEG",
+          quality: 0.6,
+        });
+
+        const blob = new Blob([heic], { type: "" });
+        const newImage = new File([blob], imageName + ".jpeg");
+    
+        image = newImage
+      }
 
       promisesFiles.push(
         new Promise((resolve) => {
           const reader = new FileReader();
-          if (image.size >= 1000000) {
+          if (image.size >= 1000000 && imageFormat !== "heic" ) { // * Si el archivo era .heic, no se comprime
             new Compressor(image, {
               quality: 0.6,
               success: (compressed) => {
@@ -48,10 +75,12 @@ export function ImageInput() {
                     size: compressed.size,
                   });
                 };
+                // if compressed size > 10000000  toast err img muy pesada
                 reader.readAsDataURL(compressed);
               },
             });
           } else {
+            console.log("no comprime", image)
             reader.onload = function () {
               resolve({
                 id: "local-image-" + imageName + (localImages.size + i + 1),
@@ -70,8 +99,10 @@ export function ImageInput() {
     try {
       const res = await Promise.all(promisesFiles);
       localImages.add(res);
+      target.value = "";
       loading.set(false);
     } catch (error) {
+      console.log(error);
       toast.error(`Algo salio mal - Intenta nuevamente`);
       loading.set(false);
     }

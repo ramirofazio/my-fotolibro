@@ -65,6 +65,7 @@ export function SortImagesPage() {
         error: "Algo salio mal, Intenta de nuevo",
       }
     );
+    API.session.disconnect({clientId})
     setTrySort(false);
   }
 
@@ -127,7 +128,7 @@ export function SortImagesPage() {
           id="finish"
           onClick={() => {
             const res = confirm(
-              `¿Quieres enviar las imagenes? \n Una vez enviadas no podras agregar ni ordenar más!`
+              `¿Quieres enviar las imagenes? \n Una vez enviadas no podras agregar ni ordenar más y el link quedara inhabilitado!`
             );
             if (res)
               toast.promise(submitBook(), {
