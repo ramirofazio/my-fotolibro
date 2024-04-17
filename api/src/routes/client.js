@@ -104,7 +104,7 @@ router.post("/", async (req, res) => {
 router.put("/edit_client/:id", async (req, res) => {
   try {
     const { id } = req.params;
-
+    console.log(req.body);
     const updated = await Client.update(
       {
         ...req.body,
@@ -170,7 +170,7 @@ router.get("/imgs/:clientId", async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      err
+      err,
     });
   }
 });
@@ -181,7 +181,7 @@ router.post("/imgs", async (req, res) => {
     if (!imgs || !clientId) {
       res.status(401).send("faltan parametros");
     }
-    
+
     let totalSize = 0;
 
     const rawImgs = imgs.map((i) => {
@@ -198,7 +198,7 @@ router.post("/imgs", async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      err
+      err,
     });
   }
 });
@@ -227,7 +227,6 @@ router.get("/canFinish/:clientId", async (req, res) => {
 // TODO refactorizar con el arhcivo mail.js
 router.post("/finish_upload", async (req, res) => {
   try {
-   
     const { clientId, photos_length } = req.body;
     const client = await Client.findByPk(clientId);
     client.active_link = false;
@@ -246,7 +245,7 @@ router.post("/finish_upload", async (req, res) => {
       <h2>Termino su book con ${photos_length} fotos</h1>
       `,
     });
-    
+
     res.json(info);
   } catch (err) {
     console.log(err);
