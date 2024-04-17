@@ -41,8 +41,8 @@ export function Root() {
       });
 
     return () => {
+      window.removeEventListener("beforeunload", () => {});
       API.session.disconnect({ clientId: id });
-      window.removeEventListener("beforeunload", handleClosing);
     };
   }, []);
 
