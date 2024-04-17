@@ -19,13 +19,11 @@ export function Root() {
     
   }, [client.upload_preset]);
 
+  function handleClosing() {
+    return API.session.disconnect({ clientId: id });
+  }
   useEffect(() => {
-    function handleClosing(e) {
-      return API.session.disconnect({ clientId: id });
-    }
-    // posibble
-    window.addEventListener("pagehide", handleClosing);
-    window.addEventListener("beforeunload", handleClosing, { capture: true });
+    window.addEventListener("beforeunload", handleClosing);
 
     API.session
       .connect({
@@ -44,20 +42,19 @@ export function Root() {
 
     return () => {
       API.session.disconnect({ clientId: id });
-      window.addEventListener("pagehide", handleClosing);
       window.removeEventListener("beforeunload", handleClosing);
     };
   }, []);
 
   return (
     <div className="bg-main min-h-screen min-w-[320px]">
-      <>
+      
         <Nav />
         <PreviousNext />
         <Outlet />
         <Scroll />
         <Loader />
-      </>
+      
     </div>
   );
 }
