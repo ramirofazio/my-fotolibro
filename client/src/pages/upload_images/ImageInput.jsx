@@ -7,8 +7,9 @@ export function ImageInput() {
   const { localImages, loading } = useApp();
 
   async function handleImages({ target }) {
-    const files = target.files;
-    
+    const files = Object.values(target.files);
+    files.reverse();
+
     if (!files) return;
     loading.set(true);
     const promisesFiles = [];
@@ -46,7 +47,7 @@ export function ImageInput() {
           };
           reader.readAsArrayBuffer(image);
         });
-        
+
         const heic = await convert({
           buffer: bufferPromise,
           format: "JPEG",
@@ -55,14 +56,15 @@ export function ImageInput() {
 
         const blob = new Blob([heic], { type: "" });
         const newImage = new File([blob], imageName + ".jpeg");
-    
-        image = newImage
+
+        image = newImage;
       }
 
       promisesFiles.push(
         new Promise((resolve) => {
           const reader = new FileReader();
-          if (image.size >= 1000000 && imageFormat !== "heic" ) { // * Si el archivo era .heic, no se comprime
+          if (image.size >= 1000000 && imageFormat !== "heic") {
+            // * Si el archivo era .heic, no se comprime
             new Compressor(image, {
               quality: 0.6,
               success: (compressed) => {
@@ -80,7 +82,6 @@ export function ImageInput() {
               },
             });
           } else {
-            console.log("no comprime", image)
             reader.onload = function () {
               resolve({
                 id: "local-image-" + imageName + (localImages.size + i + 1),
