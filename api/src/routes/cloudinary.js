@@ -35,7 +35,7 @@ router.get("/download/:clientId", async (req, res) => {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
     const zipName = client?.name.trim().toLowerCase();
-
+    console.log(zipName);
     const download_url = await cloudinary.v2.utils.download_folder(clientId, {
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
@@ -43,7 +43,7 @@ router.get("/download/:clientId", async (req, res) => {
       prefixes: "/",
       target_public_id: zipName,
     });
-
+    console.log(download_url);
     return res.json({
       download_url: [download_url],
     });
@@ -209,7 +209,7 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      err
+      err,
     });
   }
 });
@@ -255,7 +255,7 @@ router.post("/add_cloud_imgs_index/:clientId", async (req, res) => {
 
             if (oldIndex !== newIndex) {
               let indexedName = originalName.replace(oldIndex, newIndex);
-              
+
               const newImg = await cloudinary.v2.uploader.rename(
                 p?.publicId,
                 `${folder}/${album}/${indexedName}`,

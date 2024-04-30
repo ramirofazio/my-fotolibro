@@ -59,7 +59,6 @@ export function ImageInput() {
 
         image = newImage;
       }
-
       promisesFiles.push(
         new Promise((resolve) => {
           const reader = new FileReader();
@@ -67,6 +66,7 @@ export function ImageInput() {
             // * Si el archivo era .heic, no se comprime
             new Compressor(image, {
               quality: 0.6,
+              mimeType: "jpg",
               success: (compressed) => {
                 reader.onload = () => {
                   resolve({
