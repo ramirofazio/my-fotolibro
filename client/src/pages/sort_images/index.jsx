@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { useApp } from "../../contexts/AppContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { SortImages } from "./sort_images";
+import { handleClosing } from "../../utils/client";
 
 export function SortImagesPage() {
   const [trySort, setTrySort] = useState(false);
@@ -65,22 +66,26 @@ export function SortImagesPage() {
         error: "Algo salio mal, Intenta de nuevo",
       }
     );
-    API.session.disconnect({clientId})
     setTrySort(false);
   }
 
   async function submitBook() {
     try {
+      loading.set(true);
+      window.removeEventListener("beforeunload", handleClosing(clientId));
       await API.client.photo.update_indexes({ photos: cloudImages?.values });
       await API.finishUpload({
         clientId,
         photos_length: cloudImages.values?.length,
       });
-      API.client.photo.send({ clientId });
-      navigate(0);
+      return API.client.photo.send({ clientId });
+      // toast.success("Se guardaron las fotos con el orden indicado");
     } catch (error) {
+      console.log(error);
       toast.error(error.message);
-      throw error;
+    } finally {
+      loading.set(false);
+      // navigate(0);
     }
   }
 

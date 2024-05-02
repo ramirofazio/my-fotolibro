@@ -37,6 +37,26 @@ export function ImageInput() {
       nameFiles[imageName.toLowerCase()] = imageName;
       const imageFormat = image.name.substring(formatIndex + 1).toLowerCase();
 
+      const invalidFile = {
+        ogg: true,
+        mp4: true,
+        mp3: true,
+        webm: true,
+        pdf: true,
+        zip: true,
+        mov: true,
+      };
+
+      if (invalidFile[imageFormat]) {
+        toast.error("No se admiten este tipo de archivos");
+        continue;
+      }
+
+      if (imageFormat === "webp") {
+        toast.error("No se admiten imagenes en formato webp");
+        continue;
+      }
+
       if (imageFormat === "heic") {
         const bufferPromise = await new Promise((resolve) => {
           const reader = new FileReader();

@@ -297,6 +297,7 @@ router.post("/add_cloud_imgs_index/:clientId", async (req, res) => {
       await changeIndex(part2);
     }
 
+    console.log("se han cambiado");
     return res.json({
       photos,
     });
