@@ -1,6 +1,6 @@
 import {
   FolderIcon,
-  ArrowDownTrayIcon,
+  FolderArrowDownIcon,
   XCircleIcon,
   LinkIcon,
   CheckCircleIcon,
@@ -8,32 +8,43 @@ import {
 } from "@heroicons/react/24/outline";
 import { API } from "../../api_instance";
 import { useState } from "react";
-// import { useApp } from "../../contexts/AppContext";
 import { parseDate } from "../../utils/client";
+import { Modal } from "../../components/Modal";
 
 export function FolderCard({ clientData, onRemove }) {
   const { name, id, last_link_download, can_download } = clientData;
-  const [url, setUrl] = useState(false);
-  // const { adminClients } = useApp();
-
+  const [urls, setUrls] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   async function generateDownloadUrl() {
     try {
-      const url = await API.getDownloadUrl(id);
-      setUrl(url.data.download_url[0]);
+      const urls = await API.getDownloadUrl(id);
+      setUrls(urls.data.download_urls);
+      console.log(urls.data.download_urls);
+      setIsOpen(true);
     } catch (err) {
       console.log(err);
-      setUrl(false);
+      setUrls(false);
     }
-  }
-
-  async function handleDownload() { 
-    await API.updateLastDownload(id);
-    return window.location.replace(url);
   }
 
   return (
     <div className="border-2  rounded-md px-1">
+      <Modal
+        className="max-w-full max-h-full"
+        isOpen={isOpen}
+        onClose={() => {
+          API.updateLastDownload(id);
+          setIsOpen(false);
+        }}
+      >
+        <div className=" grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 col-start-auto gap-4 max-w-[90%]">
+          {urls?.length &&
+            urls.map((u, i) => {
+              return <AlbumCard url={u} key={i} index={i} />;
+            })}
+        </div>
+      </Modal>
       <div className="ml-auto my-1 flex gap-2 items-center justify-end ">
         <span className="ml-2  mr-auto">
           <p>Ultima descarga: </p>
@@ -45,23 +56,16 @@ export function FolderCard({ clientData, onRemove }) {
             <p className=" ml-2 italic text-cyan-200 mr-auto ">Sin descargar</p>
           )}
         </span>
-        {!url ? (
-          <button
-            className="text-white text-xl !justify-self-end disabled:opacity-40"
-            role="status"
-            title="Click para generar desarga"
-            onClick={generateDownloadUrl}
-            disabled={can_download ? false : true}
-          >
-            <LinkIcon className="w-9 h-9" />
-          </button>
-        ) : (
-          <>
-            <button onClick={handleDownload}>
-              <ArrowDownTrayIcon className="w-9 inline  text-green-600 hover:opacity-75" />
-            </button>
-          </>
-        )}
+
+        <button
+          className="text-white text-xl !justify-self-end disabled:opacity-40"
+          role="status"
+          title="Click para generar desarga"
+          onClick={generateDownloadUrl}
+          disabled={can_download ? false : true}
+        >
+          <LinkIcon className="w-9 h-9" />
+        </button>
         <XCircleIcon
           onClick={() => onRemove(name, id)}
           className=" w-9 inline mx-1 text-red-500 hover:opacity-60"
@@ -91,6 +95,31 @@ export function FolderCard({ clientData, onRemove }) {
           </>
         )}
       </span>
+    </div>
+  );
+}
+
+function AlbumCard({ index, url }) {
+  const [tryDownload, setTryDownload] = useState(false);
+
+  async function handleDownload() {
+    // await API.updateLastDownload(id);
+    return window.location.replace(url);
+  }
+  return (
+    <div className="border-2  flex flex-col items-center justify-center rounded-lg">
+      <h1>
+        Descargar <strong>album-{index + 1}</strong>{" "}
+      </h1>
+      <FolderArrowDownIcon
+        onClick={() => {
+          handleDownload();
+          setTryDownload(true);
+        }}
+        className={`h-20 w-20 cursor-pointer ${
+          tryDownload ? "text-green-700" : "text-blue-700"
+        } `}
+      />
     </div>
   );
 }

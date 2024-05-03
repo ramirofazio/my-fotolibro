@@ -41,8 +41,8 @@ router.get("/download/:clientId", async (req, res) => {
         clientId,
       },
     });
-    const downloadLinks = await Promise.all(
-      albums.map(async (albm) => {
+    const download_urls = await Promise.all(
+      albums.map(async (albm, i) => {
         const download_url = await cloudinary.v2.utils.download_folder(
           `${clientId}/${albm.name}`,
           {
@@ -50,26 +50,26 @@ router.get("/download/:clientId", async (req, res) => {
             api_secret: CLOUDINARY_API_SECRET,
             cloud_name: CLOUDINARY_CLOUD_NAME,
             prefixes: "/",
-            target_public_id: zipName,
+            target_public_id: `${zipName}_album_${i + 1}`,
           }
         );
         console.log(download_url);
         return download_url;
       })
     );
-
-    console.log(downloadLinks);
-    const download_url = await cloudinary.v2.utils.download_folder(clientId, {
-      api_key: CLOUDINARY_API_KEY,
-      api_secret: CLOUDINARY_API_SECRET,
-      cloud_name: CLOUDINARY_CLOUD_NAME,
-      prefixes: "/",
-      target_public_id: zipName,
-    });
-    console.log(download_url);
     return res.json({
-      download_url: [download_url],
+      download_urls,
     });
+
+    // console.log(downloadLinks);
+    // const download_url = await cloudinary.v2.utils.download_folder(clientId, {
+    //   api_key: CLOUDINARY_API_KEY,
+    //   api_secret: CLOUDINARY_API_SECRET,
+    //   cloud_name: CLOUDINARY_CLOUD_NAME,
+    //   prefixes: "/",
+    //   target_public_id: zipName,
+    // });
+    // console.log(download_url);
   } catch (err) {
     console.log(err);
     return res.json({

@@ -319,10 +319,11 @@ router.put("/timestamp/:clientId", async (req, res) => {
     const client = await Client.findByPk(clientId);
 
     const date = new Date();
-    client.last_link_download = date;
+    const argDate = date.setUTCHours(date.getUTCHours() - 3);
+    client.last_link_download = argDate;
     await client.save();
 
-    res.json({ date });
+    res.json({ argDate });
   } catch (err) {
     console.log(err);
     res.status(500).json({ err });
