@@ -60,16 +60,6 @@ router.get("/download/:clientId", async (req, res) => {
     return res.json({
       download_urls,
     });
-
-    // console.log(downloadLinks);
-    // const download_url = await cloudinary.v2.utils.download_folder(clientId, {
-    //   api_key: CLOUDINARY_API_KEY,
-    //   api_secret: CLOUDINARY_API_SECRET,
-    //   cloud_name: CLOUDINARY_CLOUD_NAME,
-    //   prefixes: "/",
-    //   target_public_id: zipName,
-    // });
-    // console.log(download_url);
   } catch (err) {
     console.log(err);
     return res.json({
@@ -320,7 +310,6 @@ router.post("/add_cloud_imgs_index/:clientId", async (req, res) => {
       await changeIndex(part2);
     }
 
-    console.log("se han cambiado");
     return res.json({
       photos,
     });

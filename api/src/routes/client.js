@@ -224,14 +224,10 @@ router.get("/canFinish/:clientId", async (req, res) => {
   }
 });
 
-// TODO refactorizar con el arhcivo mail.js
 router.post("/finish_upload", async (req, res) => {
   try {
     const { clientId, photos_length } = req.body;
     const client = await Client.findByPk(clientId);
-    // client.active_link = false;
-    // client.can_download = true;
-    // await client.save();
 
     const info = await transporter.sendMail({
       from: `"myfotolibro 📷" <${EMAIL_USER}>`,

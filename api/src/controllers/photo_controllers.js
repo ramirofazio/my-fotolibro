@@ -1,4 +1,3 @@
-const { where } = require("sequelize");
 const { Photo, Album, Client } = require("../db");
 const { cloudinary, sendConfirmationMail, consts } = require("../utils");
 
