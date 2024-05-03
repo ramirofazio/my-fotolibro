@@ -73,9 +73,9 @@ module.exports = {
   //
   sendPhotos: async function (req, res) {
     const { clientId } = req.params;
-    console.log("Comenzooo !!!!!!");
+    console.log("* START *");
     try {
-      const disableLink = await Client.update(
+      await Client.update(
         { active_link: false },
         {
           where: {
@@ -83,11 +83,19 @@ module.exports = {
           },
         }
       );
-      console.log("dis", disableLink);
+      await Client.update(
+        { can_download: false },
+        {
+          where: {
+            id: clientId,
+          },
+        }
+      );
+
       const photos = await Photo.findAll({ where: { clientId } });
       await addCloudIndex({ photos });
 
-      const updateDownload = await Client.update(
+      await Client.update(
         { can_download: true },
         {
           where: {
@@ -96,8 +104,7 @@ module.exports = {
         }
       );
 
-      console.log(updateDownload);
-      console.log("Finalizo");
+      console.log("* END *");
       res.send("ok");
 
       /*

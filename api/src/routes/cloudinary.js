@@ -4,7 +4,7 @@ const cloudinary = require("cloudinary");
 const router = Router();
 const { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } =
   process.env;
-const { Client, Photo } = require("../db.js");
+const { Client, Photo, Album } = require("../db.js");
 
 router.get("/signature", (req, res) => {
   try {
@@ -36,6 +36,29 @@ router.get("/download/:clientId", async (req, res) => {
     const client = await Client.findByPk(clientId);
     const zipName = client?.name.trim().toLowerCase();
     console.log(zipName);
+    const albums = await Album.findAll({
+      where: {
+        clientId,
+      },
+    });
+    const downloadLinks = await Promise.all(
+      albums.map(async (albm) => {
+        const download_url = await cloudinary.v2.utils.download_folder(
+          `${clientId}/${albm.name}`,
+          {
+            api_key: CLOUDINARY_API_KEY,
+            api_secret: CLOUDINARY_API_SECRET,
+            cloud_name: CLOUDINARY_CLOUD_NAME,
+            prefixes: "/",
+            target_public_id: zipName,
+          }
+        );
+        console.log(download_url);
+        return download_url;
+      })
+    );
+
+    console.log(downloadLinks);
     const download_url = await cloudinary.v2.utils.download_folder(clientId, {
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
