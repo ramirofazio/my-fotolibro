@@ -78,14 +78,12 @@ export function SortImagesPage() {
         clientId,
         photos_length: cloudImages.values?.length,
       });
-      return API.client.photo.send({ clientId });
-      // toast.success("Se guardaron las fotos con el orden indicado");
+      API.client.photo.send({ clientId });
+      loading.set(false);
+      navigate("/success");
     } catch (error) {
       console.log(error);
       toast.error(error.message);
-    } finally {
-      loading.set(false);
-      // navigate(0);
     }
   }
 
