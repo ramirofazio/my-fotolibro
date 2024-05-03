@@ -8,6 +8,7 @@ import { useNavigation } from "../../contexts/NavigationContext";
 import { cloudinary } from "../../utils/cloudinary";
 import { CloudArrowUpIcon } from "@heroicons/react/24/outline";
 import { API } from "../../api_instance";
+import toast from "react-hot-toast";
 
 export function SelectImagesPage() {
   const { clientId } = useParams();
@@ -24,6 +25,10 @@ export function SelectImagesPage() {
 
   const uploadToCloudinary = async () => {
     if (!localImages.size) return;
+    if (localImages.size + cloudImages.size > 350) {
+      toast.error("El limite total de fotos es 350");
+      return;
+    }
     loading.set(true);
     try {
       await cloudinary.upload({
@@ -60,6 +65,16 @@ export function SelectImagesPage() {
             <th className="text-left">Total</th>
             <td className="text-right">
               {localImages.size + cloudImages.size}
+            </td>
+          </tr>
+          <tr className="border-t-2">
+            <th className="text-left">Cantidad maxima </th>
+            <td className="text-right">(350) fotos</td>
+          </tr>
+          <tr className="border-b-2">
+            <th className="text-left">Dsiponibles por subir</th>
+            <td className="text-right">
+              {350 - (localImages.size + cloudImages.size)}
             </td>
           </tr>
         </table>
