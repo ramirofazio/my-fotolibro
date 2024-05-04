@@ -153,7 +153,7 @@ module.exports = {
 
 async function addCloudIndex({ photos, errors = [] }) {
   if (!photos.length) {
-    console.log("No tiene masssss");
+    console.log("Se ordeno la ultima photo");
     return errors;
   }
   const photo = photos.shift();

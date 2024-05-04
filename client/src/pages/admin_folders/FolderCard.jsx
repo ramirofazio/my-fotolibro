@@ -31,7 +31,7 @@ export function FolderCard({ clientData, onRemove }) {
   return (
     <div className="border-2  rounded-md px-1">
       <Modal
-        className="max-w-full max-h-full"
+        className="min-w-full "
         isOpen={isOpen}
         onClose={() => {
           API.updateLastDownload(id);
