@@ -6,12 +6,12 @@ import { UrlInUse } from "./UrlInUse";
 export function RouterError() {
   let { type, client } = JSON.parse(useRouteError().data);
 
-  if (type === "END_BOOK") {
-    return <SuccessPage client={client} />;
-  }
+  // if (type === "END_BOOK") {
+  //   return <SuccessPage client={client} />;
+  // }
 
   if (type === "CONNECTED") {
-    return <UrlInUse id={client.id}/>;
+    return <UrlInUse id={client.id} />;
   }
 
   return (

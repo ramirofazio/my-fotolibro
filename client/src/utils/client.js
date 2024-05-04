@@ -1,3 +1,5 @@
+import { API } from "../api_instance";
+
 export function isValidClient({ name, email, dni, phone }) {
   const errs = {};
   if (!name) errs.name = "ingrese un nombre";
@@ -29,8 +31,12 @@ export function isValidClientForAdmin({ name }) {
 }
 
 export function parseDate(_date) {
-  let [date, time] = _date.split("T")
-  let [year, month, day] = date.split("-")
-  let hour = time.slice(0,5)
-  return `${day}/${month}/${year.slice(-2)} - ${hour}`
+  let [date, time] = _date.split("T");
+  let [year, month, day] = date.split("-");
+  let hour = time.slice(0, 5);
+  return `${day}/${month}/${year.slice(-2)} - ${hour}`;
+}
+
+export function handleClosing(clientId) {
+  API.session.disconnect({ clientId });
 }

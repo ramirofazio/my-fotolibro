@@ -72,11 +72,40 @@ module.exports = {
   //
   sendPhotos: async function (req, res) {
     const { clientId } = req.params;
+    console.log("* START *");
     try {
+      await Client.update(
+        { active_link: false },
+        {
+          where: {
+            id: clientId,
+          },
+        }
+      );
+      await Client.update(
+        { can_download: false },
+        {
+          where: {
+            id: clientId,
+          },
+        }
+      );
+
       const photos = await Photo.findAll({ where: { clientId } });
       await addCloudIndex({ photos });
 
-      
+      await Client.update(
+        { can_download: true },
+        {
+          where: {
+            id: clientId,
+          },
+        }
+      );
+
+      console.log("* END *");
+      res.send("ok");
+
       /*
       const albums = await Album.findAll({
         where: { clientId },
@@ -92,13 +121,11 @@ module.exports = {
       if (albums.length !== 1)
         await reduceAlbums({ albums });
 
-         const mail_response = await sendConfirmationMail({
+        const mail_response = await sendConfirmationMail({
         name: client.name,
         id: clientId,
         photos_length: 12,
       }); */
-
-      res.send("ok");
     } catch (err) {
       console.log(err);
       res.status(500).send({
@@ -125,7 +152,10 @@ module.exports = {
 };
 
 async function addCloudIndex({ photos, errors = [] }) {
-  if (!photos.length) return errors;
+  if (!photos.length) {
+    console.log("No tiene masssss");
+    return errors;
+  }
   const photo = photos.shift();
   const { publicId, index, albumId } = photo;
 

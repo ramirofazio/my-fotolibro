@@ -224,14 +224,10 @@ router.get("/canFinish/:clientId", async (req, res) => {
   }
 });
 
-// TODO refactorizar con el arhcivo mail.js
 router.post("/finish_upload", async (req, res) => {
   try {
     const { clientId, photos_length } = req.body;
     const client = await Client.findByPk(clientId);
-    client.active_link = false;
-    client.can_download = true;
-    await client.save();
 
     const info = await transporter.sendMail({
       from: `"myfotolibro 📷" <${EMAIL_USER}>`,
@@ -319,10 +315,11 @@ router.put("/timestamp/:clientId", async (req, res) => {
     const client = await Client.findByPk(clientId);
 
     const date = new Date();
-    client.last_link_download = date;
+    const argDate = date.setUTCHours(date.getUTCHours() - 3);
+    client.last_link_download = argDate;
     await client.save();
 
-    res.json({ date });
+    res.json({ argDate });
   } catch (err) {
     console.log(err);
     res.status(500).json({ err });
