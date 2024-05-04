@@ -227,6 +227,7 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
   }
 });
 
+// ! EN DESHUSO
 router.post("/add_cloud_imgs_index/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
