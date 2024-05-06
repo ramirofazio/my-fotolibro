@@ -16,6 +16,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
+    "@vercel/analytics": "^1.2.2",
     "@zip.js/zip.js": "^2.7.40",
     "axios": "^1.6.0",
     "compressorjs": "^1.2.1",
