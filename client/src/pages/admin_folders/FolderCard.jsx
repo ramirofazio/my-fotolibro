@@ -19,7 +19,10 @@ export function FolderCard({ clientData, onRemove }) {
   async function generateDownloadUrl() {
     try {
       const urls = await API.getDownloadUrl(id);
-      setUrls(urls.data.download_urls);
+      const albums = urls.data.download_urls;
+      console.log(albums);
+      // albums.reverse();
+      setUrls(albums);
       console.log(urls.data.download_urls);
       setIsOpen(true);
     } catch (err) {
@@ -38,7 +41,7 @@ export function FolderCard({ clientData, onRemove }) {
           setIsOpen(false);
         }}
       >
-        <div className=" grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 col-start-auto gap-4 max-w-[90%]">
+        <div className="grid  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 col-start-auto gap-4 max-w-[90%]">
           {urls?.length &&
             urls.map((u, i) => {
               return <AlbumCard url={u} key={i} index={i} />;
@@ -112,6 +115,7 @@ function AlbumCard({ index, url }) {
         Descargar <strong>album-{index + 1}</strong>{" "}
       </h1>
       <FolderArrowDownIcon
+        id="album_click_download"
         onClick={() => {
           handleDownload();
           setTryDownload(true);
