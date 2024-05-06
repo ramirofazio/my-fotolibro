@@ -1,10 +1,12 @@
-import './index.css'
-import ReactDOM from 'react-dom/client'
-import { Routes } from './router/RouterProvider'
-import { AppProvider } from './contexts/AppContext'
-import { Toaster } from 'react-hot-toast'
+import "./index.css";
+import ReactDOM from "react-dom/client";
+import { Routes } from "./router/RouterProvider";
+import { AppProvider } from "./contexts/AppContext";
+import { Toaster } from "react-hot-toast";
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+import { ExternalTags } from "./external_tags/ExternalTags";
+
+ReactDOM.createRoot(document.getElementById("root")).render(
   <AppProvider>
     <Routes />
     <Toaster
@@ -13,5 +15,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         duration: 3000,
       }}
     />
+    <ExternalTags />
   </AppProvider>
-)
+);
