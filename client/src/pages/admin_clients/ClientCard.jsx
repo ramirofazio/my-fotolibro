@@ -4,7 +4,7 @@ import { API } from "../../api_instance";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-hot-toast";
 import { useApp } from "../../contexts/AppContext";
-import {parseDate} from "../../utils/client"
+import { parseDate } from "../../utils/client";
 
 export function ClientCard({ clientData, onRemove }) {
   const {
@@ -71,7 +71,9 @@ export function ClientCard({ clientData, onRemove }) {
 
             <h1>
               <p className="border-b-[1px] text-center">Creado</p>
-              <p className=" font-bold">{created_at && parseDate(created_at).slice(0,8)}</p>
+              <p className=" font-bold">
+                {created_at && parseDate(created_at).slice(0, 8)}
+              </p>
             </h1>
           </span>
           <button
@@ -126,11 +128,7 @@ export function ClientCard({ clientData, onRemove }) {
 
           <picture className="w-fit border-2 absolute -bottom-10 -right-0.5 border-black  rounded-full p-1 bg-gray-200 hover:bg-gray-600 transition-all ">
             <CopyToClipboard
-              text={
-                import.meta.env.VITE_ENV === "production"
-                  ? `https://myfotolibro.cloud/client/${id}/client_data`
-                  : `http://localhost:5173/client/${id}/client_data`
-              }
+              text={`${window.location.host}/client/${id}/client_data`}
             >
               <PaperClipIcon
                 onClick={() => toast("URL copiado", { icon: "📎" })}
