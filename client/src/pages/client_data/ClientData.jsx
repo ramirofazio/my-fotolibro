@@ -13,17 +13,17 @@ export function ClientData() {
   const [errs, setErrs] = useState({});
 
   async function handleSubmit(e) {
-    e.preventDefault();
-    API.updateClient({ clientId: _client.id, newClient: client })
-      .then((res) => {
-        if (res.data) {
-          toast.success("Se cargaron sus datos correctamente");
-          navigate(`/client/${_client.id}/upload_images`);
-        }
-      })
-      .catch((err) => {
-        toast.error(`Error: ${err?.message}`);
-      });
+    try {
+      e.preventDefault();
+      const updated = await API.updateClient({ clientId: _client.id, newClient: client })
+      if(updated) {
+        toast.success("Se cargaron sus datos correctamente");
+            await API.session.disconnect({clientId: _client.id})
+            navigate(`/client/${_client.id}/upload_images`);
+      }
+    } catch (err) {
+      toast.error(`Error: ${err?.message}`);
+    }
   }
 
   useEffect(() => {

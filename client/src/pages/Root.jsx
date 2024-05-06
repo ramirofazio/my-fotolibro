@@ -7,6 +7,7 @@ import { Loader } from "../components/Loader";
 import { useApp } from "../contexts/AppContext";
 import { toast } from "react-hot-toast";
 import { Scroll } from "../components/Scroll";
+import { handleClosing } from "../utils/client";
 
 export function Root() {
   const { id, upload_preset } = useLoaderData();
@@ -16,14 +17,10 @@ export function Root() {
     client.set({
       upload_preset,
     });
-    
   }, [client.upload_preset]);
 
-  function handleClosing() {
-    return API.session.disconnect({ clientId: id });
-  }
   useEffect(() => {
-    window.addEventListener("beforeunload", handleClosing);
+    window.addEventListener("beforeunload", handleClosing(id));
 
     API.session
       .connect({
@@ -41,20 +38,17 @@ export function Root() {
       });
 
     return () => {
-      API.session.disconnect({ clientId: id });
-      window.removeEventListener("beforeunload", handleClosing);
+      window.removeEventListener("beforeunload", () => {});
     };
   }, []);
 
   return (
     <div className="bg-main min-h-screen min-w-[320px]">
-      
-        <Nav />
-        <PreviousNext />
-        <Outlet />
-        <Scroll />
-        <Loader />
-      
+      <Nav />
+      <PreviousNext />
+      <Outlet />
+      <Scroll />
+      <Loader />
     </div>
   );
 }

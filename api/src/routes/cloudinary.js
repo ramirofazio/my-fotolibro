@@ -4,7 +4,7 @@ const cloudinary = require("cloudinary");
 const router = Router();
 const { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } =
   process.env;
-const { Client, Photo } = require("../db.js");
+const { Client, Photo, Album } = require("../db.js");
 
 router.get("/signature", (req, res) => {
   try {
@@ -35,17 +35,31 @@ router.get("/download/:clientId", async (req, res) => {
     const { clientId } = req.params;
     const client = await Client.findByPk(clientId);
     const zipName = client?.name.trim().toLowerCase();
-
-    const download_url = await cloudinary.v2.utils.download_folder(clientId, {
-      api_key: CLOUDINARY_API_KEY,
-      api_secret: CLOUDINARY_API_SECRET,
-      cloud_name: CLOUDINARY_CLOUD_NAME,
-      prefixes: "/",
-      target_public_id: zipName,
+    console.log(zipName);
+    const albums = await Album.findAll({
+      where: {
+        clientId,
+      },
     });
-
+    const download_urls = await Promise.all(
+      albums.reverse().map(async (album, i) => {
+        console.log(album);
+        const download_url = await cloudinary.v2.utils.download_folder(
+          `${clientId}/${album.name}`,
+          {
+            api_key: CLOUDINARY_API_KEY,
+            api_secret: CLOUDINARY_API_SECRET,
+            cloud_name: CLOUDINARY_CLOUD_NAME,
+            prefixes: "/",
+            target_public_id: `${zipName}_album_${i + 1}`,
+          }
+        );
+        console.log(download_url);
+        return download_url;
+      })
+    );
     return res.json({
-      download_url: [download_url],
+      download_urls,
     });
   } catch (err) {
     console.log(err);
@@ -209,11 +223,12 @@ router.post("/reset_cloudinary_index/:clientId", async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      err
+      err,
     });
   }
 });
 
+// ! EN DESHUSO
 router.post("/add_cloud_imgs_index/:clientId", async (req, res) => {
   try {
     const { clientId } = req.params;
@@ -255,7 +270,7 @@ router.post("/add_cloud_imgs_index/:clientId", async (req, res) => {
 
             if (oldIndex !== newIndex) {
               let indexedName = originalName.replace(oldIndex, newIndex);
-              
+
               const newImg = await cloudinary.v2.uploader.rename(
                 p?.publicId,
                 `${folder}/${album}/${indexedName}`,

@@ -2,7 +2,6 @@ import { api } from "./base_api";
 
 export const API = {
   getClients: ({ orderBy, direction }) => {
-    
     return api.get(`client/?orderBy=${orderBy}&direction=${direction}`);
   },
   getCLientById: (clientId) => {
@@ -21,7 +20,6 @@ export const API = {
     return api.delete(`cloudinary/images/${clientId}`);
   },
   uploadImagesDB: ({ imgs, clientId }) => {
-    
     return api.post("client/imgs", { imgs, clientId });
   },
   getDownloadUrl: (clientId) => {

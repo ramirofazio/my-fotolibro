@@ -7,8 +7,9 @@ export function ImageInput() {
   const { localImages, loading } = useApp();
 
   async function handleImages({ target }) {
-    const files = target.files;
-    
+    const files = Object.values(target.files);
+    files.reverse();
+
     if (!files) return;
     loading.set(true);
     const promisesFiles = [];
@@ -36,6 +37,26 @@ export function ImageInput() {
       nameFiles[imageName.toLowerCase()] = imageName;
       const imageFormat = image.name.substring(formatIndex + 1).toLowerCase();
 
+      const invalidFile = {
+        ogg: true,
+        mp4: true,
+        mp3: true,
+        webm: true,
+        pdf: true,
+        zip: true,
+        mov: true,
+      };
+
+      if (invalidFile[imageFormat]) {
+        toast.error("No se admiten este tipo de archivos");
+        continue;
+      }
+
+      if (imageFormat === "webp") {
+        toast.error("No se admiten imagenes en formato webp");
+        continue;
+      }
+
       if (imageFormat === "heic") {
         const bufferPromise = await new Promise((resolve) => {
           const reader = new FileReader();
@@ -46,7 +67,7 @@ export function ImageInput() {
           };
           reader.readAsArrayBuffer(image);
         });
-        
+
         const heic = await convert({
           buffer: bufferPromise,
           format: "JPEG",
@@ -55,16 +76,17 @@ export function ImageInput() {
 
         const blob = new Blob([heic], { type: "" });
         const newImage = new File([blob], imageName + ".jpeg");
-    
-        image = newImage
-      }
 
+        image = newImage;
+      }
       promisesFiles.push(
         new Promise((resolve) => {
           const reader = new FileReader();
-          if (image.size >= 1000000 && imageFormat !== "heic" ) { // * Si el archivo era .heic, no se comprime
+          if (image.size >= 1000000 && imageFormat !== "heic") {
+            // * Si el archivo era .heic, no se comprime
             new Compressor(image, {
               quality: 0.6,
+              mimeType: "jpg",
               success: (compressed) => {
                 reader.onload = () => {
                   resolve({
@@ -80,7 +102,6 @@ export function ImageInput() {
               },
             });
           } else {
-            console.log("no comprime", image)
             reader.onload = function () {
               resolve({
                 id: "local-image-" + imageName + (localImages.size + i + 1),
@@ -122,7 +143,7 @@ export function ImageInput() {
         className=" invisible w-full h-full border  absolute top-0 right-0"
         id="upload-images"
         type="file"
-        accept="image/*"
+        accept="*"
         multiple
         onChange={handleImages}
       />
