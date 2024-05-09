@@ -1,3 +1,6 @@
-sleep 5
+#!/bin/sh
 
-docker compose -p my-fotolibro up -d --build
+npx prisma migrate deploy
+
+npm run build
+npm start
