@@ -19,22 +19,23 @@ export const AppProvider = ({ children }) => {
     setLocalImages((cur) => cur.filter(({ id }) => id !== ID));
   };
   const imageExist = (name) => {
-    let lowname = name.toLowerCase();
     const current = [...localImages, ...cloudImages];
+
     const namesfiles = {};
     const nameSet = new Set();
-
+    // Imagen de WhatsApp 2024-05-02 a las 12.34.06_812564af.jpg
     current.forEach(({ originalName }) => {
-      originalName = originalName.split("(x)")[0];
-      namesfiles[originalName.toLowerCase()] = originalName;
+      namesfiles[originalName] = originalName;
       nameSet.add(originalName);
     });
+
     const hasImage = nameSet.has(name);
+
     if (hasImage) {
       return "exist";
     }
 
-    if (namesfiles[lowname]) return namesfiles[lowname];
+    if (namesfiles[name]) return namesfiles[name];
     return false;
   };
 

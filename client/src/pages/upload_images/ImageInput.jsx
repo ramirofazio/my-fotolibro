@@ -21,18 +21,20 @@ export function ImageInput() {
 
       const formatIndex = image.name.lastIndexOf(".");
       let imageName = image.name.replace(/\.[^/.]+$/, "").replace(/ /g, "");
+      console.log(image.name, "--", imageName);
 
-      const exist =
-        nameFiles[imageName.toLowerCase()] || localImages.exist(imageName); // string | false
+      const exist = nameFiles[imageName] || localImages.exist(imageName); // string | false
 
       if (exist) {
         if (exist === "exist" || imageName === exist) {
           toast.error("La imagen " + imageName + " ya existe");
           continue;
-        } else {
-          const date = new Date();
-          imageName = imageName + "(x)" + date.getMilliseconds();
         }
+        // ? descontinuado por improbabilidad
+        //  else {
+        //   const date = new Date();
+        //   imageName = imageName + "(x)" + date.getMilliseconds();
+        // }
       }
       nameFiles[imageName.toLowerCase()] = imageName;
       const imageFormat = image.name.substring(formatIndex + 1).toLowerCase();

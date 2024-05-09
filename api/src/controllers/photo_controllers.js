@@ -6,6 +6,7 @@ module.exports = {
     const { clientId } = req.params;
     const { photos } = req.body;
     try {
+      
       if (!photos || !clientId)
         return res.status(401).send({
           msg: 'Faltan parametros "photos" o "clientId"',
