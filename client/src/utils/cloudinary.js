@@ -19,8 +19,8 @@ export async function getPromisesUpload({
 
   let { size, available, id } = albums[0];
   promises[id] = [];
-  const photos_length = images.length
-  
+  const photos_length = images.length;
+
   //await API.client.album.update({ id, size, available, photos_length });
   while (available > AVAILABLE_SIZE && images.length) {
     const img = images.shift();
@@ -36,7 +36,7 @@ export async function getPromisesUpload({
 
     promises[id].push(axios.post(URL, formdata));
   }
-  
+
   await API.client.album.update({ id, size, available, photos_length });
 
   return await getPromisesUpload({
@@ -65,7 +65,7 @@ export const cloudinary = {
       const responses = await Promise.all(promises[key]);
 
       responses.forEach(({ data }) => {
-        if (data.secure_url) {
+        if (data.secure_url && data.existing === false) {
           const photo = {
             URL: data.secure_url,
             originalName: data?.original_filename,
