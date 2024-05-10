@@ -20,7 +20,7 @@ export function ImageInput() {
       if (!image) continue;
 
       const formatIndex = image.name.lastIndexOf(".");
-      let imageName = image.name.replace(/\.[^/.]+$/, "").replace(/ /g, "");
+      let imageName = image.name.replace(/ /g, "");
       console.log(image.name, "--", imageName);
 
       const exist = nameFiles[imageName] || localImages.exist(imageName); // string | false

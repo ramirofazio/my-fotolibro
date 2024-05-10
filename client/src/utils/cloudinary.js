@@ -29,6 +29,7 @@ export async function getPromisesUpload({
 
     const formdata = new FormData();
     const name = img.originalName.trim();
+    
     formdata.append("file", img.file);
     formdata.append("upload_preset", upload_preset);
     formdata.append("filename_override", name);
@@ -76,6 +77,7 @@ export const cloudinary = {
           };
 
           if (!data.original_filename) {
+            console.log("no original name");
             const name = data.public_id.split('"');
             photo.originalName = name[0];
           }
