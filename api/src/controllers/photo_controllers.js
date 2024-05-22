@@ -1,8 +1,6 @@
-const { where } = require("sequelize");
 const { Photo, Album, Client } = require("../db");
 const { cloudinary, sendConfirmationMail, consts } = require("../utils");
 const _cloudinary = require("cloudinary");
-const { SELECT } = require("sequelize/lib/query-types");
 const { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } =
   process.env;
 
@@ -192,8 +190,6 @@ module.exports = {
   },
   deleteZeroIndex: async function (clientId) {
     try {
-      // const { clientId } = req.body;
-
       const albums = await Album.findAll({
         where: {
           clientId,
@@ -225,7 +221,6 @@ module.exports = {
       const delete_assets = flatted.filter((img) => {
         const [clientId, album, publicId] = img.public_id.split("/");
         const lastIndex = publicId.slice(3, 4); // ? Si  el resultado de index es "_" significa que la foto no se ha guardado en la db
-        console.log(clientId, album, "++", lastIndex);
         return lastIndex === "_";
       });
       if (!delete_assets.length) return "No hay imagenes inecesarias";
