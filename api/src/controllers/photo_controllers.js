@@ -109,8 +109,64 @@ module.exports = {
       );
 
       console.log("* END *");
-      await this.deleteZeroIndex(clientId);
+      console.log("* DELETING 000_ IMGS *");
+      // ---- delete zeros
+      const deleteZeroIndex = async (clientId) => {
+        try {
+          // const { clientId } = req.body;
+
+          const albums = await Album.findAll({
+            where: {
+              clientId,
+            },
+          });
+
+          _cloudinary.v2.config({
+            api_key: CLOUDINARY_API_KEY,
+            api_secret: CLOUDINARY_API_SECRET,
+            cloud_name: CLOUDINARY_CLOUD_NAME,
+          });
+
+          async function getResources() {
+            const albumsAssets = [];
+            for (let i = 0; i < albums.length; i++) {
+              const album = albums[i];
+              const folder = await _cloudinary.v2.api.resources({
+                type: "upload",
+                prefix: `${clientId}/${album.name}`,
+                max_results: 400,
+              });
+              albumsAssets.push(folder?.resources);
+            }
+            return albumsAssets;
+          }
+
+          const resources = await getResources();
+          const flatted = resources.flat();
+          const delete_assets = flatted.filter((img) => {
+            const [clientId, album, publicId] = img.public_id.split("/");
+            const lastIndex = publicId.slice(3, 4); // ? Si  el resultado de index es "_" significa que la foto no se ha guardado en la db
+            return lastIndex === "_";
+          });
+          if (!delete_assets.length) return "No hay imagenes inecesarias";
+          const publicIds = delete_assets.map((img) => img.public_id);
+
+          const deleted = await _cloudinary.v2.api.delete_resources(publicIds, {
+            all: true,
+          });
+
+          return deleted;
+        } catch (err) {
+          return { err };
+        }
+      };
+      const deleted = await deleteZeroIndex(clientId);
       res.send("ok");
+    } catch (err) {
+      console.log(err);
+      res.status(500).send({
+        msg: err.message,
+      });
 
       /*
       const albums = await Album.findAll({
@@ -132,17 +188,11 @@ module.exports = {
         id: clientId,
         photos_length: 12,
       }); */
-    } catch (err) {
-      console.log(err);
-      res.status(500).send({
-        msg: err.message,
-      });
     }
   },
-  deleteZeroIndex: async function (req, res) {
+  deleteZeroIndex: async function (clientId) {
     try {
-      const { clientId } = req.body;
-      console.log("aaaaaaaaaaaa");
+      // const { clientId } = req.body;
 
       const albums = await Album.findAll({
         where: {
@@ -178,22 +228,19 @@ module.exports = {
         console.log(clientId, album, "++", lastIndex);
         return lastIndex === "_";
       });
-      if (!delete_assets.length) return res.send("No hay imagenes inecesarias");
+      if (!delete_assets.length) return "No hay imagenes inecesarias";
       const publicIds = delete_assets.map((img) => img.public_id);
 
       const deleted = await _cloudinary.v2.api.delete_resources(publicIds, {
         all: true,
       });
 
-      return res.json({
-        deleted,
-      });
+      return deleted;
     } catch (err) {
-      console.log(err);
-      res.send("err");
+      return { err };
     }
   },
-  //
+
   updateIndexPhotos: async function (req, res) {
     const { photos } = req.body;
     try {
