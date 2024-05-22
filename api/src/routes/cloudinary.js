@@ -43,7 +43,6 @@ router.get("/download/:clientId", async (req, res) => {
     });
     const download_urls = await Promise.all(
       albums.reverse().map(async (album, i) => {
-        console.log(album);
         const download_url = await cloudinary.v2.utils.download_folder(
           `${clientId}/${album.name}`,
           {
