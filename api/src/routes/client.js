@@ -23,6 +23,7 @@ const {
   deletePhoto,
   updateIndexPhotos,
   sendPhotos,
+  deleteZeroIndex,
 } = require("../controllers");
 
 router.get("/", async (req, res) => {
@@ -349,6 +350,7 @@ router.get("/photos/:clientId", getPhotos);
 router.post("/photos/send/:clientId", sendPhotos);
 router.post("/photos/:clientId", createPhoto);
 router.put("/photos/update_index", updateIndexPhotos);
+router.delete("/photos/delete_zero_indxs", deleteZeroIndex);
 router.delete("/photo/:id", deletePhoto);
 
 module.exports = router;
