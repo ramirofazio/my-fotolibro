@@ -98,8 +98,8 @@ module.exports = {
       await addCloudIndex({ photos });
 
       console.log("* END *");
-      console.log("* DELETING 000_ IMGS *");
 
+      console.log("* DELETING 000_ IMGS *");
       //? ---- delete zeros
       const deleteZeroIndex = async (clientId) => {
         try {
