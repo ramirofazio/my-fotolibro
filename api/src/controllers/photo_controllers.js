@@ -97,22 +97,12 @@ module.exports = {
       const photos = await Photo.findAll({ where: { clientId } });
       await addCloudIndex({ photos });
 
-      await Client.update(
-        { can_download: true },
-        {
-          where: {
-            id: clientId,
-          },
-        }
-      );
-
       console.log("* END *");
+
       console.log("* DELETING 000_ IMGS *");
-      // ---- delete zeros
+      //? ---- delete zeros
       const deleteZeroIndex = async (clientId) => {
         try {
-          // const { clientId } = req.body;
-
           const albums = await Album.findAll({
             where: {
               clientId,
@@ -125,7 +115,7 @@ module.exports = {
             cloud_name: CLOUDINARY_CLOUD_NAME,
           });
 
-          async function getResources() {
+          async function getResources(albums) {
             const albumsAssets = [];
             for (let i = 0; i < albums.length; i++) {
               const album = albums[i];
@@ -138,11 +128,10 @@ module.exports = {
             }
             return albumsAssets;
           }
-
-          const resources = await getResources();
+          const resources = await getResources(albums);
           const flatted = resources.flat();
           const delete_assets = flatted.filter((img) => {
-            const [clientId, album, publicId] = img.public_id.split("/");
+            const [client_id, album, publicId] = img.public_id.split("/");
             const lastIndex = publicId.slice(3, 4); // ? Si  el resultado de index es "_" significa que la foto no se ha guardado en la db
             return lastIndex === "_";
           });
@@ -155,11 +144,39 @@ module.exports = {
 
           return deleted;
         } catch (err) {
+          console.log(err);
           return { err };
         }
       };
       const deleted = await deleteZeroIndex(clientId);
-      res.send("ok");
+
+      //? ----- borrar carpetas vacias
+      const { folders } = await _cloudinary.v2.api.sub_folders(clientId);
+      for (let i = 0; i < folders.length; i++) {
+        const album = folders[i];
+        const prefix = `${clientId}/${album.name}`;
+        const folder = await _cloudinary.v2.api.resources({
+          type: "upload",
+          prefix,
+          max_results: 400,
+        });
+        if (!folder.resources.length) {
+          const deletedAlbm = await _cloudinary.v2.api.delete_folder(prefix);
+        }
+      }
+
+      await Client.update(
+        { can_download: true },
+        {
+          where: {
+            id: clientId,
+          },
+        }
+      );
+      res.json({
+        status: "ok",
+        deleted,
+      });
     } catch (err) {
       console.log(err);
       res.status(500).send({
