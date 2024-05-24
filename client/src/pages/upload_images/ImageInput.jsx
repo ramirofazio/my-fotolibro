@@ -49,7 +49,15 @@ export function ImageInput() {
         mov: true,
       };
 
-      if (invalidFile[imageFormat]) {
+      const validFile = {
+        jpg: true,
+        jpeg: true,
+        heic: true,
+        png: true,
+        svg: true,
+      };
+
+      if (invalidFile[imageFormat] || !validFile[imageFormat]) {
         toast.error("No se admiten este tipo de archivos");
         continue;
       }
