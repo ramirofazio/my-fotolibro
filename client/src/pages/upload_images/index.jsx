@@ -31,8 +31,12 @@ export function SelectImagesPage() {
     }
     loading.set(true);
     try {
+      const deleteWebp = localImages.values.filter(
+        (img) => img.file.type !== "image/webp"
+      );
+
       await cloudinary.upload({
-        images: localImages.values,
+        images: deleteWebp,
         clientId,
         upload_preset: client.upload_preset,
       });

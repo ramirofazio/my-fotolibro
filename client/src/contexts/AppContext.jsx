@@ -13,6 +13,7 @@ export const AppProvider = ({ children }) => {
   const [adminClients, setAdminClients] = useState([]);
   const [adminFolders, setAdminFolders] = useState([]);
   const addLocalImages = (images) => {
+    
     setLocalImages((cur) => [...images, ...cur]);
   };
   const removeLocalImage = (ID) => {
