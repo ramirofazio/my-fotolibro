@@ -6,7 +6,7 @@ import { useApp } from "../../contexts/AppContext";
 import { useEffect } from "react";
 import { useNavigation } from "../../contexts/NavigationContext";
 import { cloudinary } from "../../utils/cloudinary";
-import { CloudArrowUpIcon } from "@heroicons/react/24/outline";
+import { CloudArrowUpIcon, CheckIcon } from "@heroicons/react/24/outline";
 import { API } from "../../api_instance";
 import toast from "react-hot-toast";
 
@@ -103,18 +103,23 @@ function UploadButton({ total, pending, onUpload }) {
   return (
     <button
       className={`w-fit md:w-[25%] mr-7 cursor-pointer text-xl  text-white ${
-        pending === 0 ? "bg-green-600" : "bg-blue-700"
+        pending === 0
+          ? "bg-transparent underline p-1 pointer-events-none border-2 border-green-500"
+          : "bg-blue-700 animate-pulse"
       } px-2 py-3 rounded hover:font-medium self-center md:self-end `}
       onClick={() => onUpload()}
     >
-      <span
-        className={`flex gap-2 items-center justify-center ${"animate-pulse"}`}
-      >
+      <span className={`flex gap-2 items-center justify-center `}>
         {pending === 0
           ? "Imagenes subidas! seleccione mas o pase a ordenar"
           : "Subir imagenes"}
         <CloudArrowUpIcon
           className={`w-8 aspect-square ${pending === 0 ? "hidden" : "inline"}`}
+        />
+        <CheckIcon
+          className={`w-16 aspect-square text-green-600 ${
+            pending === 0 ? "inline" : "hidden"
+          }`}
         />
       </span>
     </button>

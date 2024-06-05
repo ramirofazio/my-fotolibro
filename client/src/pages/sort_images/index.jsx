@@ -105,7 +105,8 @@ export function SortImagesPage() {
   return (
     <section className="border-2 border-transparent">
       <h2 className="w-fit text-white text-xl mx-auto my-2 text-center px-6">
-        Guarde el orden deseado para las fotos abajo del todo{" "}
+        Guarde el orden deseado para las fotos abajo del todo{""} <br />
+        Utilice la ✋ para arrastrar y cambiar el orden
         <div className="animate-bounce mt-3">👇</div>
       </h2>
 

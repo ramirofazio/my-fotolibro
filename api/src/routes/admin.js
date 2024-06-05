@@ -4,6 +4,9 @@ const { Admin } = require("../db.js");
 const transporter = require("../node_mailer");
 require("dotenv").config();
 const { EMAIL_USER, ENV } = process.env;
+const cloudinary = require("cloudinary");
+const { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } =
+  process.env;
 
 router.post("/create", async (req, res) => {
   try {
@@ -31,7 +34,25 @@ router.get("/verify/:adminId", async (req, res) => {
     return res.send("authorized");
   } catch (err) {
     console.log(err);
-    res.status(401).json({err})
+    res.status(401).json({ err });
+  }
+});
+
+router.get("/status", async (req, res) => {
+  try {
+    cloudinary.v2.config({
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+    });
+    const status = await cloudinary.v2.api.usage();
+    console.log(status);
+    return res.json({
+      status,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(401).json({ err });
   }
 });
 
