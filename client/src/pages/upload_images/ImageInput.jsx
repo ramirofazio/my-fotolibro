@@ -21,7 +21,6 @@ export function ImageInput() {
 
       const formatIndex = image.name.lastIndexOf(".");
       let imageName = image.name.replace(/ /g, "");
-      console.log(image.name, "--", imageName);
 
       const exist = nameFiles[imageName] || localImages.exist(imageName); // string | false
 
@@ -47,6 +46,7 @@ export function ImageInput() {
         pdf: true,
         zip: true,
         mov: true,
+        webp: true,
       };
 
       const validFile = {

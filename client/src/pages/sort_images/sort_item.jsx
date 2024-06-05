@@ -1,5 +1,8 @@
 import { useSortable } from "@dnd-kit/sortable";
-import { ChevronUpDownIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  HandRaisedIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import { CSS } from "@dnd-kit/utilities";
 
 export function SortableItem({ image, index, onDelete, isLoading }) {
@@ -53,7 +56,7 @@ export function SortableItem({ image, index, onDelete, isLoading }) {
               {...attributes}
               {...listeners}
             >
-              <ChevronUpDownIcon className="w-8 sm:w-11 lg:w-12 aspect-square" />
+              <HandRaisedIcon className="w-8 sm:w-11 lg:w-12 aspect-square" />
             </button>
           </>
         ) : (
