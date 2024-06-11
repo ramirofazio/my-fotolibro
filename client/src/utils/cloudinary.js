@@ -21,7 +21,6 @@ export async function getPromisesUpload({
   promises[id] = [];
   const photos_length = images.length;
 
-  //await API.client.album.update({ id, size, available, photos_length });
   while (available > AVAILABLE_SIZE && images.length) {
     const img = images.shift();
     size += img.size;
@@ -29,11 +28,13 @@ export async function getPromisesUpload({
 
     const formdata = new FormData();
     const name = img.originalName.trim();
-    
+
     formdata.append("file", img.file);
     formdata.append("upload_preset", upload_preset);
-    formdata.append("filename_override", name);
-    formdata.append("public_id", "albm-" + id + "/" + "000_" + name);
+    formdata.append("asset_folder", `/${clientId}/albm-${id}`);
+    formdata.append("public_id", `${clientId}/albm-${id}/000_${name}`);
+    // formdata.append("filename_override", `000_${name}`);
+    // ? Estar atento al "FILE MODE" utilizado, de ser necesario se puede requerrir las propiedades "filename_override, use_asset_folder_as_public_id_prefix, use_filename_as_display_name"
 
     promises[id].push(axios.post(URL, formdata));
   }
@@ -66,22 +67,21 @@ export const cloudinary = {
       const responses = await Promise.all(promises[key]);
 
       responses.forEach(({ data }) => {
+        console.log(data);
         if (data.secure_url && data.existing === false) {
           const photo = {
             URL: data.secure_url,
-            originalName: data?.original_filename,
+            originalName: data.display_name,
             size: data.bytes,
             publicId: `${data.public_id}`,
             albumId: parseInt(key),
             clientId: parseInt(clientId),
           };
 
-          if (!data.original_filename) {
-            console.log("no original name");
-            const name = data.public_id.split('"');
-            photo.originalName = name[0];
+          if (!data.display_name) {
+            const name = data.public_id.split("/")[2];
+            photo.originalName = name;
           }
-
           photos.push(photo);
         }
       });

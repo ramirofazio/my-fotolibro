@@ -1,5 +1,5 @@
 const { Photo, Album, Client } = require("../db");
-const { cloudinary, sendConfirmationMail, consts } = require("../utils");
+const { cloudinary, consts } = require("../utils");
 const _cloudinary = require("cloudinary");
 const { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } =
   process.env;
@@ -183,26 +183,7 @@ module.exports = {
         msg: err.message,
       });
 
-      /*
-      const albums = await Album.findAll({
-        where: { clientId },
-        include: Photo,
-      });
-
-      await cloudinary.renameFile({
-        public_id: "1/albm-12/000_72aee5df68edb6fbde7c253e4785af26",
-        albumId: 10,
-        index: 2,
-      });
-
-      if (albums.length !== 1)
-        await reduceAlbums({ albums });
-
-        const mail_response = await sendConfirmationMail({
-        name: client.name,
-        id: clientId,
-        photos_length: 12,
-      }); */
+  
     }
   },
   deleteZeroIndex: async function (clientId) {
@@ -276,20 +257,31 @@ async function addCloudIndex({ photos, errors = [] }) {
     return errors;
   }
   const photo = photos.shift();
-  const { publicId, index, albumId } = photo;
-
   try {
+    const { publicId, index, albumId } = photo;
+
     const data = await cloudinary.renameFile({
       public_id: publicId,
       index,
       albumId,
     });
+
+    _cloudinary.v2.config({
+      api_key: CLOUDINARY_API_KEY,
+      api_secret: CLOUDINARY_API_SECRET,
+      cloud_name: CLOUDINARY_CLOUD_NAME,
+    });
+
     if (data !== "same values") {
+      await _cloudinary.v2.api.update(data.public_id, {
+        display_name: data.public_id.split("/")[2],
+      });
       photo.publicId = data.public_id;
       photo.URL = data.secure_url;
       await photo.save();
     }
   } catch (err) {
+    console.log(err);
     if (err.status === 420) console.log(err);
     errors.push({
       error: err,
