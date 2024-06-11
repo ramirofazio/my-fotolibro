@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const { Album, Photo } = require("../db");
+const { Album } = require("../db");
 const { consts } = require("../utils");
 
 module.exports = {
@@ -14,7 +14,6 @@ module.exports = {
           },
         },
       });
-
       res.status(202).send(albums);
     } catch (error) {
       res.status(404).send({

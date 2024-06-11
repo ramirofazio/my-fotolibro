@@ -34,12 +34,13 @@ export function SelectImagesPage() {
       const deleteWebp = localImages.values.filter(
         (img) => img.file.type !== "image/webp"
       );
-
+      
       await cloudinary.upload({
         images: deleteWebp,
         clientId,
         upload_preset: client.upload_preset,
       });
+
       const { data } = await API.client.photo.getAll({ clientId });
       cloudImages.set(data.photos);
       localImages.clear();
@@ -54,33 +55,35 @@ export function SelectImagesPage() {
     <>
       <div className="flex flex-col md:flex-row gap-y-2 justify-between w-full my-6 px-6">
         <table className=" text-white w-fit text-lg mb-5">
-          <tr>
-            <th className="text-xl">Fotos seleccionadas</th>
-          </tr>
-          <tr>
-            <th className="text-left">Subidas</th>
-            <td className="text-right">{cloudImages.size}</td>
-          </tr>
-          <tr>
-            <th className="text-left">Pendientes</th>
-            <td className="text-right">{localImages.size}</td>
-          </tr>
-          <tr>
-            <th className="text-left">Total</th>
-            <td className="text-right">
-              {localImages.size + cloudImages.size}
-            </td>
-          </tr>
-          <tr className="border-t-2">
-            <th className="text-left">Cantidad maxima </th>
-            <td className="text-right">(350) fotos</td>
-          </tr>
-          <tr className="border-b-2">
-            <th className="text-left">Dsiponibles por subir</th>
-            <td className="text-right">
-              {350 - (localImages.size + cloudImages.size)}
-            </td>
-          </tr>
+          <tbody>
+            <tr>
+              <th className="text-xl">Fotos seleccionadas</th>
+            </tr>
+            <tr>
+              <th className="text-left">Subidas</th>
+              <td className="text-right">{cloudImages.size}</td>
+            </tr>
+            <tr>
+              <th className="text-left">Pendientes</th>
+              <td className="text-right">{localImages.size}</td>
+            </tr>
+            <tr>
+              <th className="text-left">Total</th>
+              <td className="text-right">
+                {localImages.size + cloudImages.size}
+              </td>
+            </tr>
+            <tr className="border-t-2">
+              <th className="text-left">Cantidad maxima </th>
+              <td className="text-right">(350) fotos</td>
+            </tr>
+            <tr className="border-b-2">
+              <th className="text-left">Dsiponibles por subir</th>
+              <td className="text-right">
+                {350 - (localImages.size + cloudImages.size)}
+              </td>
+            </tr>
+          </tbody>
         </table>
         <UploadButton
           total={localImages.size + cloudImages.size}

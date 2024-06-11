@@ -11,7 +11,6 @@ const router = Router();
 const { Client, Photo } = require("../db.js");
 const cloudinary = require("cloudinary");
 const transporter = require("../node_mailer");
-const { DateTime } = require("luxon");
 const { Op } = require("sequelize");
 
 const {
@@ -86,10 +85,14 @@ router.post("/", async (req, res) => {
       api_key: CLOUDINARY_API_KEY,
       api_secret: CLOUDINARY_API_SECRET,
       name: `${newClient.name}-${newClient.id}`, //minimum 6 charcaters
-      folder: newClient.id,
       unsigned: true,
+      use_filename: true,
+      unique_filename: false,
       disallow_public_id: false,
+      unique_display_name: false,
+      use_filename_as_display_name: false,
       use_asset_folder_as_public_id_prefix: false,
+      // folder: newClient.id, // ? En dynamic folders no es necesario, en el caso de que se cambie el modo de carpetas debera descomentarce
     });
 
     newClient.upload_preset = upload_preset.name;
