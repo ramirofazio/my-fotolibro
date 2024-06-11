@@ -34,6 +34,7 @@ export async function getPromisesUpload({
     formdata.append("asset_folder", `/${clientId}/albm-${id}`);
     formdata.append("public_id", `${clientId}/albm-${id}/000_${name}`);
     // formdata.append("filename_override", `000_${name}`);
+    // ? Estar atento al "FILE MODE" utilizado, de ser necesario se puede requerrir las propiedades "filename_override, use_asset_folder_as_public_id_prefix, use_filename_as_display_name"
 
     promises[id].push(axios.post(URL, formdata));
   }
@@ -53,7 +54,7 @@ export const cloudinary = {
   upload: async function ({ images = [], clientId, upload_preset }) {
     if (!clientId) return;
     const { data } = await API.client.album.getAll({ clientId });
-    console.log("ALBUM PREVIO", data);
+
     const promises = await getPromisesUpload({
       albums: data,
       clientId,
@@ -68,7 +69,6 @@ export const cloudinary = {
       responses.forEach(({ data }) => {
         console.log(data);
         if (data.secure_url && data.existing === false) {
-          console.log("DISPLAY", data.display_name);
           const photo = {
             URL: data.secure_url,
             originalName: data.display_name,
@@ -80,7 +80,6 @@ export const cloudinary = {
 
           if (!data.display_name) {
             const name = data.public_id.split("/")[2];
-            console.log("NO DISPLAY", name);
             photo.originalName = name;
           }
           photos.push(photo);
