@@ -1,8 +1,5 @@
 import { useSortable } from "@dnd-kit/sortable";
-import {
-  HandRaisedIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { HandRaisedIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { CSS } from "@dnd-kit/utilities";
 
 export function SortableItem({ image, index, onDelete, isLoading }) {
@@ -14,7 +11,8 @@ export function SortableItem({ image, index, onDelete, isLoading }) {
     transform: CSS.Transform.toString(transform),
     transition,
   };
-  const { URL, originalName } = image;
+  let { URL, originalName } = image;
+  originalName = originalName.slice(4, originalName.length);
 
   return (
     <div
